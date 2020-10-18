@@ -30,9 +30,6 @@
 
 set(WARNING_FLAGS
 
-  # possible loss of data
+  # possible loss of data (convert from int to char) #include <algorithem>
   /wd4244
-
-  # convert int to size_t
-  /wd4267
 )

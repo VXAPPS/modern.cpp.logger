@@ -11,6 +11,6 @@ make -j`nproc`
 
 ## Classes
 - **FileLogger** - Loggin to a file.
-- **Logger** - General defines and logging to /dev/null.
+- **Logger** - General definition and logging to /dev/null.
 - **LoggerFactory** - Loggin to all possible types, as configured.
 - **StdLogger** - Loggin to stdout.
