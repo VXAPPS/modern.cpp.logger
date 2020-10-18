@@ -35,6 +35,7 @@
 #include "FileLogger.h"
 #include "LoggerFactory.h"
 #include "StdLogger.h"
+#include "XmlFileLogger.h"
 
 namespace vx {
 
@@ -43,6 +44,7 @@ namespace vx {
     m_creators.emplace( "", []( const std::unordered_map<std::string, std::string> &_config ) { return new Logger( _config ); } );
     m_creators.emplace( "std", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new StdLogger( _config ); } );
     m_creators.emplace( "file", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new FileLogger( _config ); } );
+    m_creators.emplace( "xml", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new XmlFileLogger( _config ); } );
   }
 
   Logger *LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_config ) const {
