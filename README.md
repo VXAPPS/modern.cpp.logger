@@ -14,3 +14,4 @@ make -j`nproc`
 - **Logger** - General definition and logging to /dev/null.
 - **LoggerFactory** - Loggin to all possible types, as configured.
 - **StdLogger** - Loggin to stdout.
+- **XmlFileLogger** - Loggin to a file as xml.

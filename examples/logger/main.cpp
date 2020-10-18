@@ -34,9 +34,10 @@
 
 /* modern.cpp.logger */
 //#include <FileLogger.h>
-#include <LoggerFactory.h>
+//#include <LoggerFactory.h>
 //#include <Logger.h>
 //#include <StdLogger.h>
+#include <XmlFileLogger.h>
 
 using namespace vx;
 
@@ -93,8 +94,13 @@ int main() {
   FileLogger logger( configuration );
   logger.log( logMessage, Severity::Fatal ); */
 
+  /* Log to file */
+  std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.xml"} };
+  XmlFileLogger logger( configuration );
+  logger.log( logMessage, Severity::Fatal );
+
   /* Log with logging factory */
-  vx::LogFatal( logMessage );
+//  vx::LogFatal( logMessage );
 
   return EXIT_SUCCESS;
 }

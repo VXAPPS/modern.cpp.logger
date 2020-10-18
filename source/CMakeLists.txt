@@ -44,6 +44,9 @@ add_library(${PROJECT_NAME}
   LoggerFactory.h
   StdLogger.cpp
   StdLogger.h
+  StdLogger.cpp
+  XmlFileLogger.cpp
+  XmlFileLogger.h
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}../3rdparty)
