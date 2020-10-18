@@ -33,7 +33,6 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
-#include <mutex>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -43,18 +42,19 @@
  */
 namespace vx {
 
-  /* the log levels we support */
+  /**
+   * @brief The Severity enum.
+   */
   enum class Severity {
 
-    Verbose,
-    Debug,
-    Info,
-    Warning,
-    Error,
-    Fatal
+    Verbose, /**< Verbose level. */
+    Debug, /**< Debug level. */
+    Info, /**< Info level. */
+    Warning, /**< Warning level. */
+    Error, /**< Error level. */
+    Fatal /**< Fatal error level. */
   };
 
-  /* all, something in between, none or default to info */
 #if defined(LOGGINGALL) || defined(LOGGINGVERBOSE)
   constexpr Severity avoidLogAbove = Severity::Verbose;
 #elif defined(LOGGINGDEBUG)
@@ -71,7 +71,10 @@ namespace vx {
   constexpr Severity avoidLogAbove = Severity::Info;
 #endif
 
-  /* returns formated to: 'Y-m-dTh:m:s.xxxxxx' */
+  /**
+   * @brief Create thread-safe timestamp.
+   * @return Timestamp as 'Y-m-dThh:mm:ss.xxxxxx'
+   */
   inline std::string timestamp() {
 
     /* get a precise timestamp as a string */
@@ -97,23 +100,51 @@ namespace vx {
     return result;
   }
 
-  inline std::string threadId() {
+  // TODO: Currently not used
+/*  inline std::string threadId() {
 
     std::ostringstream s;
     s << " [" << std::this_thread::get_id() << "]";
     s.flush();
     std::string result = s.str();
     return result;
-  }
+  } */
 
-  /* logger base class, not pure virtual so you can use as a null logger if you want */
+  /**
+   * @brief The Logger class.
+   * @note Not pure virtual to use as /dev/null logger.
+   * @author Florian Becker <fb\@vxapps.com> (VX APPS)
+   */
   class Logger {
 
   public:
+    /**
+     * @brief Deletet default constructor for Logger.
+     */
     Logger() = delete;
+
+    /**
+     * @brief Default constructor for Logger.
+     * @param _configuration   Logger configuration.
+     */
     explicit Logger( const std::unordered_map<std::string, std::string> &_configuration );
+
+    /**
+     * @brief Default destructor for Logger.
+     */
     virtual ~Logger() = default;
+
+    /**
+     * @brief Build the log message.
+     * @param _message   Message to log.
+     * @param _severity   Severity level of the message.
+     */
     virtual void log( const std::string &_message, const Severity _severity );
+
+    /**
+     * @brief Output the log message.
+     * @param _message   Message to log.
+     */
     virtual void log( const std::string &_message );
   };
 }

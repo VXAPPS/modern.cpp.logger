@@ -42,19 +42,46 @@
  */
 namespace vx {
 
-  /* logger that writes to standard out */
+  /**
+   * @brief The StdLogger class for writing messages to stdout.
+   * @author Florian Becker <fb\@vxapps.com> (VX APPS)
+   */
   class StdLogger : public Logger {
 
   public:
+    /**
+     * @brief Deletet default constructor for StdLogger.
+     */
     StdLogger() = delete;
+
+    /**
+     * @brief Default constructor for StdLogger.
+     * @param _configuration   Logger configuration.
+     */
     explicit StdLogger( const std::unordered_map<std::string, std::string> &_config );
 
+    /**
+     * @brief Build the log message.
+     * @param _message   Message to log.
+     * @param _severity   Severity level of the message.
+     */
     virtual void log( const std::string &m_message, const Severity _severity ) override;
 
+    /**
+     * @brief Output the log message.
+     * @param _message   Message to log.
+     */
     virtual void log( const std::string &_message ) override;
 
   private:
+    /**
+     * @brief Use colored message output.
+     */
     bool m_useColor = false;
+
+    /**
+     * @brief Use stderr for severity >= Error.
+     */
     bool m_useStdErr = false;
   };
 }

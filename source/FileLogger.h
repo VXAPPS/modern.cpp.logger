@@ -34,6 +34,7 @@
 #include <chrono>
 #include <fstream>
 #include <string>
+#include <unordered_map>
 
 /* local header */
 #include "Logger.h"
@@ -43,25 +44,62 @@
  */
 namespace vx {
 
-  /* logger that writes to file */
+  /**
+   * @brief The FileLogger class for writing messages to file.
+   * @author Florian Becker <fb\@vxapps.com> (VX APPS)
+   */
   class FileLogger : public Logger {
 
   public:
+    /**
+     * @brief Deletet default constructor for FileLogger.
+     */
     FileLogger() = delete;
 
+    /**
+     * @brief Default constructor for FileLogger.
+     * @param _configuration   Logger configuration.
+     */
     explicit FileLogger( const std::unordered_map<std::string, std::string> &_config );
 
+    /**
+     * @brief Build the log message.
+     * @param _message   Message to log.
+     * @param _severity   Severity level of the message.
+     */
     virtual void log( const std::string &_message, const Severity _severity ) override;
 
+    /**
+     * @brief Output the log message.
+     * @param _message   Message to log.
+     */
     virtual void log( const std::string &_message ) override;
 
   protected:
+    /**
+     * @brief Close and reopen the log file.
+     */
     void reopen();
 
   private:
+    /**
+     * @brief Log filename.
+     */
     std::string m_filename;
+
+    /**
+     * @brief Log file handle.
+     */
     std::ofstream m_file;
+
+    /**
+     * @brief Interval for reopening the log file.
+     */
     std::chrono::seconds m_reopenInterval;
+
+    /**
+     * @brief Timestamp of last reopen activity.
+     */
     std::chrono::system_clock::time_point m_lastReopen;
   };
 }

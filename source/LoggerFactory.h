@@ -45,70 +45,119 @@
  */
 namespace vx {
 
-  /* a factory that can create loggers (that derive from 'logger') via function pointers */
-  /* this way you could make your own logger that sends log messages to who knows where */
+  /**
+   * @brief The LoggerFactory class.
+   * @author Florian Becker <fb\@vxapps.com> (VX APPS)
+   */
   class LoggerFactory : public Singleton<LoggerFactory> {
 
   public:
+    /**
+     * @brief Default constructor for LoggerFactory.
+     */
     explicit LoggerFactory();
 
+    /**
+     * @brief Create all siblings of different log possibilities.
+     * @param _config   Configuration for logger.
+     * @return Logger class with specific config.
+     */
     Logger *produce( const std::unordered_map<std::string, std::string> &_config ) const;
 
   private:
+    /**
+     * @brief Created loggers.
+     */
     std::unordered_map<std::string, Logger *( * )( const std::unordered_map<std::string, std::string> & )> m_creators;
   };
 
-  /* get at the singleton */
+  /**
+   * @brief Create instance with default configuration for logger.
+   * @param _config   Configuration for logger.
+   */
   inline Logger &instance( const std::unordered_map<std::string, std::string> &_config = { { "type", "std" }, { "color", "" } } ) {
 
     static std::unique_ptr<Logger> singleton( LoggerFactory::instance().produce( _config ) );
     return *singleton;
   }
 
-  /* configure the singleton (once only) */
+  /**
+   * @brief Change the configuration at runtime.
+   * @param _config   Logger configuration.
+   */
   inline void LogConfigure( const std::unordered_map<std::string, std::string> &_config ) {
 
     instance( _config );
   }
 
-  /* statically log manually without the macros below */
-  inline void Log( const std::string &_message, const Severity _level ) {
+  /**
+   * @brief Direct function for logging.
+   * @param _message   Message to log.
+   * @param _severity   Severity level for message to log.
+   */
+  inline void Log( const std::string &_message, const Severity _severity ) {
 
-    instance().log( _message, _level );
+    instance().log( _message, _severity );
   }
 
-  /* statically log manually without a level or maybe with a custom one */
+  /**
+   * @brief Direct function for logging.
+   * @param _message   Message to log.
+   */
   inline void Log( const std::string &_message ) {
 
     instance().log( _message );
   }
 
-  /* these standout when reading code */
+  /**
+   * @brief Direct function for logging with verbose serivity.
+   * @param _message   Message to log.
+   */
   inline void LogVerbose( const std::string &_message ) {
 
     instance().log( _message, Severity::Verbose );
   };
 
+  /**
+   * @brief Direct function for logging with debug serivity.
+   * @param _message   Message to log.
+   */
   inline void LogDebug( const std::string &_message ) {
 
     instance().log( _message, Severity::Debug );
   };
 
+  /**
+   * @brief Direct function for logging with info serivity.
+   * @param _message   Message to log.
+   */
   inline void LogInfo( const std::string &_message ) {
 
     instance().log( _message, Severity::Info );
   };
 
+  /**
+   * @brief Direct function for logging with warning serivity.
+   * @param _message   Message to log.
+   */
   inline void LogWarning( const std::string &_message ) {
 
     instance().log( _message, Severity::Warning );
   };
 
+  /**
+   * @brief Direct function for logging with error serivity.
+   * @param _message   Message to log.
+   */
   inline void LogError( const std::string &_message ) {
 
     instance().log( _message, Severity::Error );
   };
 
+  /**
+   * @brief Direct function for logging with fatal error serivity.
+   * @param _message   Message to log.
+   */
   inline void LogFatal( const std::string &_message ) {
 
     instance().log( _message, Severity::Fatal );
