@@ -29,4 +29,10 @@
 #
 
 set(WARNING_FLAGS
+
+  # possible loss of data
+  /wd4244
+
+  # convert int to size_t
+  /wd4267
 )

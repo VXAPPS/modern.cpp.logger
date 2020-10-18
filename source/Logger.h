@@ -80,11 +80,17 @@ namespace vx {
     const auto nowAsTimeT = std::chrono::system_clock::to_time_t( now );
     const auto nowMs = std::chrono::duration_cast<std::chrono::microseconds>( now.time_since_epoch() ) % 1000000;
 
+#ifdef _WIN32
+  localtime_s(&currentLocalTime, &nowAsTimeT);
+#else
+  localtime_r(&nowAsTimeT, &currentLocalTime);
+#endif
+
     std::ostringstream nowSs;
     nowSs
-        << std::put_time( localtime_r( &nowAsTimeT, &currentLocalTime ), "%Y-%m-%dT%T" )
+        << std::put_time( &currentLocalTime, "%Y-%m-%dT%T" )
         << '.' << std::setfill( '0' ) << std::setw( 6 ) << nowMs.count()
-        << std::put_time( localtime_r( &nowAsTimeT, &currentLocalTime ), "%z" );
+        << std::put_time( &currentLocalTime, "%z" );
     std::string result = nowSs.str();
     /* somewhat special - maybe see systemtimeformatter */
     result.replace( result.end() - 2, result.end() - 2, ":" );
