@@ -29,6 +29,7 @@
  */
 
 /* stl header */
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
