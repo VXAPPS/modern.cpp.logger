@@ -115,7 +115,7 @@ namespace vx {
         m_file.open( m_filename, std::ofstream::out | std::ofstream::app );
         m_lastReopen = std::chrono::system_clock::now();
       }
-      catch ( const std::exception & /*_exception*/ ) {
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
 
         m_file.close();
         throw;
