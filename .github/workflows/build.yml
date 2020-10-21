@@ -117,12 +117,12 @@ jobs:
       - name: Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
-            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{ matrix.version}}" = "11" ]; then
+            sudo apt-get install -y ninja-build
+
+            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "11" ]; then
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
               sudo apt-get update
             fi
-
-            sudo apt-get install -y ninja-build
 
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               sudo apt-get install -y g++-${{matrix.version}}
@@ -137,44 +137,44 @@ jobs:
       - name: Dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install cmake ninja
+            brew install cmake ninja
 
-          if [ "${{matrix.compiler}}" = "gcc" ]; then
-            brew install gcc@${{matrix.version}}
-            echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
-            echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
-          else
-            ls -ls /Applications/
-            sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
-            echo "CC=clang" >> $GITHUB_ENV
-            echo "CXX=clang++" >> $GITHUB_ENV
-          fi
+            if [ "${{matrix.compiler}}" = "gcc" ]; then
+              brew install gcc@${{matrix.version}}
+              echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
+              echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
+            else
+              ls -ls /Applications/
+              sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
+              echo "CC=clang" >> $GITHUB_ENV
+              echo "CXX=clang++" >> $GITHUB_ENV
+            fi
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-          scoop install ninja --global
-          if ("${{matrix.compiler}}".StartsWith("clang")) {
-            scoop install llvm --global
-          }
-          if ("${{matrix.compiler}}" -eq "gcc") {
-            # Chocolatey GCC is broken on the windows-2019 image.
-            # See: https://github.com/DaanDeMeyer/doctest/runs/231595515
-            # See: https://github.community/t5/GitHub-Actions/Something-is-wrong-with-the-chocolatey-installed-version-of-gcc/td-p/32413
-            scoop install gcc --global
-            echo "CC=gcc" >> $GITHUB_ENV
-            echo "CXX=g++" >> $GITHUB_ENV
-          } elseif ("${{matrix.compiler}}" -eq "clang") {
-            echo "CC=clang" >> $GITHUB_ENV
-            echo "CXX=clang++" >> $GITHUB_ENV
-          } else {
-            echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
-            echo "CXX=${{matrix.compiler}}" >> $GITHUB_ENV
-          }
-          # Scoop modifies the PATH so we make the modified PATH global.
-          echo "PATH=$env:PATH" >> $GITHUB_ENV
+            Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+            scoop install ninja --global
+            if ("${{matrix.compiler}}".StartsWith("clang")) {
+              scoop install llvm --global
+            }
+            if ("${{matrix.compiler}}" -eq "gcc") {
+              # Chocolatey GCC is broken on the windows-2019 image.
+              # See: https://github.com/DaanDeMeyer/doctest/runs/231595515
+              # See: https://github.community/t5/GitHub-Actions/Something-is-wrong-with-the-chocolatey-installed-version-of-gcc/td-p/32413
+              scoop install gcc --global
+              echo "CC=gcc" >> $GITHUB_ENV
+              echo "CXX=g++" >> $GITHUB_ENV
+            } elseif ("${{matrix.compiler}}" -eq "clang") {
+              echo "CC=clang" >> $GITHUB_ENV
+              echo "CXX=clang++" >> $GITHUB_ENV
+            } else {
+              echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
+              echo "CXX=${{matrix.compiler}}" >> $GITHUB_ENV
+            }
+            # Scoop modifies the PATH so we make the modified PATH global.
+            echo "PATH=$env:PATH" >> $GITHUB_ENV
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
