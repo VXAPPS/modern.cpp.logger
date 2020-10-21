@@ -33,7 +33,7 @@ project(modern.cpp.logger)
 include_directories(../3rdparty)
 
 add_library(${PROJECT_NAME}
-  ../.github/workflows/build.yml
+  ../.github/workflows/integrate.yml
   ../README.md
   ../3rdparty/magic_enum.hpp
   ../3rdparty/Singleton.h
