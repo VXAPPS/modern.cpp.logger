@@ -1,4 +1,4 @@
-name: build
+name: integration
 
 on: [push, pull_request]
 
@@ -8,8 +8,8 @@ jobs:
     name: ${{matrix.name}} (${{matrix.config}})
     runs-on: ${{matrix.os}}
 
-    env:
-      CMAKE_GENERATOR: Ninja
+#    env:
+#      CMAKE_GENERATOR: Ninja
 
     strategy:
       fail-fast: false
@@ -22,7 +22,6 @@ jobs:
           ubuntu-20.04-clang-9,
           ubuntu-20.04-clang-10,
           ubuntu-20.04-clang-11,
-          ubuntu-20.04-clang-12,
           windows-2019-cl,
           windows-2019-clang-cl,
           windows-2019-clang,
@@ -122,7 +121,7 @@ jobs:
               sudo apt-get update
             fi
             if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
-              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-snapshot main"
+              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-snapshot main"
               sudo apt-get update
             fi
 
@@ -179,7 +178,6 @@ jobs:
             }
             # Scoop modifies the PATH so we make the modified PATH global.
             echo "PATH=$env:PATH" >> $GITHUB_ENV
-            echo "::set-env name=PATH::$env:PATH"
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
@@ -195,4 +193,3 @@ jobs:
       - name: Test
         working-directory: ${{runner.workspace}}/build
         run: ctest -C ${{matrix.config}}
-
