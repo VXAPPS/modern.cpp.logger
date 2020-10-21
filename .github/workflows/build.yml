@@ -130,7 +130,8 @@ jobs:
               brew install gcc@${{matrix.version}}
               echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
               echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
-            elseif [ "${{matrix.compiler}}" = "xcode" ]; then
+            fi
+            if [ "${{matrix.compiler}}" = "xcode" ]; then
               ls -ls /Applications/
               sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
               echo "CC=clang" >> $GITHUB_ENV
@@ -164,7 +165,6 @@ jobs:
             echo "PATH=$env:PATH" >> $GITHUB_ENV
 
       - name: Create Build Environment
-        shell: bash
         run: cmake -E make_directory ${{runner.workspace}}/build
 
       - name: Configure CMake
