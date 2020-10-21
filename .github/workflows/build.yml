@@ -18,7 +18,12 @@ jobs:
           ubuntu-20.04-clang-8,
           ubuntu-20.04-clang-9,
           ubuntu-20.04-clang-10,
-          macOS-latest,
+          windows-2019-cl,
+          windows-2019-clang-cl,
+          windows-2019-clang,
+          windows-2019-gcc,
+          macos-11.0,
+          macos-10.15,
         ]
         config: [Debug, Release]
         include:
@@ -52,8 +57,28 @@ jobs:
             compiler: clang
             version: "10"
 
-          - name: macOS-latest
-            os: macOS-latest
+          - name: windows-2019-cl
+            os: windows-2019
+            compiler: cl
+            version: "10"
+
+          - name: windows-2019-clang-cl
+            os: windows-2019
+            compiler: clang-cl
+
+          - name: windows-2019-clang
+            os: windows-2019
+            compiler: clang
+
+          - name: windows-2019-gcc
+            os: windows-2019
+            compiler: gcc
+
+          - name: macos-11.0
+            os: macos-11.0
+
+          - name: macOS-10.15
+            os: macOS-10.15
 
     steps:
       - uses: actions/checkout@v2
@@ -78,41 +103,6 @@ jobs:
               echo "::set-env name=CC::clang-${{matrix.version}}"
               echo "::set-env name=CXX::clang++-${{matrix.version}}"
             fi
-
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{runner.workspace}}/build
-
-      - name: Configure CMake
-        shell: bash
-        working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.config}}
-
-      - name: Build
-        working-directory: ${{runner.workspace}}/build
-        shell: bash
-        run: cmake --build . --config ${{matrix.config}}
-
-      - name: Test
-        working-directory: ${{runner.workspace}}/build
-        shell: bash
-        run: ctest -C ${{matrix.config}}
-
-  Windows:
-    name: Windows (${{matrix.config}})
-    runs-on: windows-2019
-    strategy:
-      fail-fast: false
-      matrix:
-        config: [Debug, Release]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          # ninja version to download. Default: 1.10.0
-          version: 1.10.0
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
