@@ -137,7 +137,6 @@ jobs:
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
-        shell: powershell
         run: |
             choco install ninja --global
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
@@ -151,7 +150,7 @@ jobs:
               echo "CXX=clang++" >> $Env:GITHUB_ENV
             }
             if ( "${{matrix.compiler}}" -eq "cl" ) {
-              Invoke-BatchFile "${env:ProgramFiles(x86)}\\Microsoft Visual Studio\\${{matrix.version}}\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat"
+              "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
             }
 
       - name: Create Build Environment
