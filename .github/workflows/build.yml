@@ -68,10 +68,10 @@ jobs:
             compiler: clang
             version: "11"
 
-          - name: ubuntu-20.04-clang-12
-            os: ubuntu-20.04
-            compiler: clang
-            version: "12"
+#          - name: ubuntu-20.04-clang-12
+#            os: ubuntu-20.04
+#            compiler: clang
+#            version: "12"
 
           - name: windows-2019-cl
             os: windows-2019
@@ -120,10 +120,10 @@ jobs:
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
               sudo apt-get update
             fi
-            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
-              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-snapshot main"
-              sudo apt-get update
-            fi
+#            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
+#              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-snapshot main"
+#              sudo apt-get update
+#            fi
 
             sudo apt-get install -y ninja-build
 
@@ -146,7 +146,7 @@ jobs:
               brew install gcc@${{matrix.version}}
               echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
               echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
-            elseif [ "${{matrix.compiler}}" = "clang" ]; then
+            elseif [ "${{matrix.compiler}}" = "xcode" ]; then
               ls -ls /Applications/
               sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
               echo "CC=clang" >> $GITHUB_ENV
@@ -155,7 +155,7 @@ jobs:
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
-        shell: powershell
+        shell: bash
         run: |
             Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
             scoop install ninja --global
@@ -180,16 +180,20 @@ jobs:
             echo "PATH=$env:PATH" >> $GITHUB_ENV
 
       - name: Create Build Environment
+        shell: bash
         run: cmake -E make_directory ${{runner.workspace}}/build
 
       - name: Configure CMake
+        shell: bash
         working-directory: ${{runner.workspace}}/build
         run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{matrix.config}}
 
       - name: Build
+        shell: bash
         working-directory: ${{runner.workspace}}/build
         run: cmake --build . --config ${{matrix.config}}
 
       - name: Test
+        shell: bash
         working-directory: ${{runner.workspace}}/build
         run: ctest -C ${{matrix.config}}
