@@ -135,9 +135,13 @@ jobs:
               echo "CXX=clang++" >> $GITHUB_ENV
             fi
 
-      - name: MSBuild (Windows)
+      - name: Add msbuild to PATH
         if: runner.os == 'Windows'
-        run: cmd.exe \c "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+        uses: microsoft/setup-msbuild@v1.0.2
+
+#      - name: MSBuild (Windows)
+#        if: runner.os == 'Windows'
+#        run: cmd.exe \c "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
