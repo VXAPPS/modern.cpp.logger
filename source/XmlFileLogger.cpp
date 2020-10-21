@@ -28,6 +28,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* stl header */
+#include <algorithm>
+
 /* magic enum */
 #include <magic_enum.hpp>
 
