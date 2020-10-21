@@ -8,6 +8,9 @@ jobs:
     name: ${{matrix.name}} (${{matrix.config}})
     runs-on: ${{matrix.os}}
 
+    env:
+      CMAKE_GENERATOR: Ninja
+
     strategy:
       fail-fast: false
       matrix:
@@ -83,16 +86,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          # ninja version to download. Default: 1.10.0
-          version: 1.10.0
-
       - name: Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
-            sudo apt-get update
+            sudo apt-get install -y ninja-build
 
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               sudo apt-get install -y g++-${{matrix.version}}
@@ -103,6 +100,11 @@ jobs:
               echo "CC=clang-${{matrix.version}}" >> $GITHUB_ENV
               echo "CXX=clang++-${{matrix.version}}" >> $GITHUB_ENV
             fi
+
+      - name: Dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake ninja
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
