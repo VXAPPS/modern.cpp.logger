@@ -137,6 +137,7 @@ jobs:
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
+        run: call "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
         run: |
             choco install ninja --global
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
@@ -148,9 +149,6 @@ jobs:
               choco install llvm --global
               echo "CC=clang" >> $Env:GITHUB_ENV
               echo "CXX=clang++" >> $Env:GITHUB_ENV
-            }
-            if ( "${{matrix.compiler}}" -eq "cl" ) {
-              cmd.exe /c "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
             }
 
       - name: Create Build Environment
