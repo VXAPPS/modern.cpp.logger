@@ -21,12 +21,18 @@ jobs:
           ubuntu-20.04-clang-8,
           ubuntu-20.04-clang-9,
           ubuntu-20.04-clang-10,
+          ubuntu-20.04-clang-11,
+          ubuntu-20.04-clang-12,
           windows-2019-cl,
           windows-2019-clang-cl,
           windows-2019-clang,
           windows-2019-gcc,
-          macos-11.0,
-          macos-10.15,
+          macos-10.15-xcode-11,
+          macos-10.15-xcode-11.4,
+          macos-10.15-xcode-12,
+          macos-11.0-xcode-11,
+          macos-11.0-xcode-11.4,
+          macos-11.0-xcode-12,
         ]
         config: [Debug, Release]
         include:
@@ -60,6 +66,16 @@ jobs:
             compiler: clang
             version: "10"
 
+          - name: ubuntu-20.04-clang-11
+            os: ubuntu-20.04
+            compiler: clang
+            version: "11"
+
+          - name: ubuntu-20.04-clang-12
+            os: ubuntu-20.04
+            compiler: clang
+            version: "12"
+
           - name: windows-2019-cl
             os: windows-2019
             compiler: cl
@@ -77,11 +93,35 @@ jobs:
             os: windows-2019
             compiler: gcc
 
-          - name: macos-11.0
-            os: macos-11.0
-
-          - name: macOS-10.15
+          - name: macOS-10.15-xcode-11
             os: macOS-10.15
+            compiler: xcode
+            version: "11"
+
+          - name: macOS-10.15-xcode-11.4
+            os: macOS-10.15
+            compiler: xcode
+            version: "11.4"
+
+          - name: macOS-10.15-xcode-12
+            os: macOS-10.15
+            compiler: xcode
+            version: "12"
+
+          - name: macos-11.0-xcode-11
+            os: macos-11.0
+            compiler: xcode
+            version: "11"
+
+          - name: macos-11.0-xcode-11.4
+            os: macos-11.0
+            compiler: xcode
+            version: "11.4"
+
+          - name: macos-11.0-xcode-12
+            os: macos-11.0
+            compiler: xcode
+            version: "12"
 
     steps:
       - uses: actions/checkout@v2
@@ -106,15 +146,27 @@ jobs:
         run: |
           brew install cmake ninja
 
+          if [ "${{matrix.compiler}}" = "gcc" ]; then
+            brew install gcc@${{matrix.version}}
+            echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
+            echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
+          else
+            ls -ls /Applications/
+            sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
+            echo "CC=clang" >> $GITHUB_ENV
+            echo "CXX=clang++" >> $GITHUB_ENV
+          fi
+
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
+        shell: powershell
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop install ninja --global
-          if ("${{ matrix.compiler }}".StartsWith("clang")) {
+          if ("${{matrix.compiler}}".StartsWith("clang")) {
             scoop install llvm --global
           }
-          if ("${{ matrix.compiler }}" -eq "gcc") {
+          if ("${{matrix.compiler}}" -eq "gcc") {
             # Chocolatey GCC is broken on the windows-2019 image.
             # See: https://github.com/DaanDeMeyer/doctest/runs/231595515
             # See: https://github.community/t5/GitHub-Actions/Something-is-wrong-with-the-chocolatey-installed-version-of-gcc/td-p/32413
@@ -125,8 +177,8 @@ jobs:
             echo "CC=clang" >> $GITHUB_ENV
             echo "CXX=clang++" >> $GITHUB_ENV
           } else {
-            echo "CC=${{ matrix.compiler }}" >> $GITHUB_ENV
-            echo "CXX=${{ matrix.compiler }}" >> $GITHUB_ENV
+            echo "CC=${{matrix.compiler}}" >> $GITHUB_ENV
+            echo "CXX=${{matrix.compiler}}" >> $GITHUB_ENV
           }
           # Scoop modifies the PATH so we make the modified PATH global.
           echo "PATH=$env:PATH" >> $GITHUB_ENV
