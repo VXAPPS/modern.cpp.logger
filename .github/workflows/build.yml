@@ -15,21 +15,21 @@ jobs:
       fail-fast: false
       matrix:
         name: [
-#          ubuntu-18.04-gcc-9,
-#          ubuntu-20.04-gcc-9,
-#          ubuntu-20.04-gcc-10,
-#          ubuntu-20.04-clang-8,
-#          ubuntu-20.04-clang-9,
-#          ubuntu-20.04-clang-10,
+          ubuntu-18.04-gcc-9,
+          ubuntu-20.04-gcc-9,
+          ubuntu-20.04-gcc-10,
+          ubuntu-20.04-clang-8,
+          ubuntu-20.04-clang-9,
+          ubuntu-20.04-clang-10,
           ubuntu-20.04-clang-11,
           ubuntu-20.04-clang-12,
           windows-2019-cl,
           windows-2019-clang-cl,
           windows-2019-clang,
           windows-2019-gcc,
-#          macos-10.15-xcode-11,
-#          macos-10.15-xcode-11.4,
-#          macos-10.15-xcode-12,
+          macos-10.15-xcode-11,
+          macos-10.15-xcode-11.4,
+          macos-10.15-xcode-12,
           macos-11.0
         ]
         config: [Debug, Release]
@@ -117,8 +117,12 @@ jobs:
         run: |
             wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 
-            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "11" ] || [ "${{matrix.version}}" = "12" ]; then
+            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "11" ]; then
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
+              sudo apt-get update
+            fi
+            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
+              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-snapshot main"
               sudo apt-get update
             fi
 
