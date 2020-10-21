@@ -69,10 +69,12 @@ jobs:
           - name: windows-2016-msvc2017
             os: windows-2016
             compiler: cl
+            verision: "2017"
 
           - name: windows-2019-msvc2019
             os: windows-2019
             compiler: cl
+            verision: "2019"
 
           - name: macOS-10.15-xcode-11
             os: macOS-10.15
@@ -147,7 +149,9 @@ jobs:
               echo "CC=clang" >> $Env:GITHUB_ENV
               echo "CXX=clang++" >> $Env:GITHUB_ENV
             }
-            echo "PATH=$Env:PATH" >> $Env:GITHUB_ENV
+            if ( "${{matrix.compiler}}" -eq "cl" ) {
+              call "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+            }
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
