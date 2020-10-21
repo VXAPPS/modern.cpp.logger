@@ -79,9 +79,6 @@ jobs:
               echo "::set-env name=CXX::clang++-${{ matrix.version }}"
             fi
 
-      - name: Dependencies (macOS)
-        if: runner.os == 'macOS'
-
       - name: Create Build Environment
         run: cmake -E make_directory ${{runner.workspace}}/build
 
