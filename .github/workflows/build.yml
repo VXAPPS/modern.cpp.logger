@@ -8,9 +8,6 @@ jobs:
     name: ${{matrix.name}} (${{matrix.config}})
     runs-on: ${{matrix.os}}
 
-#    env:
-#      CMAKE_GENERATOR: Ninja
-
     strategy:
       fail-fast: false
       matrix:
@@ -116,8 +113,6 @@ jobs:
               sudo apt-get update
             fi
 
-            sudo apt-get install -y ninja-build
-
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               sudo apt-get install -y g++-${{matrix.version}}
               echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
@@ -131,8 +126,6 @@ jobs:
       - name: Dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-            brew install cmake ninja
-
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               brew install gcc@${{matrix.version}}
               echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
@@ -146,7 +139,7 @@ jobs:
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
-        shell: bash
+        shell: powershell
         run: |
             Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
             scoop install ninja --global
