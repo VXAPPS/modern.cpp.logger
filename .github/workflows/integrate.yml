@@ -135,9 +135,12 @@ jobs:
               echo "CXX=clang++" >> $GITHUB_ENV
             fi
 
-      - name: Dependencies (Windows)
+      - name: MSBuild (Windows)
         if: runner.os == 'Windows'
         run: call "C:/Program Files (x86)/Microsoft Visual Studio/${{matrix.version}}/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+
+      - name: Dependencies (Windows)
+        if: runner.os == 'Windows'
         run: |
             choco install ninja --global
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
