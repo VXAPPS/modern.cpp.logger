@@ -108,20 +108,8 @@ jobs:
             compiler: xcode
             version: "12"
 
-          - name: macos-11.0-xcode-11
+          - name: macos-11.0
             os: macos-11.0
-            compiler: xcode
-            version: "11"
-
-          - name: macos-11.0-xcode-11.4
-            os: macos-11.0
-            compiler: xcode
-            version: "11.4"
-
-          - name: macos-11.0-xcode-12
-            os: macos-11.0
-            compiler: xcode
-            version: "12"
 
     steps:
       - uses: actions/checkout@v2
@@ -129,6 +117,11 @@ jobs:
       - name: Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
+            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{ matrix.version}}" = "11" ]; then
+              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
+              sudo apt-get update
+            fi
+
             sudo apt-get install -y ninja-build
 
             if [ "${{matrix.compiler}}" = "gcc" ]; then
@@ -150,7 +143,7 @@ jobs:
             brew install gcc@${{matrix.version}}
             echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
             echo "CXX=g++-${{matrix.version}}" >> $GITHUB_ENV
-          else
+          elseif [ "${{matrix.compiler}}" = "xcode" ]; then
             ls -ls /Applications/
             sudo xcode-select -switch /Applications/Xcode_${{matrix.version}}.app
             echo "CC=clang" >> $GITHUB_ENV
@@ -173,7 +166,7 @@ jobs:
             scoop install gcc --global
             echo "CC=gcc" >> $GITHUB_ENV
             echo "CXX=g++" >> $GITHUB_ENV
-          } elseif ("${{ matrix.compiler }}" -eq "clang") {
+          } elseif ("${{matrix.compiler}}" -eq "clang") {
             echo "CC=clang" >> $GITHUB_ENV
             echo "CXX=clang++" >> $GITHUB_ENV
           } else {
