@@ -5,7 +5,7 @@
 // | |  | | (_| | (_| | | (__  | |____| | | | |_| | | | | | | | |____|_|   |_|
 // |_|  |_|\__,_|\__, |_|\___| |______|_| |_|\__,_|_| |_| |_|  \_____|
 //                __/ | https://github.com/Neargye/magic_enum
-//               |___/  version 0.6.6
+//               |___/  version 0.7.0
 //
 // Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 // SPDX-License-Identifier: MIT
@@ -33,8 +33,8 @@
 #define NEARGYE_MAGIC_ENUM_HPP
 
 #define MAGIC_ENUM_VERSION_MAJOR 0
-#define MAGIC_ENUM_VERSION_MINOR 6
-#define MAGIC_ENUM_VERSION_PATCH 6
+#define MAGIC_ENUM_VERSION_MINOR 7
+#define MAGIC_ENUM_VERSION_PATCH 0
 
 #include <array>
 #include <cassert>
@@ -280,7 +280,7 @@ constexpr I log2(I value) noexcept {
   static_assert(std::is_integral_v<I>, "magic_enum::detail::log2 requires integral type.");
 
   auto ret = I{0};
-  for (; value > I{1}; value >>= I{1}, ++ret) {};
+  for (; value > I{1}; value >>= I{1}, ++ret) {}
 
   return ret;
 }
