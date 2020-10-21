@@ -68,11 +68,6 @@ jobs:
             compiler: clang
             version: "11"
 
-#          - name: ubuntu-20.04-clang-12
-#            os: ubuntu-20.04
-#            compiler: clang
-#            version: "12"
-
           - name: windows-2019-cl
             os: windows-2019
             compiler: cl
@@ -120,10 +115,6 @@ jobs:
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
               sudo apt-get update
             fi
-#            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
-#              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-snapshot main"
-#              sudo apt-get update
-#            fi
 
             sudo apt-get install -y ninja-build
 
