@@ -137,6 +137,7 @@ jobs:
 
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
+        shell: powershell
         run: |
             choco install ninja --global
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
