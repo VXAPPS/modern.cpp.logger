@@ -69,12 +69,12 @@ jobs:
           - name: windows-2016-msvc2017
             os: windows-2016
             compiler: cl
-            verision: "2017"
+            version: "2017"
 
           - name: windows-2019-msvc2019
             os: windows-2019
             compiler: cl
-            verision: "2019"
+            version: "2019"
 
           - name: macOS-10.15-xcode-11
             os: macOS-10.15
