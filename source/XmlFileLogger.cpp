@@ -57,7 +57,7 @@ namespace vx {
     output.append( "</timestamp>" );
 
     std::string severity = std::string( magic_enum::enum_name( _severity ) );
-    std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return std::toupper( c ); } );
+    std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
     output.append( "<severity>" );
     output.append( severity );
     output.append( "</severity>" );
