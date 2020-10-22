@@ -70,12 +70,12 @@ jobs:
           - name: windows-2019-msvc2015
             os: windows-2019
             compiler: cl
-            version: "Visual Studio 14 2015 x64"
+            version: "Visual Studio 14 2015 Win64"
 
           - name: windows-2019-msvc2017
             os: windows-2019
             compiler: cl
-            version: "Visual Studio 15 2017 x64"
+            version: "Visual Studio 15 2017 Win64"
 
           - name: windows-2019-msvc2019
             os: windows-2019
