@@ -33,6 +33,7 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
+#include <source_location.hpp>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -56,19 +57,19 @@ namespace vx {
   };
 
 #if defined(LOGGINGALL) || defined(LOGGINGVERBOSE)
-  constexpr Severity avoidLogAbove = Severity::Verbose;
+  constexpr Severity avoidLogBelow = Severity::Verbose;
 #elif defined(LOGGINGDEBUG)
-  constexpr Severity avoidLogAbove = Severity::Debug;
+  constexpr Severity avoidLogBelow = Severity::Debug;
 #elif defined(LOGGINGWARNING)
-  constexpr Severity avoidLogAbove = Severity::Warning;
+  constexpr Severity avoidLogBelow = Severity::Warning;
 #elif defined(LOGGINGERROR)
-  constexpr Severity avoidLogAbove = Severity::Error;
+  constexpr Severity avoidLogBelow = Severity::Error;
 #elif defined(LOGGINGFATAL)
-  constexpr Severity avoidLogAbove = Severity::Fatal;
+  constexpr Severity avoidLogBelow = Severity::Fatal;
 #elif defined(LOGGINGNONE)
-  constexpr Severity avoidLogAbove = Severity::Fatal + 1;
+  constexpr Severity avoidLogBelow = Severity::Fatal + 1;
 #else
-  constexpr Severity avoidLogAbove = Severity::Info;
+  constexpr Severity avoidLogBelow = Severity::Info;
 #endif
 
   /**
@@ -84,9 +85,9 @@ namespace vx {
     const auto nowMs = std::chrono::duration_cast<std::chrono::microseconds>( now.time_since_epoch() ) % 1000000;
 
 #ifdef _WIN32
-  localtime_s(&currentLocalTime, &nowAsTimeT);
+    localtime_s( &currentLocalTime, &nowAsTimeT );
 #else
-  localtime_r(&nowAsTimeT, &currentLocalTime);
+    localtime_r( &nowAsTimeT, &currentLocalTime );
 #endif
 
     std::ostringstream nowSs;
@@ -99,16 +100,6 @@ namespace vx {
     result.replace( result.end() - 2, result.end() - 2, ":" );
     return result;
   }
-
-  // TODO: Currently not used
-/*  inline std::string threadId() {
-
-    std::ostringstream s;
-    s << " [" << std::this_thread::get_id() << "]";
-    s.flush();
-    std::string result = s.str();
-    return result;
-  } */
 
   /**
    * @brief The Logger class.
@@ -138,8 +129,11 @@ namespace vx {
      * @brief Build the log message.
      * @param _message   Message to log.
      * @param _severity   Severity level of the message.
+     * @param _location   Source location information.
      */
-    virtual void log( const std::string &_message, const Severity _severity );
+    virtual void log( const std::string &_message,
+                      const Severity _severity,
+                      const nostd::source_location &_location = nostd::source_location::current() );
 
     /**
      * @brief Output the log message.

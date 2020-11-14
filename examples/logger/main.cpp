@@ -34,10 +34,10 @@
 
 /* modern.cpp.logger */
 //#include <FileLogger.h>
-//#include <LoggerFactory.h>
+#include <LoggerFactory.h>
 //#include <Logger.h>
 //#include <StdLogger.h>
-#include <XmlFileLogger.h>
+//#include <XmlFileLogger.h>
 
 using namespace vx;
 
@@ -62,7 +62,7 @@ constexpr auto logMessage = "This is a log message";
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-//  vx::configure({ {"type", "file"}, {"filename", "test2.log"}, {"reopen_interval", "1"} });
+//  vx::configureLogger({ {"type", "file"}, {"filename", "test2.log"}, {"reopen_interval", "1"} });
 
   /* start up some threads */
 /*  std::vector<std::shared_ptr<std::thread>> threads( std::thread::hardware_concurrency() );
@@ -85,9 +85,9 @@ int main() {
   logger.log( logMessage, Severity::Fatal ); */
 
   /* Log to stdout */
-  /* std::unordered_map<std::string, std::string> configuration = { { "color", "" } };
-  StdLogger logger( configuration );
-  logger.log( logMessage, Severity::Fatal ); */
+//  std::unordered_map<std::string, std::string> configuration = { { "color", "" } };
+//  StdLogger logger( configuration );
+//  logger.log( logMessage, Severity::Fatal );
 
   /* Log to file */
   /* std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.log"} };
@@ -95,12 +95,12 @@ int main() {
   logger.log( logMessage, Severity::Fatal ); */
 
   /* Log to file */
-  std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.xml"} };
-  XmlFileLogger logger( configuration );
-  logger.log( logMessage, Severity::Fatal );
+//  std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.xml"} };
+//  XmlFileLogger logger( configuration );
+//  logger.log( logMessage, Severity::Fatal );
 
   /* Log with logging factory */
-//  vx::LogFatal( logMessage );
+  LogFatal( logMessage );
 
   return EXIT_SUCCESS;
 }

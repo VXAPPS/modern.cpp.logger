@@ -40,6 +40,16 @@
 
 namespace vx {
 
+  /**
+   * @brief Reserved overhead for new log entry.
+   */
+  const int overhead = 64;
+
+  /**
+   * @brief Default reopen interval.
+   */
+  const int reopenInterval = 300;
+
   FileLogger::FileLogger( const std::unordered_map<std::string, std::string> &_config )
     : Logger( _config ) {
 
@@ -52,7 +62,7 @@ namespace vx {
     m_filename = name->second;
 
     /* if we specify an interval */
-    m_reopenInterval = std::chrono::seconds( 300 );
+    m_reopenInterval = std::chrono::seconds( reopenInterval );
     auto interval = _config.find( "reopen_interval" );
     if ( interval != _config.end() ) {
 
@@ -70,22 +80,34 @@ namespace vx {
     reopen();
   }
 
-  void FileLogger::log( const std::string &_message, const Severity _severity ) {
+  void FileLogger::log( const std::string &_message,
+                        const Severity _severity,
+                        const nostd::source_location &_location ) {
 
-    if ( avoidLogAbove > _severity ) {
+    if ( avoidLogBelow > _severity ) {
 
       return;
     }
 
     std::string output;
-    output.reserve( _message.length() + 64 );
+    output.reserve( _message.size() + overhead );
     output.append( timestamp() );
 
     std::string severity = std::string( magic_enum::enum_name( _severity ) );
     std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
     output.append( " [" + severity + "] " );
+    if ( std::string( _location.file_name() ) != "unsupported" ) {
+
+      output.append( _location.file_name() );
+      output.push_back( ':' );
+      output.append( std::to_string( _location.line() ) );
+      output.push_back( ' ' );
+      output.append( _location.function_name() );
+      output.push_back( ' ' );
+    }
     output.append( _message );
     output.push_back( '\n' );
+
     log( output );
   }
 

@@ -1,5 +1,12 @@
 # modern.cpp.logger
-Modern C++ logger classes for logging functions in most native and modern C++17.
+Modern C++ logger classes for logging functions (thread-safe) in most native and modern C++17.
+
+## Features
+- Log a message to /dev/null, stdout, file and file as xml.
+- Log a message with severity of Verbose, Debug, Info, Warning, Error and Fatal.
+- Log thread-safe from whole application.
+- Use compile flag to avoid level below a specified level. Default is LOGGINGINFO.
+- Log automatically file, line and function name from logging position (except Visual Studio builds)
 
 ## Build
 ```bash

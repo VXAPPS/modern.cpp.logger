@@ -66,8 +66,11 @@ namespace vx {
      * @brief Build the log message.
      * @param _message   Message to log.
      * @param _severity   Severity level of the message.
+     * @param _location   Source location information.
      */
-    virtual void log( const std::string &_message, const Severity _severity ) override;
+    virtual void log( const std::string &_message,
+                      const Severity _severity,
+                      const nostd::source_location &_location = nostd::source_location::current() ) override;
 
     /**
      * @brief Output the log message.
@@ -95,11 +98,11 @@ namespace vx {
     /**
      * @brief Interval for reopening the log file.
      */
-    std::chrono::seconds m_reopenInterval;
+    std::chrono::seconds m_reopenInterval {};
 
     /**
      * @brief Timestamp of last reopen activity.
      */
-    std::chrono::system_clock::time_point m_lastReopen;
+    std::chrono::system_clock::time_point m_lastReopen {};
   };
 }

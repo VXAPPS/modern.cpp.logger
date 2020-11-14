@@ -37,6 +37,7 @@ add_library(${PROJECT_NAME}
   ../README.md
   ../3rdparty/magic_enum.hpp
   ../3rdparty/Singleton.h
+  ../3rdparty/source_location.hpp
   FileLogger.cpp
   FileLogger.h
   Logger.cpp

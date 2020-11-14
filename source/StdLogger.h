@@ -64,8 +64,11 @@ namespace vx {
      * @brief Build the log message.
      * @param _message   Message to log.
      * @param _severity   Severity level of the message.
+     * @param _location   Source location information.
      */
-    virtual void log( const std::string &m_message, const Severity _severity ) override;
+    virtual void log( const std::string &m_message,
+                      const Severity _severity,
+                      const nostd::source_location &_location = nostd::source_location::current() ) override;
 
     /**
      * @brief Output the log message.

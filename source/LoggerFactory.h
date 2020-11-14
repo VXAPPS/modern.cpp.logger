@@ -85,7 +85,7 @@ namespace vx {
    * @brief Change the configuration at runtime.
    * @param _config   Logger configuration.
    */
-  inline void LogConfigure( const std::unordered_map<std::string, std::string> &_config ) {
+  inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_config ) {
 
     instance( _config );
   }
@@ -94,10 +94,13 @@ namespace vx {
    * @brief Direct function for logging.
    * @param _message   Message to log.
    * @param _severity   Severity level for message to log.
+   * @param _location   Source location information.
    */
-  inline void Log( const std::string &_message, const Severity _severity ) {
+  inline void Log( const std::string &_message,
+                   const Severity _severity,
+                   const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, _severity );
+    instance().log( _message, _severity, _location );
   }
 
   /**
@@ -112,54 +115,66 @@ namespace vx {
   /**
    * @brief Direct function for logging with verbose serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogVerbose( const std::string &_message ) {
+  inline void LogVerbose( const std::string &_message,
+                          const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Verbose );
+    instance().log( _message, Severity::Verbose, _location );
   };
 
   /**
    * @brief Direct function for logging with debug serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogDebug( const std::string &_message ) {
+  inline void LogDebug( const std::string &_message,
+                        const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Debug );
+    instance().log( _message, Severity::Debug, _location );
   };
 
   /**
    * @brief Direct function for logging with info serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogInfo( const std::string &_message ) {
+  inline void LogInfo( const std::string &_message,
+                       const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Info );
+    instance().log( _message, Severity::Info, _location );
   };
 
   /**
    * @brief Direct function for logging with warning serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogWarning( const std::string &_message ) {
+  inline void LogWarning( const std::string &_message,
+                          const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Warning );
+    instance().log( _message, Severity::Warning, _location );
   };
 
   /**
    * @brief Direct function for logging with error serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogError( const std::string &_message ) {
+  inline void LogError( const std::string &_message,
+                        const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Error );
+    instance().log( _message, Severity::Error, _location );
   };
 
   /**
    * @brief Direct function for logging with fatal error serivity.
    * @param _message   Message to log.
+   * @param _location   Source location information.
    */
-  inline void LogFatal( const std::string &_message ) {
+  inline void LogFatal( const std::string &_message,
+                        const nostd::source_location &_location = nostd::source_location::current() ) {
 
-    instance().log( _message, Severity::Fatal );
+    instance().log( _message, Severity::Fatal, _location );
   };
 }

@@ -41,20 +41,27 @@
 
 namespace vx {
 
+  /**
+   * @brief Reserved overhead for new log entry.
+   */
+  const int overhead = 64;
+
   StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_config )
     : Logger( _config )
     , m_useColor( _config.find( "color" ) != _config.end() )
     , m_useStdErr( _config.find( "stderr" ) != _config.end() ) {}
 
-  void StdLogger::log( const std::string &_message, const Severity _severity ) {
+  void StdLogger::log( const std::string &_message,
+                       const Severity _severity,
+                       const nostd::source_location &_location ) {
 
-    if ( avoidLogAbove > _severity ) {
+    if ( avoidLogBelow > _severity ) {
 
       return;
     }
 
     std::string output;
-    output.reserve( _message.length() + 64 );
+    output.reserve( _message.size() + overhead );
     output.append( timestamp() );
 
     std::string severity = std::string( magic_enum::enum_name( _severity ) );
@@ -87,8 +94,24 @@ namespace vx {
 
       output.append( " [" + severity + "] " );
     }
+    std::string filename = _location.file_name();
+    if ( filename != "unsupported" ) {
+
+      if ( filename.find_last_of( '/' ) != std::string::npos ) {
+
+        std::size_t pos = filename.find_last_of( '/' );
+        filename = filename.substr( pos + 1, filename.size() - ( pos + 1 ) );
+      }
+      output.append( filename );
+      output.push_back( ':' );
+      output.append( std::to_string( _location.line() ) );
+      output.push_back( ' ' );
+      output.append( _location.function_name() );
+      output.push_back( ' ' );
+    }
     output.append( _message );
     output.push_back( '\n' );
+
     log( output );
   }
 

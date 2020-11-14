@@ -64,6 +64,6 @@ namespace vx {
     }
 
     /* couldn't get a logger */
-    throw std::invalid_argument( "Couldn't produce logger for type: " + type->second );
+    throw std::invalid_argument( "Couldn't produce logger of type: " + type->second );
   }
 }

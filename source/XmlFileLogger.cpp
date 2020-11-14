@@ -39,22 +39,41 @@
 
 namespace vx {
 
+  /**
+   * @brief Reserved overhead for new log entry.
+   */
+  constexpr int overhead = 256;
+
   XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_config )
     : FileLogger( _config ) {}
 
-  void XmlFileLogger::log( const std::string &_message, const Severity _severity ) {
+  void XmlFileLogger::log( const std::string &_message,
+                           const Severity _severity,
+                           const nostd::source_location &_location ) {
 
-    if ( avoidLogAbove > _severity ) {
+    if ( avoidLogBelow > _severity ) {
 
       return;
     }
 
     std::string output;
-    output.reserve( _message.length() + 64 );
+    output.reserve( _message.size() + overhead );
     output.append( "<entry>" );
     output.append( "<timestamp>" );
     output.append( timestamp() );
     output.append( "</timestamp>" );
+    if ( std::string( _location.file_name() ) != "unsupported" ) {
+
+      output.append( "<filename>" );
+      output.append( _location.file_name() );
+      output.append( "</filename>" );
+      output.append( "<line>" );
+      output.append( std::to_string( _location.line() ) );
+      output.append( "</line>" );
+      output.append( "<function>" );
+      output.append( _location.function_name() );
+      output.append( "</function>" );
+    }
 
     std::string severity = std::string( magic_enum::enum_name( _severity ) );
     std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
@@ -65,6 +84,7 @@ namespace vx {
     output.append( _message );
     output.append( "</message>" );
     output.append( "</entry>\n" );
+
     FileLogger::log( output );
   }
 }
