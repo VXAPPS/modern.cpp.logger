@@ -24,7 +24,6 @@ jobs:
           ubuntu-20.04-clang-11,
           windows-2016-msvc2017,
           windows-2019-msvc2019,
-          macos-10.15-xcode-11,
           macos-10.15-xcode-11.4,
           macos-10.15-xcode-12,
           macos-11.0-x86_64,
@@ -76,11 +75,6 @@ jobs:
             os: windows-2019
             compiler: cl
             version: "Visual Studio 16 2019"
-
-          - name: macOS-10.15-xcode-11
-            os: macOS-10.15
-            compiler: xcode
-            version: "11"
 
           - name: macOS-10.15-xcode-11.4
             os: macOS-10.15

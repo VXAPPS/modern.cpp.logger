@@ -8,6 +8,12 @@
 namespace nostd {
 struct source_location {
 public:
+#ifdef MSVC
+  static constexpr source_location current(const char* fileName = "unsupported",
+      const char* functionName = "unsupported",
+      const uint_least32_t lineNumber = 0,
+      const uint_least32_t columnOffset = 0) noexcept
+#else
 #if defined(__clang__) and (__clang_major__ >= 9)
     static constexpr source_location current(const char* fileName = __builtin_FILE(),
         const char* functionName = __builtin_FUNCTION(),
@@ -23,6 +29,7 @@ public:
         const char* functionName = "unsupported",
         const uint_least32_t lineNumber = 0,
         const uint_least32_t columnOffset = 0) noexcept
+#endif
 #endif
     {
         return source_location(fileName, functionName, lineNumber, columnOffset);
