@@ -33,10 +33,12 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
-#include <source_location.hpp>
 #include <sstream>
 #include <string>
 #include <unordered_map>
+
+/* nostd header */
+#include <source_location.hpp>
 
 /**
  * @brief vx (VX Apps) namespace.
