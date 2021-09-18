@@ -38,7 +38,7 @@
 #include "FileLogger.h"
 
 /**
- * @brief vx (VX Apps) namespace.
+ * @brief vx (VX APPS) namespace.
  */
 namespace vx {
 
