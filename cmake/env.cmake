@@ -64,7 +64,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Case insensitive match
 if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]")
 
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11)
+    include(${CMAKE}/clang_warnings_11.cmake)
+  elseif(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
     include(${CMAKE}/clang_warnings_10.cmake)
   else()
     include(${CMAKE}/clang_warnings.cmake)
