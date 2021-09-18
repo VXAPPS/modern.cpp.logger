@@ -177,8 +177,6 @@ jobs:
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
         run: |
-            choco install --yes cppunit
-
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
               choco install gcc --global
               echo "CC=gcc" >> $Env:GITHUB_ENV

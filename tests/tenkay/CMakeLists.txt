@@ -30,6 +30,8 @@
 
 project(tenkay)
 
+include_directories(${CPPUNIT_INCLUDE_DIR})
+
 ADD_EXECUTABLE(${PROJECT_NAME}
   main.cpp
 )
