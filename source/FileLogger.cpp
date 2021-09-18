@@ -43,12 +43,12 @@ namespace vx {
   /**
    * @brief Reserved overhead for new log entry.
    */
-  const int overhead = 64;
+  constexpr int overhead = 64;
 
   /**
    * @brief Default reopen interval.
    */
-  const int reopenInterval = 300;
+  constexpr int reopenInterval = 300;
 
   FileLogger::FileLogger( const std::unordered_map<std::string, std::string> &_config )
     : Logger( _config ) {
