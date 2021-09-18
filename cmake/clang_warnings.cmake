@@ -41,4 +41,5 @@ set(WARNING_FLAGS
 
   # CppUnit
   -Wno-weak-vtables
+  -Wno-poison-system-directories # brew install cppunit will insert /usr/local/include on macos
 )
