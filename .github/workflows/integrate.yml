@@ -160,6 +160,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
             brew install ninja
+            brew install cppunit
+
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               brew install gcc@${{matrix.version}}
               echo "CC=gcc-${{matrix.version}}" >> $GITHUB_ENV
@@ -175,6 +177,8 @@ jobs:
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
         run: |
+            choco install --yes cppunit
+
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
               choco install gcc --global
               echo "CC=gcc" >> $Env:GITHUB_ENV
