@@ -12,7 +12,7 @@ Modern C++ logger classes for logging functions (thread-safe) in most native and
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Debug|Release ../modern.cpp.logger
+cmake -DCMAKE_BUILD_TYPE:STRING=Debug|Release ../modern.cpp.logger
 make -j`nproc`
 ```
 
