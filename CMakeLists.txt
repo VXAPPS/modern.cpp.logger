@@ -35,3 +35,7 @@ include(cmake/env.cmake)
 
 add_subdirectory(source)
 add_subdirectory(examples)
+if(CPPUNIT_FOUND)
+  ENABLE_TESTING()
+  add_subdirectory(tests)
+endif()

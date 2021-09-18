@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+# Copyright (c) 2021 Florian Becker <fb@vxapps.com> (VX APPS).
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,17 +28,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-set(WARNING_FLAGS
+project(tenkay)
 
-  # Own parameter
-  -Wno-c++98-compat # C++11
-  -Wno-c++98-compat-pedantic # C++11
-  -Wno-padded
-
-  # Singleton
-  -Wno-exit-time-destructors
-  -Wno-documentation # DO NOT REMOVE - Templates which are not used, uses multi language documentation - and this will break the compiling.
-
-  # CppUnit
-  -Wno-weak-vtables
+ADD_EXECUTABLE(${PROJECT_NAME}
+  main.cpp
 )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+
+ADD_TEST(tenkay ${PROJECT_NAME})

@@ -31,6 +31,7 @@
 #pragma once
 
 /* stl header */
+#include <memory>
 #include <string>
 #include <unordered_map>
 

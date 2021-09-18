@@ -44,7 +44,7 @@ namespace vx {
   /**
    * @brief Reserved overhead for new log entry.
    */
-  const int overhead = 64;
+  constexpr int overhead = 64;
 
   StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_config )
     : Logger( _config )
