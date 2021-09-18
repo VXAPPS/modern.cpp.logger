@@ -63,7 +63,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Warning flags
 # Case insensitive match
 if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]")
-  include(${CMAKE}/clang_warnings.cmake)
+
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+    include(${CMAKE}/clang_warnings_10.cmake)
+  else()
+    include(${CMAKE}/clang_warnings.cmake)
+  endif()
 
   set(WARNING_FLAGS_SPACED "")
   foreach(WARNING_FLAG ${WARNING_FLAGS})

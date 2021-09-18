@@ -160,6 +160,9 @@ jobs:
         if: runner.os == 'macOS'
         run: |
             brew install ninja
+            if [ "${{matrix.cmake}}" = "-DCMAKE_OSX_ARCHITECTURES:STRING=arm64" ]; then
+              export ARCHFLAGS="-arch arm64"
+            fi
             brew install cppunit
 
             if [ "${{matrix.compiler}}" = "gcc" ]; then
