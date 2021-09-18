@@ -98,7 +98,7 @@ jobs:
             version: 12.4
 
           - name: macos-11.0-x86_64
-            os: macos-latest
+            os: macos-11.0
             compiler: xcode
             version: 12.5
             cmake: -DCMAKE_OSX_ARCHITECTURES=x86_64
