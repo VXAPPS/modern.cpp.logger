@@ -29,9 +29,17 @@
  */
 
 /* cppunit header */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpoison-system-directories"
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#pragma clang diagnostic ignored "-Wextra-semi"
+#pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
+#pragma clang diagnostic ignored "-Wold-style-cast"
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
+#pragma clang diagnostic pop
 
 class Test : public CppUnit::TestCase {
 
