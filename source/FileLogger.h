@@ -60,7 +60,7 @@ namespace vx {
      * @brief Default constructor for FileLogger.
      * @param _configuration   Logger configuration.
      */
-    explicit FileLogger( const std::unordered_map<std::string, std::string> &_config );
+    explicit FileLogger( const std::unordered_map<std::string, std::string> &_configuration );
 
     /**
      * @brief Build the log message.

@@ -60,10 +60,10 @@ namespace vx {
 
     /**
      * @brief Create all siblings of different log possibilities.
-     * @param _config   Configuration for logger.
+     * @param _configuration   Configuration for logger.
      * @return Logger class with specific config.
      */
-    Logger *produce( const std::unordered_map<std::string, std::string> &_config ) const;
+    Logger *produce( const std::unordered_map<std::string, std::string> &_configuration ) const;
 
   private:
     /**
@@ -74,21 +74,28 @@ namespace vx {
 
   /**
    * @brief Create instance with default configuration for logger.
-   * @param _config   Configuration for logger.
+   * @param _configuration   Configuration for logger.
    */
-  inline Logger &instance( const std::unordered_map<std::string, std::string> &_config = { { "type", "std" }, { "color", "" } } ) {
+  inline Logger &instance( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) {
 
-    static std::unique_ptr<Logger> singleton( LoggerFactory::instance().produce( _config ) );
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+#endif
+    static std::unique_ptr<Logger> singleton( LoggerFactory::instance().produce( _configuration ) );
     return *singleton;
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#endif
   }
 
   /**
    * @brief Change the configuration at runtime.
-   * @param _config   Logger configuration.
+   * @param _configuration   Logger configuration.
    */
-  inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_config ) {
+  inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_configuration ) {
 
-    instance( _config );
+    instance( _configuration );
   }
 
   /**

@@ -58,7 +58,7 @@ namespace vx {
      * @brief Default constructor for StdLogger.
      * @param _configuration   Logger configuration.
      */
-    explicit StdLogger( const std::unordered_map<std::string, std::string> &_config );
+    explicit StdLogger( const std::unordered_map<std::string, std::string> &_configuration );
 
     /**
      * @brief Build the log message.
@@ -66,7 +66,7 @@ namespace vx {
      * @param _severity   Severity level of the message.
      * @param _location   Source location information.
      */
-    virtual void log( const std::string &m_message,
+    virtual void log( const std::string &_message,
                       const Severity _severity,
                       const nostd::source_location &_location = nostd::source_location::current() ) override;
 

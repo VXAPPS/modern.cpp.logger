@@ -29,3 +29,4 @@
 #
 
 find_package(CppUnit)
+find_package(Threads REQUIRED)

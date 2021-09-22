@@ -58,7 +58,7 @@ namespace vx {
      * @brief Default constructor for XmlFileLogger.
      * @param _configuration   Logger configuration.
      */
-    explicit XmlFileLogger( const std::unordered_map<std::string, std::string> &_config );
+    explicit XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration );
 
     /**
      * @brief Build the log message.

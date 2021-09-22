@@ -38,6 +38,7 @@
 //  #pragma clang diagnostic ignored "-Wold-style-cast"
 //  #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
 //  #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
+//  #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Weverything"
 #endif
 #include <cppunit/TestCase.h>
@@ -50,14 +51,21 @@
 class Test : public CppUnit::TestCase {
 
   CPPUNIT_TEST_SUITE_REGISTRATION(Test);
-  CPPUNIT_TEST_SUITE(Test);
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+#endif
+    CPPUNIT_TEST_SUITE(Test);
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#endif
     CPPUNIT_TEST(testCase);
   CPPUNIT_TEST_SUITE_END();
 
 public:
   explicit Test( const std::string &_name = {} ) : CppUnit::TestCase( _name ) {}
 
-  void setUp() final {}
+  void setUp() override {}
 
   void testCase() {
 

@@ -35,10 +35,6 @@ set(WARNING_FLAGS
   -Wno-c++98-compat-pedantic # C++11
   -Wno-padded
 
-  # Singleton
-  -Wno-exit-time-destructors
-  -Wno-documentation # DO NOT REMOVE - Templates which are not used, uses multi language documentation - and this will break the compiling.
-
   # CppUnit
   -Wno-weak-vtables
 )

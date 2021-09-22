@@ -50,12 +50,12 @@ namespace vx {
    */
   constexpr int reopenInterval = 300;
 
-  FileLogger::FileLogger( const std::unordered_map<std::string, std::string> &_config )
-    : Logger( _config ) {
+  FileLogger::FileLogger( const std::unordered_map<std::string, std::string> &_configuration )
+    : Logger( _configuration ) {
 
     /* grab the file name */
-    auto name = _config.find( "filename" );
-    if ( name == _config.end() ) {
+    auto name = _configuration.find( "filename" );
+    if ( name == _configuration.end() ) {
 
       throw std::invalid_argument( "No output file provided to file logger" );
     }
@@ -63,8 +63,8 @@ namespace vx {
 
     /* if we specify an interval */
     m_reopenInterval = std::chrono::seconds( reopenInterval );
-    auto interval = _config.find( "reopen_interval" );
-    if ( interval != _config.end() ) {
+    auto interval = _configuration.find( "reopen_interval" );
+    if ( interval != _configuration.end() ) {
 
       try {
 

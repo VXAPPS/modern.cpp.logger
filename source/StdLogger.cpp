@@ -46,10 +46,10 @@ namespace vx {
    */
   constexpr int overhead = 64;
 
-  StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_config )
-    : Logger( _config )
-    , m_useColor( _config.find( "color" ) != _config.end() )
-    , m_useStdErr( _config.find( "stderr" ) != _config.end() ) {}
+  StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration )
+    : Logger( _configuration )
+    , m_useColor( _configuration.find( "color" ) != _configuration.end() )
+    , m_useStdErr( _configuration.find( "stderr" ) != _configuration.end() ) {}
 
   void StdLogger::log( const std::string &_message,
                        const Severity _severity,

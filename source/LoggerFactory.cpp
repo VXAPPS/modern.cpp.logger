@@ -41,17 +41,17 @@ namespace vx {
 
   LoggerFactory::LoggerFactory() {
 
-    m_creators.emplace( "", []( const std::unordered_map<std::string, std::string> &_config ) { return new Logger( _config ); } );
-    m_creators.emplace( "std", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new StdLogger( _config ); } );
-    m_creators.emplace( "file", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new FileLogger( _config ); } );
-    m_creators.emplace( "xml", []( const std::unordered_map<std::string, std::string> &_config ) -> Logger * { return new XmlFileLogger( _config ); } );
+    m_creators.emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return new Logger( _configuration ); } );
+    m_creators.emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new StdLogger( _configuration ); } );
+    m_creators.emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new FileLogger( _configuration ); } );
+    m_creators.emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new XmlFileLogger( _configuration ); } );
   }
 
-  Logger *LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_config ) const {
+  Logger *LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_configuration ) const {
 
     /* grab the type */
-    auto type = _config.find( "type" );
-    if ( type == _config.end() ) {
+    auto type = _configuration.find( "type" );
+    if ( type == _configuration.end() ) {
 
       throw std::invalid_argument( "Logging factory configuration requires a type of logger" );
     }
@@ -60,7 +60,7 @@ namespace vx {
     auto found = m_creators.find( type->second );
     if ( found != m_creators.end() ) {
 
-      return found->second( _config );
+      return found->second( _configuration );
     }
 
     /* couldn't get a logger */

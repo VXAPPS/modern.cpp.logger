@@ -39,43 +39,42 @@
 //#include <StdLogger.h>
 //#include <XmlFileLogger.h>
 
-using namespace vx;
-
+constexpr size_t logMessageCount = 10000;
 constexpr auto logMessage = "This is a log message";
 
-//static void work() {
+static void work() {
 
-//  std::ostringstream s;
-//  s << logMessage;
-//  std::string message = s.str();
-//  for ( size_t i  = 0; i < 10000; ++i ) {
+  std::ostringstream s;
+  s << logMessage;
+  std::string message = s.str();
+  for ( size_t i  = 0; i < logMessageCount; ++i ) {
 
-//    vx::LogFatal( message );
-//    vx::LogError( message );
-//    vx::LogWarning( message );
-//    vx::LogInfo( message );
-//    vx::LogDebug( message );
-//    vx::LogVerbose( message );
-//  }
-//}
+    vx::LogFatal( message );
+    vx::LogError( message );
+    vx::LogWarning( message );
+    vx::LogInfo( message );
+    vx::LogDebug( message );
+    vx::LogVerbose( message );
+  }
+}
 
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-//  vx::configureLogger({ {"type", "file"}, {"filename", "test2.log"}, {"reopen_interval", "1"} });
+  vx::ConfigureLogger( { { "type", "file" }, { "filename", "/tmp/thread-test.log" }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
-/*  std::vector<std::shared_ptr<std::thread>> threads( std::thread::hardware_concurrency() );
+  std::vector<std::shared_ptr<std::thread>> threads( std::thread::hardware_concurrency() );
   for ( auto &thread : threads ) {
 
     thread.reset( new std::thread( work ) );
-  } */
+  }
 
   /* wait for finish */
-/*  for ( const auto &thread : threads ) {
+  for ( const auto &thread : threads ) {
 
     thread->join();
-  } */
+  }
 
   // = { { "type", "file" }, { "filename", "test2.log" }, { "reopen_interval", "1" } };
 
@@ -100,7 +99,7 @@ int main() {
 //  logger.log( logMessage, Severity::Fatal );
 
   /* Log with logging factory */
-  LogFatal( logMessage );
+  vx::LogFatal( logMessage );
 
   return EXIT_SUCCESS;
 }
