@@ -37,6 +37,9 @@ set(WARNING_FLAGS
 
   # CppUnit
   -Wno-weak-vtables
+)
+
+set(WARNING_FLAGS_VERSION12
 
   # macOS cppunit include path from brew
   -Wno-poison-system-directories

@@ -29,4 +29,8 @@
 #
 
 find_package(CppUnit)
+
+if (UNIX)
+  set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+endif()
 find_package(Threads REQUIRED)

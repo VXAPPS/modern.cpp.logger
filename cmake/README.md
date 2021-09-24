@@ -3,7 +3,7 @@
 ## Configuration files for cmake build environment
 
 env.cmake
-Environment variables for ModernCppCore
+Environment variables.
 
 doxygen.cmake
 Template for running doxygen - not yet usable

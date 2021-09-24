@@ -49,19 +49,19 @@ static void work() {
   std::string message = s.str();
   for ( size_t i  = 0; i < logMessageCount; ++i ) {
 
-    vx::LogFatal( message );
-    vx::LogError( message );
-    vx::LogWarning( message );
-    vx::LogInfo( message );
-    vx::LogDebug( message );
-    vx::LogVerbose( message );
+    LogFatal( message );
+    LogError( message );
+    LogWarning( message );
+    LogInfo( message );
+    LogDebug( message );
+    LogVerbose( message );
   }
 }
 
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  vx::ConfigureLogger( { { "type", "file" }, { "filename", "/tmp/thread-test.log" }, { "reopen_interval", "1" } } );
+  ConfigureLogger( { { "type", "file" }, { "filename", "/tmp/thread-test.log" }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
   std::vector<std::shared_ptr<std::thread>> threads( std::thread::hardware_concurrency() );
@@ -99,7 +99,7 @@ int main() {
 //  logger.log( logMessage, Severity::Fatal );
 
   /* Log with logging factory */
-  vx::LogFatal( logMessage );
+  LogFatal( logMessage );
 
   return EXIT_SUCCESS;
 }

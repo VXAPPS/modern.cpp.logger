@@ -41,22 +41,22 @@
 #include <source_location.hpp>
 
 /**
+ * @brief The Severity enum.
+ */
+enum class Severity {
+
+  Verbose, /**< Verbose level. */
+  Debug, /**< Debug level. */
+  Info, /**< Info level. */
+  Warning, /**< Warning level. */
+  Error, /**< Error level. */
+  Fatal /**< Fatal error level. */
+};
+
+/**
  * @brief vx (VX APPS) namespace.
  */
 namespace vx {
-
-  /**
-   * @brief The Severity enum.
-   */
-  enum class Severity {
-
-    Verbose, /**< Verbose level. */
-    Debug, /**< Debug level. */
-    Info, /**< Info level. */
-    Warning, /**< Warning level. */
-    Error, /**< Error level. */
-    Fatal /**< Fatal error level. */
-  };
 
 #if defined(LOGGINGALL) || defined(LOGGINGVERBOSE)
   constexpr Severity avoidLogBelow = Severity::Verbose;

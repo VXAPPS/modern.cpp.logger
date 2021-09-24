@@ -160,7 +160,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
             brew install ninja
-            brew install cppunit
 
             if [ "${{matrix.compiler}}" = "gcc" ]; then
               brew install gcc@${{matrix.version}}
