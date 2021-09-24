@@ -78,14 +78,14 @@ namespace vx {
    */
   inline Logger &instance( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) {
 
-#if defined(__clang__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
 #endif
     static std::unique_ptr<Logger> singleton( LoggerFactory::instance().produce( _configuration ) );
     return *singleton;
-#if defined(__clang__)
-  #pragma clang diagnostic pop
+#ifdef __clang__
+#pragma clang diagnostic pop
 #endif
   }
 

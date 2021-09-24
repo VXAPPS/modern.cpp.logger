@@ -31,14 +31,14 @@
 /* cppunit header */
 #if defined(__clang__)
   #pragma clang diagnostic push
-//  #pragma clang diagnostic ignored "-Wpoison-system-directories"
-//  #pragma clang diagnostic ignored "-Wreserved-id-macro"
-//  #pragma clang diagnostic ignored "-Wextra-semi"
-//  #pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
-//  #pragma clang diagnostic ignored "-Wold-style-cast"
-//  #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-//  #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
-//  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+  //  #pragma clang diagnostic ignored "-Wpoison-system-directories"
+  //  #pragma clang diagnostic ignored "-Wreserved-id-macro"
+  //  #pragma clang diagnostic ignored "-Wextra-semi"
+  //  #pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
+  //  #pragma clang diagnostic ignored "-Wold-style-cast"
+  //  #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+  //  #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
+  //  #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Weverything"
 #endif
 #include <cppunit/TestCase.h>
@@ -50,16 +50,16 @@
 
 class Test : public CppUnit::TestCase {
 
-  CPPUNIT_TEST_SUITE_REGISTRATION(Test);
+  CPPUNIT_TEST_SUITE_REGISTRATION( Test );
 #if defined(__clang__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wexit-time-destructors"
 #endif
-    CPPUNIT_TEST_SUITE(Test);
+  CPPUNIT_TEST_SUITE( Test );
 #if defined(__clang__)
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
-    CPPUNIT_TEST(testCase);
+  CPPUNIT_TEST( testCase );
   CPPUNIT_TEST_SUITE_END();
 
 public:
