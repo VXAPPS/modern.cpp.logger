@@ -36,7 +36,7 @@ set(WARNING_FLAGS
   -Wno-padded
 )
 
-set(WARNING_FLAGS_VERSION11
+set(WARNING_FLAGS_VERSION12
 
   # macOS cppunit include path from brew
   -Wno-poison-system-directories
