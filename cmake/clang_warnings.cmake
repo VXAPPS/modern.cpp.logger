@@ -34,12 +34,9 @@ set(WARNING_FLAGS
   -Wno-c++98-compat # C++11
   -Wno-c++98-compat-pedantic # C++11
   -Wno-padded
-
-  # CppUnit
-  -Wno-weak-vtables
 )
 
-set(WARNING_FLAGS_VERSION12
+set(WARNING_FLAGS_VERSION11
 
   # macOS cppunit include path from brew
   -Wno-poison-system-directories

@@ -31,14 +31,6 @@
 /* cppunit header */
 #ifdef __clang__
   #pragma clang diagnostic push
-  //  #pragma clang diagnostic ignored "-Wpoison-system-directories"
-  //  #pragma clang diagnostic ignored "-Wreserved-id-macro"
-  //  #pragma clang diagnostic ignored "-Wextra-semi"
-  //  #pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
-  //  #pragma clang diagnostic ignored "-Wold-style-cast"
-  //  #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-  //  #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
-  //  #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Weverything"
 #endif
 #include <cppunit/TestCase.h>
@@ -48,17 +40,15 @@
   #pragma clang diagnostic pop
 #endif
 
-class Test : public CppUnit::TestCase {
-
-  CPPUNIT_TEST_SUITE_REGISTRATION( Test );
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wexit-time-destructors"
+#pragma clang diagnostic ignored "-Wweak-vtables"
 #endif
+class Test : public CppUnit::TestCase {
+
+  CPPUNIT_TEST_SUITE_REGISTRATION( Test );
   CPPUNIT_TEST_SUITE( Test );
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
   CPPUNIT_TEST( testCase );
   CPPUNIT_TEST_SUITE_END();
 
@@ -67,13 +57,16 @@ public:
 
   void setUp() override {}
 
-  void testCase() {
+  virtual void testCase() {
 
     CPPUNIT_ASSERT( true );
   }
 
   void tearDown() final {}
 };
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 int main() {
 
