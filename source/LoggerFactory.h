@@ -130,7 +130,7 @@ inline void LogVerbose( const std::string &_message,
                         const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Verbose, _location );
-};
+}
 
 /**
  * @brief Direct function for logging with debug serivity.
@@ -141,7 +141,7 @@ inline void LogDebug( const std::string &_message,
                       const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Debug, _location );
-};
+}
 
 /**
  * @brief Direct function for logging with info serivity.
@@ -152,7 +152,7 @@ inline void LogInfo( const std::string &_message,
                      const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Info, _location );
-};
+}
 
 /**
  * @brief Direct function for logging with warning serivity.
@@ -163,7 +163,7 @@ inline void LogWarning( const std::string &_message,
                         const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Warning, _location );
-};
+}
 
 /**
  * @brief Direct function for logging with error serivity.
@@ -174,7 +174,7 @@ inline void LogError( const std::string &_message,
                       const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Error, _location );
-};
+}
 
 /**
  * @brief Direct function for logging with fatal error serivity.
@@ -185,4 +185,4 @@ inline void LogFatal( const std::string &_message,
                       const nostd::source_location &_location = nostd::source_location::current() ) {
 
   instance().log( _message, Severity::Fatal, _location );
-};
+}
