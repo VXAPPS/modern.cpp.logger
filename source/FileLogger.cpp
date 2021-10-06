@@ -113,11 +113,13 @@ namespace vx {
 
   void FileLogger::log( const std::string &_message ) {
 
-    std::mutex mutex;
-    std::unique_lock<std::mutex> lock( mutex );
+    std::unique_lock<std::shared_mutex> lock( m_mutex );
+
     m_file << _message;
     m_file.flush();
+
     lock.unlock();
+
     reopen();
   }
 
@@ -125,8 +127,9 @@ namespace vx {
 
     /* check if it should be closed and reopened */
     auto now = std::chrono::system_clock::now();
-    std::mutex mutex;
-    std::lock_guard<std::mutex> lock( mutex );
+
+    std::shared_lock<std::shared_mutex> lock( m_mutex );
+
     if ( now - m_lastReopen > m_reopenInterval ) {
 
       m_lastReopen = now;

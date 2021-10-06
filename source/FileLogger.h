@@ -33,6 +33,7 @@
 /* stl header */
 #include <chrono>
 #include <fstream>
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
 
@@ -104,5 +105,10 @@ namespace vx {
      * @brief Timestamp of last reopen activity.
      */
     std::chrono::system_clock::time_point m_lastReopen {};
+
+    /**
+     * @brief Member for shared mutex.
+     */
+    mutable std::shared_mutex m_mutex;
   };
 }
