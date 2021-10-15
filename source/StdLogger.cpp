@@ -51,7 +51,7 @@ namespace vx {
     , m_useColor( _configuration.find( "color" ) != _configuration.end() )
     , m_useStdErr( _configuration.find( "stderr" ) != _configuration.end() ) {}
 
-  void StdLogger::log( const std::string &_message,
+  void StdLogger::log( std::string_view _message,
                        const Severity _severity,
                        const nostd::source_location &_location ) {
 
@@ -94,8 +94,8 @@ namespace vx {
 
       output.append( " [" + severity + "] " );
     }
-    std::string filename = _location.file_name();
-    if ( filename != "unsupported" ) {
+
+    if ( std::string filename = _location.file_name(); filename != "unsupported" ) {
 
       if ( filename.find_last_of( '/' ) != std::string::npos ) {
 
@@ -115,7 +115,7 @@ namespace vx {
     log( output );
   }
 
-  void StdLogger::log( const std::string &_message ) {
+  void StdLogger::log( std::string_view _message ) {
 
     /* cout is thread safe, to avoid multiple threads interleaving on one line */
     /* though, we make sure to only call the << operator once on std::cout */

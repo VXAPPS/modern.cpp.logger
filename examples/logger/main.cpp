@@ -61,20 +61,21 @@ static void work() {
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "file" }, { "filename", "/tmp/thread-test.log" }, { "reopen_interval", "1" } } );
+  ConfigureLogger( { { "type", "file" }, { "filename", "thread-test.log" }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
-  std::vector<std::shared_ptr<std::thread>> threads( std::thread::hardware_concurrency() );
+  unsigned int hardwareThreadCount = std::max( 1U, std::thread::hardware_concurrency() );
+  std::vector<std::thread> threads {};
+  threads.reserve( hardwareThreadCount );
+  for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
+
+    threads.emplace_back( std::thread( work ) );
+  }
   for ( auto &thread : threads ) {
 
-    thread.reset( new std::thread( work ) );
+    thread.join();
   }
-
-  /* wait for finish */
-  for ( const auto &thread : threads ) {
-
-    thread->join();
-  }
+  threads.clear();
 
   // = { { "type", "file" }, { "filename", "test2.log" }, { "reopen_interval", "1" } };
 

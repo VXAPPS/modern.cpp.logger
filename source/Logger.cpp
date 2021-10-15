@@ -35,9 +35,9 @@ namespace vx {
 
   Logger::Logger( [[maybe_unused]] const std::unordered_map<std::string, std::string> &_configuration ) {}
 
-  void Logger::log( [[maybe_unused]] const std::string &_message,
+  void Logger::log( [[maybe_unused]] std::string_view _message,
                     [[maybe_unused]] const Severity _severity,
                     [[maybe_unused]] const nostd::source_location &_location ) { /* /dev/null logger */ }
 
-  void Logger::log( [[maybe_unused]] const std::string &_message ) { /* /dev/null logger */ }
+  void Logger::log( [[maybe_unused]] std::string_view _message ) { /* /dev/null logger */ }
 }

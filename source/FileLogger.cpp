@@ -80,7 +80,7 @@ namespace vx {
     reopen();
   }
 
-  void FileLogger::log( const std::string &_message,
+  void FileLogger::log( std::string_view _message,
                         const Severity _severity,
                         const nostd::source_location &_location ) {
 
@@ -111,7 +111,7 @@ namespace vx {
     log( output );
   }
 
-  void FileLogger::log( const std::string &_message ) {
+  void FileLogger::log( std::string_view _message ) {
 
     std::unique_lock<std::shared_mutex> lock( m_mutex );
 

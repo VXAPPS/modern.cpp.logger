@@ -66,9 +66,9 @@ namespace vx {
      * @param _severity   Severity level of the message.
      * @param _location   Source location information.
      */
-    virtual void log( const std::string &_message,
-                      const Severity _severity,
-                      const nostd::source_location &_location = nostd::source_location::current() ) override;
+    void log( std::string_view _message,
+              const Severity _severity,
+              const nostd::source_location &_location = nostd::source_location::current() ) override;
 
     /**
      * @brief Using of inherited function.

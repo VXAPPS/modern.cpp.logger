@@ -41,13 +41,13 @@ namespace vx {
 
   LoggerFactory::LoggerFactory() {
 
-    m_creators.emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return new Logger( _configuration ); } );
-    m_creators.emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new StdLogger( _configuration ); } );
-    m_creators.emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new FileLogger( _configuration ); } );
-    m_creators.emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> Logger * { return new XmlFileLogger( _configuration ); } );
+    m_creators.try_emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return std::make_unique<Logger>( _configuration ); } );
+    m_creators.try_emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<StdLogger>( _configuration ); } );
+    m_creators.try_emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<FileLogger>( _configuration ); } );
+    m_creators.try_emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<XmlFileLogger>( _configuration ); } );
   }
 
-  Logger *LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_configuration ) const {
+  std::unique_ptr<Logger> LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_configuration ) const {
 
     /* grab the type */
     auto type = _configuration.find( "type" );
@@ -57,8 +57,7 @@ namespace vx {
     }
 
     /* grab the logger */
-    auto found = m_creators.find( type->second );
-    if ( found != m_creators.end() ) {
+    if ( auto found = m_creators.find( type->second ); found != m_creators.end() ) {
 
       return found->second( _configuration );
     }

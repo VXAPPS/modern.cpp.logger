@@ -63,13 +63,13 @@ namespace vx {
      * @param _configuration   Configuration for logger.
      * @return Logger class with specific config.
      */
-    Logger *produce( const std::unordered_map<std::string, std::string> &_configuration ) const;
+    std::unique_ptr<Logger> produce( const std::unordered_map<std::string, std::string> &_configuration ) const;
 
   private:
     /**
      * @brief Created loggers.
      */
-    std::unordered_map<std::string, Logger *( * )( const std::unordered_map<std::string, std::string> & )> m_creators;
+    std::unordered_map<std::string, std::unique_ptr<Logger> ( * )( const std::unordered_map<std::string, std::string> & )> m_creators;
   };
 }
 

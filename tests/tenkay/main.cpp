@@ -55,14 +55,14 @@ class Test : public CppUnit::TestCase {
 public:
   explicit Test( const std::string &_name = {} ) : CppUnit::TestCase( _name ) {}
 
-  void setUp() override {}
+  void setUp() override { /* Setup things here. */ }
 
   virtual void testCase() {
 
     CPPUNIT_ASSERT( true );
   }
 
-  void tearDown() final {}
+  void tearDown() final { /* Clean up things here. */ }
 };
 #ifdef __clang__
 #pragma clang diagnostic pop

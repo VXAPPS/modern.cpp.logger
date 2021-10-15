@@ -47,7 +47,7 @@ namespace vx {
   XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration )
     : FileLogger( _configuration ) {}
 
-  void XmlFileLogger::log( const std::string &_message,
+  void XmlFileLogger::log( std::string_view _message,
                            const Severity _severity,
                            const nostd::source_location &_location ) {
 
