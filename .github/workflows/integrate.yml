@@ -24,6 +24,7 @@ jobs:
           ubuntu-20.04-clang-10,
           ubuntu-20.04-clang-11,
           ubuntu-20.04-clang-12,
+          ubuntu-20.04-clang-13,
           windows-2016-msvc2017,
           windows-2019-msvc2019,
           windows-2022-msvc2022,
@@ -81,6 +82,11 @@ jobs:
             os: ubuntu-20.04
             compiler: clang
             version: 12
+
+          - name: ubuntu-20.04-clang-13
+            os: ubuntu-20.04
+            compiler: clang
+            version: 13
 
           - name: windows-2016-msvc2017
             os: windows-2016
@@ -146,17 +152,18 @@ jobs:
 
             if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "11" ]; then
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
-              sudo apt update
             fi
             if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "12" ]; then
               sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main"
-              sudo apt update
+            fi
+            if [ "${{matrix.compiler}}" = "clang" ] && [ "${{matrix.version}}" = "13" ]; then
+              sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main"
             fi
             if [ "${{matrix.compiler}}" = "gcc" ] && [ "${{matrix.version}}" = "11" ]; then
               sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-              sudo apt update
             fi
 
+            sudo apt update
             sudo apt install -y ninja-build
             sudo apt install -y libcppunit-dev
 
