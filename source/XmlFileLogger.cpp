@@ -85,6 +85,6 @@ namespace vx {
     output.append( "</message>" );
     output.append( "</entry>\n" );
 
-    log( output );
+    FileLogger::log( output );
   }
 }

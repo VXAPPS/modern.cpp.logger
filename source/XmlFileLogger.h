@@ -69,10 +69,5 @@ namespace vx {
     void log( std::string_view _message,
               const Severity _severity,
               const nostd::source_location &_location = nostd::source_location::current() ) override;
-
-    /**
-     * @brief Using of inherited function.
-     */
-    using FileLogger::log;
   };
 }

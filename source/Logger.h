@@ -41,36 +41,43 @@
 #include <source_location.hpp>
 
 /**
- * @brief The Severity enum.
- */
-enum class Severity {
-
-  Verbose, /**< Verbose level. */
-  Debug, /**< Debug level. */
-  Info, /**< Info level. */
-  Warning, /**< Warning level. */
-  Error, /**< Error level. */
-  Fatal /**< Fatal error level. */
-};
-
-/**
  * @brief vx (VX APPS) namespace.
  */
 namespace vx {
 
+  /**
+   * @brief The Severity enum.
+   */
+  enum class Severity {
+
+    Verbose, /**< Verbose level. */
+    Debug, /**< Debug level. */
+    Info, /**< Info level. */
+    Warning, /**< Warning level. */
+    Error, /**< Error level. */
+    Fatal /**< Fatal error level. */
+  };
+
 #if defined(LOGGINGALL) || defined(LOGGINGVERBOSE)
+  /** Avoid log below verbose. */
   constexpr Severity avoidLogBelow = Severity::Verbose;
 #elif defined(LOGGINGDEBUG)
+  /** Avoid log below debug. */
   constexpr Severity avoidLogBelow = Severity::Debug;
 #elif defined(LOGGINGWARNING)
+  /** Avoid log below warning. */
   constexpr Severity avoidLogBelow = Severity::Warning;
 #elif defined(LOGGINGERROR)
+  /** Avoid log below error. */
   constexpr Severity avoidLogBelow = Severity::Error;
 #elif defined(LOGGINGFATAL)
+  /** Avoid log below fatal. */
   constexpr Severity avoidLogBelow = Severity::Fatal;
 #elif defined(LOGGINGNONE)
+  /** Avoid log below fatal + 1. */
   constexpr Severity avoidLogBelow = Severity::Fatal + 1;
 #else
+  /** Avoid log below info. */
   constexpr Severity avoidLogBelow = Severity::Info;
 #endif
 
