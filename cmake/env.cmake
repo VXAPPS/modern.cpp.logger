@@ -47,8 +47,7 @@ option(CMAKE_VERBOSE_MAKEFILE "Show the complete build commands" OFF)
 # add_compile_options("-DLOGGINGVERBOSE")
 
 # General
-set(PROJECT "modern.cpp.logger")
-set(VERSION 0.3)
+set(CMAKE_PROJECT_VERSION 0.3)
 
 # Pathes
 if(NOT DEV)
@@ -126,4 +125,5 @@ set(CMAKE_MODULE_PATH ${CMAKE}/modules)
 
 # Includes
 include(${CMAKE}/find_package.cmake)
+include(${CMAKE}/create_package.cmake)
 include(${CMAKE}/doxygen.cmake)
