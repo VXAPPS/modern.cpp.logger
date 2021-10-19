@@ -89,12 +89,12 @@ namespace vx {
     /**
      * @brief Log filename.
      */
-    std::string m_filename;
+    std::string m_filename {};
 
     /**
      * @brief Log file handle.
      */
-    std::ofstream m_file;
+    std::ofstream m_file {};
 
     /**
      * @brief Interval for reopening the log file.
@@ -109,6 +109,6 @@ namespace vx {
     /**
      * @brief Member for shared mutex.
      */
-    mutable std::shared_mutex m_mutex;
+    mutable std::shared_mutex m_mutex {};
   };
 }

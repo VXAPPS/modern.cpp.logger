@@ -33,9 +33,16 @@
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Weverything"
 #endif
+#ifdef __GNUC__
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Weffc++"
+#endif
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
+#ifdef __GNUC__
+  #pragma GCC diagnostic pop
+#endif
 #ifdef __clang__
   #pragma clang diagnostic pop
 #endif

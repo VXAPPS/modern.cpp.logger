@@ -69,7 +69,7 @@ namespace vx {
     /**
      * @brief Created loggers.
      */
-    std::unordered_map<std::string, std::unique_ptr<Logger> ( * )( const std::unordered_map<std::string, std::string> & )> m_creators;
+    std::unordered_map<std::string, std::unique_ptr<Logger> ( * )( const std::unordered_map<std::string, std::string> & )> m_creators {};
   };
 }
 
