@@ -28,7 +28,7 @@ jobs:
           windows-2016-msvc2017,
           windows-2019-msvc2019,
           windows-2022-msvc2022,
-          macos-10.15-xcode-10,
+#          macos-10.15-xcode-10,
           macos-10.15-xcode-11,
           macos-10.15-xcode-12,
           macos-11.0-xcode-12-x86_64,
@@ -103,10 +103,10 @@ jobs:
             compiler: cl
             version: Visual Studio 17 2022
 
-          - name: macOS-10.15-xcode-10
-            os: macOS-10.15
-            compiler: xcode
-            version: "10.3"
+#          - name: macOS-10.15-xcode-10
+#            os: macOS-10.15
+#            compiler: xcode
+#            version: "10.3"
 
           - name: macOS-10.15-xcode-11
             os: macOS-10.15
@@ -235,5 +235,4 @@ jobs:
         run: ctest -C ${{matrix.config}}
 
       - name: Perform CodeQL Analysis
-        if: runner.os != 'Windows'
         uses: github/codeql-action/analyze@v1
