@@ -46,19 +46,18 @@ option(CMAKE_VERBOSE_MAKEFILE "Show the complete build commands" OFF)
 # Example for all build types:
 # add_compile_options("-DLOGGINGVERBOSE")
 
-# Pathes
-if(NOT DEV)
-  get_filename_component(DEV "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
-endif()
+# General
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
 
-set(CMAKE ${DEV}/cmake)
+# CMake
+set(CMAKE ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Force C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Warning flags
 # Case insensitive match
@@ -113,14 +112,10 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS_SPACED}")
 endif()
 
-add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 # Project modules/variables
 set(CMAKE_MODULE_PATH ${CMAKE}/modules)
 
 # Includes
-include(${CMAKE}/find_package.cmake)
 include(${CMAKE}/create_package.cmake)
 include(${CMAKE}/doxygen.cmake)
+include(${CMAKE}/find_package.cmake)
