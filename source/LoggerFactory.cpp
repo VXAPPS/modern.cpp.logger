@@ -39,7 +39,7 @@
 
 namespace vx {
 
-  LoggerFactory::LoggerFactory() {
+  LoggerFactory::LoggerFactory() noexcept {
 
     m_creators.try_emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return std::make_unique<Logger>( _configuration ); } );
     m_creators.try_emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<StdLogger>( _configuration ); } );

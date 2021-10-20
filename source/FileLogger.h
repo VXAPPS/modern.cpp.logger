@@ -61,7 +61,7 @@ namespace vx {
      * @brief Default constructor for FileLogger.
      * @param _configuration   Logger configuration.
      */
-    explicit FileLogger( const std::unordered_map<std::string, std::string> &_configuration );
+    explicit FileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept( false );
 
     /**
      * @brief Build the log message.
@@ -71,19 +71,19 @@ namespace vx {
      */
     void log( std::string_view _message,
               const Severity _severity,
-              const nostd::source_location &_location = nostd::source_location::current() ) override;
+              const nostd::source_location &_location = nostd::source_location::current() ) noexcept override;
 
     /**
      * @brief Output the log message.
      * @param _message   Message to log.
      */
-    void log( std::string_view _message ) override;
+    void log( std::string_view _message ) noexcept override;
 
   protected:
     /**
      * @brief Close and reopen the log file.
      */
-    void reopen();
+    void reopen() noexcept( false );
 
   private:
     /**

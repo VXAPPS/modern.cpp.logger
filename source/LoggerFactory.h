@@ -56,14 +56,14 @@ namespace vx {
     /**
      * @brief Default constructor for LoggerFactory.
      */
-    explicit LoggerFactory();
+    explicit LoggerFactory() noexcept;
 
     /**
      * @brief Create all siblings of different log possibilities.
      * @param _configuration   Configuration for logger.
      * @return Logger class with specific config.
      */
-    std::unique_ptr<Logger> produce( const std::unordered_map<std::string, std::string> &_configuration ) const;
+    std::unique_ptr<Logger> produce( const std::unordered_map<std::string, std::string> &_configuration ) const noexcept( false );
 
   private:
     /**

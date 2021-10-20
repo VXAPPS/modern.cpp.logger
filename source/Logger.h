@@ -85,7 +85,7 @@ namespace vx {
    * @brief Create thread-safe timestamp.
    * @return Timestamp as 'Y-m-dThh:mm:ss.xxxxxx'
    */
-  inline std::string timestamp() {
+  inline const std::string timestamp() noexcept {
 
     /* get a precise timestamp as a string */
     struct std::tm currentLocalTime {};
@@ -127,7 +127,7 @@ namespace vx {
      * @brief Default constructor for Logger.
      * @param _configuration   Logger configuration.
      */
-    explicit Logger( const std::unordered_map<std::string, std::string> &_configuration );
+    explicit Logger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept;
 
     /**
      * @brief Default destructor for Logger.
@@ -142,12 +142,12 @@ namespace vx {
      */
     virtual void log( std::string_view _message,
                       const Severity _severity,
-                      const nostd::source_location &_location = nostd::source_location::current() );
+                      const nostd::source_location &_location = nostd::source_location::current() ) noexcept;
 
     /**
      * @brief Output the log message.
      * @param _message   Message to log.
      */
-    virtual void log( std::string_view _message );
+    virtual void log( std::string_view _message ) noexcept;
   };
 }

@@ -33,11 +33,11 @@
 
 namespace vx {
 
-  Logger::Logger( [[maybe_unused]] const std::unordered_map<std::string, std::string> &_configuration ) {}
+  Logger::Logger( [[maybe_unused]] const std::unordered_map<std::string, std::string> &_configuration ) noexcept {}
 
   void Logger::log( [[maybe_unused]] std::string_view _message,
                     [[maybe_unused]] const Severity _severity,
-                    [[maybe_unused]] const nostd::source_location &_location ) { /* /dev/null logger */ }
+                    [[maybe_unused]] const nostd::source_location &_location ) noexcept { /* /dev/null logger */ }
 
-  void Logger::log( [[maybe_unused]] std::string_view _message ) { /* /dev/null logger */ }
+  void Logger::log( [[maybe_unused]] std::string_view _message ) noexcept { /* /dev/null logger */ }
 }

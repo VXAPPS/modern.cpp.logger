@@ -76,13 +76,13 @@ namespace vx {
       }
     }
 
-    /* crack the file open */
+    /* open the file */
     reopen();
   }
 
   void FileLogger::log( std::string_view _message,
                         const Severity _severity,
-                        const nostd::source_location &_location ) {
+                        const nostd::source_location &_location ) noexcept {
 
     if ( avoidLogBelow > _severity ) {
 
@@ -111,7 +111,7 @@ namespace vx {
     log( output );
   }
 
-  void FileLogger::log( std::string_view _message ) {
+  void FileLogger::log( std::string_view _message ) noexcept {
 
     std::unique_lock<std::shared_mutex> lock( m_mutex );
 

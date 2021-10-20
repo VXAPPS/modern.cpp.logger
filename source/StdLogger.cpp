@@ -46,14 +46,14 @@ namespace vx {
    */
   constexpr int overhead = 64;
 
-  StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration )
+  StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
     : Logger( _configuration )
     , m_useColor( _configuration.find( "color" ) != _configuration.end() )
     , m_useStdErr( _configuration.find( "stderr" ) != _configuration.end() ) {}
 
   void StdLogger::log( std::string_view _message,
                        const Severity _severity,
-                       const nostd::source_location &_location ) {
+                       const nostd::source_location &_location ) noexcept {
 
     if ( avoidLogBelow > _severity ) {
 
@@ -115,7 +115,7 @@ namespace vx {
     log( output );
   }
 
-  void StdLogger::log( std::string_view _message ) {
+  void StdLogger::log( std::string_view _message ) noexcept {
 
     /* cout is thread safe, to avoid multiple threads interleaving on one line */
     /* though, we make sure to only call the << operator once on std::cout */

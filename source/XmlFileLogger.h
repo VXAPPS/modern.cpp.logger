@@ -58,7 +58,7 @@ namespace vx {
      * @brief Default constructor for XmlFileLogger.
      * @param _configuration   Logger configuration.
      */
-    explicit XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration );
+    explicit XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept;
 
     /**
      * @brief Build the log message.
@@ -68,6 +68,6 @@ namespace vx {
      */
     void log( std::string_view _message,
               const Severity _severity,
-              const nostd::source_location &_location = nostd::source_location::current() ) override;
+              const nostd::source_location &_location = nostd::source_location::current() ) noexcept override;
   };
 }

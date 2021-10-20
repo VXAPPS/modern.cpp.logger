@@ -44,12 +44,12 @@ namespace vx {
    */
   constexpr int overhead = 256;
 
-  XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration )
+  XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
     : FileLogger( _configuration ) {}
 
   void XmlFileLogger::log( std::string_view _message,
                            const Severity _severity,
-                           const nostd::source_location &_location ) {
+                           const nostd::source_location &_location ) noexcept {
 
     if ( avoidLogBelow > _severity ) {
 
