@@ -40,9 +40,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads modern.cpp.logger
 
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)
-    if (CMAKE_STRIP)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} -s ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
-    endif()
+  if (CMAKE_STRIP)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} --strip-all ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
+  endif()
 endif()
 
 install(TARGETS ${PROJECT_NAME} COMPONENT ${PROJECT_NAME} RUNTIME DESTINATION bin)
