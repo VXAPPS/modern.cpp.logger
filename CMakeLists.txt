@@ -30,7 +30,7 @@
 
 cmake_minimum_required(VERSION 3.10.0)
 
-project(modern.cpp.logger VERSION 0.3 DESCRIPTION "Thread-Safe Modern C++ Logger" HOMEPAGE_URL "http://vxapps.com" LANGUAGES CXX)
+project(modern.cpp.logger VERSION 0.4 DESCRIPTION "Thread-Safe Modern C++ Logger" HOMEPAGE_URL "https://vxapps.com" LANGUAGES CXX)
 include(cmake/env.cmake)
 
 add_subdirectory(source)
