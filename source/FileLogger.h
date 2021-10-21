@@ -83,7 +83,7 @@ namespace vx {
     /**
      * @brief Close and reopen the log file.
      */
-    void reopen() noexcept( false );
+    void reopen() noexcept;
 
   private:
     /**
