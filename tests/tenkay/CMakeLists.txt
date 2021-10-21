@@ -32,10 +32,10 @@ project(tenkay)
 
 include_directories(${CPPUNIT_INCLUDE_DIR})
 
-ADD_EXECUTABLE(${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
   main.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-ADD_TEST(tenkay ${PROJECT_NAME})
+add_test(tenkay ${PROJECT_NAME})
