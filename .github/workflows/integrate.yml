@@ -235,4 +235,5 @@ jobs:
         run: ctest -C ${{matrix.config}}
 
       - name: Perform CodeQL Analysis
+        if: runner.os != 'Windows'
         uses: github/codeql-action/analyze@v1
