@@ -30,6 +30,7 @@
 
 /* stl header */
 #include <algorithm>
+#include <filesystem>
 #include <thread>
 #include <vector>
 
@@ -39,16 +40,33 @@
 //#include <Logger.h>
 //#include <StdLogger.h>
 //#include <XmlFileLogger.h>
+#include <iostream>
 
-constexpr size_t logMessageCount = 10000;
+/**
+ * @brief Filename of temporary log file.
+ */
+constexpr auto filename = "thread-test.log";
+
+/**
+ * @brief Count of log messages per thread.
+ */
+constexpr std::size_t logMessageCount = 10000;
+
+/**
+ * @brief Log message itself.
+ */
 constexpr auto logMessage = "This is a log message";
 
+/**
+ * @brief Function per thread.
+ */
 static void work() {
 
   std::ostringstream s;
   s << logMessage;
+
   std::string message = s.str();
-  for ( size_t i  = 0; i < logMessageCount; ++i ) {
+  for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
 
     LogFatal( message );
     LogError( message );
@@ -61,11 +79,16 @@ static void work() {
 
 int main() {
 
+  std::string tmpDir = std::filesystem::temp_directory_path();
+  std::cout << "Create tmp file: " << tmpDir + filename << std::endl;
+
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "file" }, { "filename", "thread-test.log" }, { "reopen_interval", "1" } } );
+  ConfigureLogger( { { "type", "file" }, { "filename", tmpDir + filename }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
-  unsigned int hardwareThreadCount = std::max( 1U, std::thread::hardware_concurrency() );
+  unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
+  std::cout << "Using threads: " << hardwareThreadCount << std::endl;
+
   std::vector<std::thread> threads {};
   threads.reserve( hardwareThreadCount );
   for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
@@ -102,6 +125,14 @@ int main() {
 
   /* Log with logging factory */
   LogFatal( logMessage );
+
+  bool removed = std::filesystem::remove( tmpDir + filename );
+  if ( !removed ) {
+
+    std::cout << "Tmp file cannot be removed: " << tmpDir + filename << std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout << "Tmp file was removed: " << tmpDir + filename << std::endl;
 
   return EXIT_SUCCESS;
 }

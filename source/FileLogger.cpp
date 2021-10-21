@@ -123,7 +123,7 @@ namespace vx {
     reopen();
   }
 
-  void FileLogger::reopen() {
+  void FileLogger::reopen() noexcept {
 
     /* check if it should be closed and reopened */
     auto now = std::chrono::system_clock::now();
@@ -143,7 +143,6 @@ namespace vx {
       catch ( [[maybe_unused]] const std::exception &_exception ) {
 
         m_file.close();
-        throw;
       }
     }
   }

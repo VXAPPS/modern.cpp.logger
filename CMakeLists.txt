@@ -37,6 +37,6 @@ add_subdirectory(source)
 add_subdirectory(examples)
 
 if(CPPUNIT_FOUND)
-  ENABLE_TESTING()
+  enable_testing()
   add_subdirectory(tests)
 endif()
