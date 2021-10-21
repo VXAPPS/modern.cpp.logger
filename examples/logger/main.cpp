@@ -80,11 +80,7 @@ static void work() {
 
 int main() {
 
-#ifdef _MSC_VER
-  std::string tmpDir = std::string( std::filesystem::temp_directory_path().c_str() );
-#else
-  std::string tmpDir = std::filesystem::temp_directory_path();
-#endif
+  std::string tmpDir = std::filesystem::temp_directory_path().string();
   std::cout << "Create tmp file: " << tmpDir + filename << std::endl;
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
