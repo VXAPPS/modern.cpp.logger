@@ -31,6 +31,7 @@
 /* stl header */
 #include <algorithm>
 #include <filesystem>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -79,11 +80,7 @@ static void work() {
 
 int main() {
 
-#ifdef _WIN32
-  std::string tmpDir = std::filesystem::temp_directory_path().c_str();
-#else
   std::string tmpDir = std::filesystem::temp_directory_path();
-#endif
   std::cout << "Create tmp file: " << tmpDir + filename << std::endl;
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
