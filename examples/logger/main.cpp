@@ -80,11 +80,14 @@ static void work() {
 
 int main() {
 
-  std::string tmpDir = std::filesystem::temp_directory_path().string();
-  std::cout << "Create tmp file: " << tmpDir + filename << std::endl;
+  std::cout << std::filesystem::temp_directory_path() << std::endl;
+  std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
+  tmpPath /= filename;
+  std::string tmpFile = tmpPath.string();
+  std::cout << "Create tmp file: " << tmpFile << std::endl;
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "file" }, { "filename", tmpDir + filename }, { "reopen_interval", "1" } } );
+  ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
   unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
@@ -127,13 +130,13 @@ int main() {
   /* Log with logging factory */
   LogFatal( logMessage );
 
-  bool removed = std::filesystem::remove( tmpDir + filename );
+  bool removed = std::filesystem::remove( tmpFile );
   if ( !removed ) {
 
-    std::cout << "Tmp file cannot be removed: " << tmpDir + filename << std::endl;
+    std::cout << "Tmp file cannot be removed: " << tmpFile << std::endl;
     return EXIT_FAILURE;
   }
-  std::cout << "Tmp file was removed: " << tmpDir + filename << std::endl;
+  std::cout << "Tmp file was removed: " << tmpFile << std::endl;
 
   return EXIT_SUCCESS;
 }
