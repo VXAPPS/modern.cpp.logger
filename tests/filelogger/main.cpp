@@ -47,6 +47,9 @@
   #pragma clang diagnostic pop
 #endif
 
+/* stl header */
+#include <filesystem>
+
 /* magic enum */
 #include <magic_enum.hpp>
 
