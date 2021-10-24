@@ -30,7 +30,4 @@
 
 project(tests)
 
-add_subdirectory(nulllogger)
-add_subdirectory(stdlogger)
-add_subdirectory(filelogger)
-add_subdirectory(xmlfilelogger)
+add_subdirectory(simple)

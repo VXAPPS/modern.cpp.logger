@@ -67,22 +67,22 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  class LoggerTest : public CppUnit::TestCase {
+  class NullLogger : public CppUnit::TestCase {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( LoggerTest );
-    CPPUNIT_TEST_SUITE( LoggerTest );
-    CPPUNIT_TEST( stdLogger );
+    CPPUNIT_TEST_SUITE_REGISTRATION( NullLogger );
+    CPPUNIT_TEST_SUITE( NullLogger );
+    CPPUNIT_TEST( nullLogger );
     CPPUNIT_TEST_SUITE_END();
 
   public:
-    explicit LoggerTest( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    explicit NullLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
     void setUp() noexcept final { /* Setup things here. */ }
 
-    virtual void stdLogger() noexcept {
+    virtual void nullLogger() noexcept {
 
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      /* ConfigureLogger( { { "type", "std" }, { "color", "true" } } ); */
+      ConfigureLogger( { { "type", "" } } );
 
       std::ostringstream s;
       s << logMessage;
@@ -111,7 +111,7 @@ namespace vx {
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::LoggerTest::suite() );
+  runner.addTest( vx::NullLogger::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }

@@ -62,7 +62,7 @@
 /**
  * @brief Filename of temporary log file.
  */
-constexpr auto filename = "test.xml";
+constexpr auto filename = "test.log";
 
 /**
  * @brief Count of log messages per thread.
@@ -81,26 +81,27 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  class LoggerTest : public CppUnit::TestCase {
+  class FileLogger : public CppUnit::TestCase {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( LoggerTest );
-    CPPUNIT_TEST_SUITE( LoggerTest );
-    CPPUNIT_TEST( xmlFileLogger );
+    CPPUNIT_TEST_SUITE_REGISTRATION( FileLogger );
+    CPPUNIT_TEST_SUITE( FileLogger );
+    CPPUNIT_TEST( fileLogger );
     CPPUNIT_TEST_SUITE_END();
 
   public:
-    explicit LoggerTest( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    explicit FileLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
     void setUp() noexcept final { /* Setup things here. */ }
 
-    virtual void xmlFileLogger() noexcept {
+    virtual void fileLogger() noexcept {
 
       std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
       tmpPath /= filename;
       std::string tmpFile = tmpPath.string();
+      std::cout << tmpFile << std::endl;
 
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      ConfigureLogger( { { "type", "xml" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+      ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
       std::ostringstream s;
       s << logMessage;
@@ -117,7 +118,6 @@ namespace vx {
       }
 
       std::size_t count = TestHelper::countNewLines( tmpFile );
-      std::cout << count << std::endl;
 
       bool removed = std::filesystem::remove( tmpFile );
       if ( !removed ) {
@@ -140,7 +140,7 @@ namespace vx {
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::LoggerTest::suite() );
+  runner.addTest( vx::FileLogger::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }

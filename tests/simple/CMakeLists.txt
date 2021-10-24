@@ -28,12 +28,12 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(NullLoggerTest)
+project(SimpleNullLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ../../3rdparty)
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
-  main.cpp
+  NullLogger.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
@@ -42,5 +42,60 @@ string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
 string(TOUPPER ${FIRST} FIRST)
 string(LENGTH ${PROJECT_NAME} LENGTH)
 string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
-string(CONCAT TEST_NAME ${FIRST} ${NEXT} "Test")
+string(CONCAT TEST_NAME ${FIRST} ${NEXT})
+add_test(${TEST_NAME} ${PROJECT_NAME})
+
+project(SimpleStdLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  StdLogger.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+
+string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
+string(TOUPPER ${FIRST} FIRST)
+string(LENGTH ${PROJECT_NAME} LENGTH)
+string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
+string(CONCAT TEST_NAME ${FIRST} ${NEXT})
+add_test(${TEST_NAME} ${PROJECT_NAME})
+
+project(SimpleFileLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  FileLogger.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+
+string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
+string(TOUPPER ${FIRST} FIRST)
+string(LENGTH ${PROJECT_NAME} LENGTH)
+string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
+string(CONCAT TEST_NAME ${FIRST} ${NEXT})
+add_test(${TEST_NAME} ${PROJECT_NAME})
+
+project(SimpleXmlLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  XmlLogger.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+
+string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
+string(TOUPPER ${FIRST} FIRST)
+string(LENGTH ${PROJECT_NAME} LENGTH)
+string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
+string(CONCAT TEST_NAME ${FIRST} ${NEXT})
 add_test(${TEST_NAME} ${PROJECT_NAME})
