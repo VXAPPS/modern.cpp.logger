@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+# Copyright (c) 2021 Florian Becker <fb@vxapps.com> (VX APPS).
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,25 +28,21 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(logger)
+project(filelogger)
 
-#include_directories(${3RDPARTY_DIR})
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   main.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads modern.cpp.logger)
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-# Strip binary for release builds
-if(CMAKE_BUILD_TYPE STREQUAL Release)
-  if(CMAKE_STRIP)
-    if(APPLE)
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} -S ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
-    else()
-      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} --strip-all ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
-    endif()
-  endif()
-endif()
-
-install(TARGETS ${PROJECT_NAME} COMPONENT ${PROJECT_NAME} RUNTIME DESTINATION bin)
+string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
+string(TOUPPER ${FIRST} FIRST)
+string(LENGTH ${PROJECT_NAME} LENGTH)
+string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
+string(CONCAT TEST_NAME ${FIRST} ${NEXT} "Test")
+add_test(${TEST_NAME} ${PROJECT_NAME})

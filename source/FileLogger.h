@@ -64,6 +64,11 @@ namespace vx {
     explicit FileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept( false );
 
     /**
+     * @brief Default destructor for FileLogger.
+     */
+    ~FileLogger() noexcept override;
+
+    /**
      * @brief Build the log message.
      * @param _message   Message to log.
      * @param _severity   Severity level of the message.

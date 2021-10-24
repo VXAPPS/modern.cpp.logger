@@ -31,6 +31,7 @@
 #pragma once
 
 /* stl header */
+#include <iostream>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -79,13 +80,23 @@ namespace {
    * @brief Create instance with default configuration for logger.
    * @param _configuration   Configuration for logger.
    */
-  inline vx::Logger &instance( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) {
+  inline vx::Logger &instance( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) noexcept {
 
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wexit-time-destructors"
 #endif
-    static std::unique_ptr<vx::Logger> singleton( vx::LoggerFactory::instance().produce( _configuration ) );
+    std::unique_ptr<vx::Logger> logger {};
+    try {
+
+      logger = vx::LoggerFactory::instance().produce( _configuration );
+    }
+    catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+      /* Could not create a real logger */
+      std::cout << "Cannot create a real logger: " << _exception.what() << std::endl;
+    }
+    static std::unique_ptr<vx::Logger> singleton( std::move( logger ) );
     return *singleton;
 #ifdef __clang__
 #pragma clang diagnostic pop
@@ -96,7 +107,7 @@ namespace {
    * @brief Change the configuration at runtime.
    * @param _configuration   Logger configuration.
    */
-  inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_configuration ) {
+  inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept {
 
     instance( _configuration );
   }
@@ -109,7 +120,7 @@ namespace {
    */
   inline void Log( const std::string &_message,
                    const vx::Severity _severity,
-                   const nostd::source_location &_location = nostd::source_location::current() ) {
+                   const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, _severity, _location );
   }
@@ -118,7 +129,7 @@ namespace {
    * @brief Direct function for logging.
    * @param _message   Message to log.
    */
-  inline void Log( const std::string &_message ) {
+  inline void Log( const std::string &_message ) noexcept {
 
     instance().log( _message );
   }
@@ -129,7 +140,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogVerbose( const std::string &_message,
-                          const nostd::source_location &_location = nostd::source_location::current() ) {
+                          const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Verbose, _location );
   }
@@ -140,7 +151,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogDebug( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) {
+                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Debug, _location );
   }
@@ -151,7 +162,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogInfo( const std::string &_message,
-                       const nostd::source_location &_location = nostd::source_location::current() ) {
+                       const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Info, _location );
   }
@@ -162,7 +173,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogWarning( const std::string &_message,
-                          const nostd::source_location &_location = nostd::source_location::current() ) {
+                          const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Warning, _location );
   }
@@ -173,7 +184,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogError( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) {
+                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Error, _location );
   }
@@ -184,7 +195,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogFatal( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) {
+                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Fatal, _location );
   }

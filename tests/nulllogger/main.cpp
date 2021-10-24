@@ -47,38 +47,71 @@
   #pragma clang diagnostic pop
 #endif
 
+/* modern.cpp.logger header */
+#include <LoggerFactory.h>
+
+/**
+ * @brief Count of log messages per thread.
+ */
+constexpr std::size_t logMessageCount = 10000;
+
+/**
+ * @brief Log message itself.
+ */
+constexpr auto logMessage = "This is a log message";
+
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wexit-time-destructors"
-#pragma clang diagnostic ignored "-Wweak-vtables"
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wexit-time-destructors"
+  #pragma clang diagnostic ignored "-Wweak-vtables"
 #endif
-class Test : public CppUnit::TestCase {
+namespace vx {
 
-  CPPUNIT_TEST_SUITE_REGISTRATION( Test );
-  CPPUNIT_TEST_SUITE( Test );
-  CPPUNIT_TEST( testCase );
-  CPPUNIT_TEST_SUITE_END();
+  class LoggerTest : public CppUnit::TestCase {
 
-public:
-  explicit Test( const std::string &_name = {} ) : CppUnit::TestCase( _name ) {}
+    CPPUNIT_TEST_SUITE_REGISTRATION( LoggerTest );
+    CPPUNIT_TEST_SUITE( LoggerTest );
+    CPPUNIT_TEST( nullLogger );
+    CPPUNIT_TEST_SUITE_END();
 
-  void setUp() override { /* Setup things here. */ }
+  public:
+    explicit LoggerTest( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
-  virtual void testCase() {
+    void setUp() noexcept final { /* Setup things here. */ }
 
-    CPPUNIT_ASSERT( true );
-  }
+    virtual void nullLogger() noexcept {
 
-  void tearDown() final { /* Clean up things here. */ }
-};
+      /* configure logging, if you dont do, it defaults to standard out logging with colors */
+      ConfigureLogger( { { "type", "" } } );
+
+      std::ostringstream s;
+      s << logMessage;
+
+      std::string message = s.str();
+      for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
+
+        LogFatal( message );
+        LogError( message );
+        LogWarning( message );
+        LogInfo( message );
+        LogDebug( message );
+        LogVerbose( message );
+      }
+
+      CPPUNIT_ASSERT( true );
+    }
+
+    void tearDown() noexcept final { /* Clean up things here. */ }
+  };
+}
 #ifdef __clang__
-#pragma clang diagnostic pop
+  #pragma clang diagnostic pop
 #endif
 
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( Test::suite() );
+  runner.addTest( vx::LoggerTest::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }

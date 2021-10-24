@@ -40,11 +40,11 @@
 namespace vx {
 
   /**
-   * @brief Reserved overhead for new log entry.
+   * @brief Reserved overhead for new xml log entry.
    */
-  constexpr int overhead = 256;
+  constexpr int xmlOverhead = 256;
 
-  XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
+  XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration )
     : FileLogger( _configuration ) {}
 
   void XmlFileLogger::log( std::string_view _message,
@@ -57,7 +57,7 @@ namespace vx {
     }
 
     std::string output;
-    output.reserve( _message.size() + overhead );
+    output.reserve( _message.size() + xmlOverhead );
     output.append( "<entry>" );
     output.append( "<timestamp>" );
     output.append( timestamp() );
@@ -75,8 +75,8 @@ namespace vx {
       output.append( "</function>" );
     }
 
-    std::string severity = std::string( magic_enum::enum_name( _severity ) );
-    std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
+    std::string severity( magic_enum::enum_name( _severity ) );
+    std::transform( severity.begin(), severity.end(), severity.begin(), []( auto c ) { return ::toupper( c ); } );
     output.append( "<severity>" );
     output.append( severity );
     output.append( "</severity>" );

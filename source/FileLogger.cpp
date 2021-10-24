@@ -43,7 +43,7 @@ namespace vx {
   /**
    * @brief Reserved overhead for new log entry.
    */
-  constexpr int overhead = 64;
+  constexpr int fileOverhead = 64;
 
   /**
    * @brief Default reopen interval.
@@ -57,7 +57,7 @@ namespace vx {
     auto name = _configuration.find( "filename" );
     if ( name == _configuration.end() ) {
 
-      throw std::invalid_argument( "No output file provided to file logger" );
+      throw std::invalid_argument( "No output file provided to file logger." );
     }
     m_filename = name->second;
 
@@ -70,14 +70,39 @@ namespace vx {
 
         m_reopenInterval = std::chrono::seconds( std::stoul( interval->second ) );
       }
-      catch ( ... ) {
+      catch ( [[maybe_unused]] const std::invalid_argument &_exception ) {
 
-        throw std::invalid_argument( interval->second + " is not a valid reopen interval" );
+        throw std::invalid_argument( interval->second + " is not a valid reopen interval." );
+      }
+      catch ( [[maybe_unused]] const std::out_of_range &_exception ) {
+
+        throw std::out_of_range( interval->second + " is out of range reopen interval." );
+      }
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+        /* nothing to do */
       }
     }
 
+    m_file.exceptions( std::ofstream::failbit | std::ofstream::badbit );
+
     /* open the file */
     reopen();
+  }
+
+  FileLogger::~FileLogger() noexcept {
+
+    try {
+
+      if ( m_file.is_open() ) {
+
+        m_file.close();
+      }
+    }
+    catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+      /* nothing to do, file cannot be closed. */
+    }
   }
 
   void FileLogger::log( std::string_view _message,
@@ -90,11 +115,11 @@ namespace vx {
     }
 
     std::string output;
-    output.reserve( _message.size() + overhead );
+    output.reserve( _message.size() + fileOverhead );
     output.append( timestamp() );
 
-    std::string severity = std::string( magic_enum::enum_name( _severity ) );
-    std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
+    std::string severity( magic_enum::enum_name( _severity ) );
+    std::transform( severity.begin(), severity.end(), severity.begin(), []( auto c ) { return ::toupper( c ); } );
     output.append( " [" + severity + "] " );
     if ( std::string( _location.file_name() ) != "unsupported" ) {
 
@@ -125,25 +150,28 @@ namespace vx {
 
   void FileLogger::reopen() noexcept {
 
+    std::shared_lock<std::shared_mutex> lock( m_mutex );
+
     /* check if it should be closed and reopened */
     auto now = std::chrono::system_clock::now();
-
-    std::shared_lock<std::shared_mutex> lock( m_mutex );
 
     if ( now - m_lastReopen > m_reopenInterval ) {
 
       m_lastReopen = now;
-      m_file.close();
 
       try {
 
+        if ( m_file.is_open() ) {
+
+          m_file.close();
+        }
         m_file.open( m_filename, std::ofstream::out | std::ofstream::app );
-        m_lastReopen = std::chrono::system_clock::now();
       }
       catch ( [[maybe_unused]] const std::exception &_exception ) {
 
-        m_file.close();
+        /* nothing to do, file is not open or cannot be closed. */
       }
+      m_lastReopen = std::chrono::system_clock::now();
     }
   }
 }

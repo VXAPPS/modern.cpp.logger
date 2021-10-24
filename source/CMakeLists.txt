@@ -30,14 +30,14 @@
 
 project(modern.cpp.logger)
 
-include_directories(../3rdparty)
+include_directories(${3RDPARTY_DIR})
 
 add_library(${PROJECT_NAME}
   ../.github/workflows/integrate.yml
   ../README.md
-  ../3rdparty/magic_enum.hpp
-  ../3rdparty/Singleton.h
-  ../3rdparty/source_location.hpp
+  ${3RDPARTY_DIR}/magic_enum.hpp
+  ${3RDPARTY_DIR}/Singleton.h
+  ${3RDPARTY_DIR}/source_location.hpp
   FileLogger.cpp
   FileLogger.h
   Logger.cpp
@@ -51,4 +51,4 @@ add_library(${PROJECT_NAME}
   XmlFileLogger.h
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}../3rdparty)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_DIR} ${3RDPARTY_DIR})

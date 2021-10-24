@@ -29,6 +29,7 @@
  */
 
 /* stl header */
+#include <algorithm>
 #include <stdexcept>
 
 /* local header */
@@ -41,25 +42,86 @@ namespace vx {
 
   LoggerFactory::LoggerFactory() noexcept {
 
-    m_creators.try_emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return std::make_unique<Logger>( _configuration ); } );
-    m_creators.try_emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<StdLogger>( _configuration ); } );
-    m_creators.try_emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<FileLogger>( _configuration ); } );
-    m_creators.try_emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<XmlFileLogger>( _configuration ); } );
+    m_creators.try_emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) {
+
+      try {
+
+        return std::make_unique<Logger>( _configuration );
+      }
+      catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
+
+        /* _exception.what() */
+      }
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+        /* _exception.what() */
+      }
+      return std::unique_ptr<Logger>();
+    } );
+    m_creators.try_emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> {
+
+      try {
+
+        return std::make_unique<StdLogger>( _configuration );
+      }
+      catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
+
+        /* _exception.what() */
+      }
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+        /* _exception.what() */
+      }
+      return std::unique_ptr<StdLogger>();
+    } );
+    m_creators.try_emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> {
+
+      try {
+
+        return std::make_unique<FileLogger>( _configuration );
+      }
+      catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
+
+        /* _exception.what() */
+      }
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+        /* _exception.what() */
+      }
+      return std::unique_ptr<FileLogger>();
+    } );
+    m_creators.try_emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> {
+
+      try {
+
+        return std::make_unique<XmlFileLogger>( _configuration );
+      }
+      catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
+
+        /* _exception.what() */
+      }
+      catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+        /* _exception.what() */
+      }
+      return std::unique_ptr<XmlFileLogger>();
+    } );
   }
 
   std::unique_ptr<Logger> LoggerFactory::produce( const std::unordered_map<std::string, std::string> &_configuration ) const {
 
     /* grab the type */
-    auto type = _configuration.find( "type" );
+    const auto type = _configuration.find( "type" );
     if ( type == _configuration.end() ) {
 
       throw std::invalid_argument( "Logging factory configuration requires a type of logger" );
     }
 
     /* grab the logger */
-    if ( auto found = m_creators.find( type->second ); found != m_creators.end() ) {
+    const auto logger = std::find_if( std::begin( m_creators ), std::end( m_creators ), [&type]( const auto & creator ) { return creator.first == type->second; } );
+    if ( logger != m_creators.end() ) {
 
-      return found->second( _configuration );
+      return logger->second( _configuration );
     }
 
     /* couldn't get a logger */

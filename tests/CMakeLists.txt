@@ -30,4 +30,7 @@
 
 project(tests)
 
-add_subdirectory(tenkay)
+add_subdirectory(nulllogger)
+add_subdirectory(stdlogger)
+add_subdirectory(filelogger)
+add_subdirectory(xmlfilelogger)

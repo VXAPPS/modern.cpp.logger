@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+ * Copyright (c) 2021 Florian Becker <fb@vxapps.com> (VX APPS).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
-
 /* stl header */
 #include <string>
-#include <unordered_map>
 
-/* local header */
-#include "FileLogger.h"
+namespace vx::TestHelper {
 
-/**
- * @brief vx (VX APPS) namespace.
- */
-namespace vx {
-
-  /**
-   * @brief The FileLogger class for writing messages to file.
-   * @author Florian Becker <fb\@vxapps.com> (VX APPS)
-   */
-  class XmlFileLogger : public FileLogger {
-
-  public:
-    /**
-     * @brief Deletet default constructor for XmlFileLogger.
-     */
-    XmlFileLogger() = delete;
-
-    /**
-     * @brief Default constructor for XmlFileLogger.
-     * @param _configuration   Logger configuration.
-     */
-    explicit XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept( false );
-
-    /**
-     * @brief Build the log message.
-     * @param _message   Message to log.
-     * @param _severity   Severity level of the message.
-     * @param _location   Source location information.
-     */
-    void log( std::string_view _message,
-              const Severity _severity,
-              const nostd::source_location &_location = nostd::source_location::current() ) noexcept override;
-  };
+  std::size_t countNewLines( const std::string &_filename ) noexcept;
 }

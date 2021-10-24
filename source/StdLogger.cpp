@@ -48,8 +48,8 @@ namespace vx {
 
   StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
     : Logger( _configuration )
-    , m_useColor( _configuration.find( "color" ) != _configuration.end() )
-    , m_useStdErr( _configuration.find( "stderr" ) != _configuration.end() ) {}
+    , m_useColor( _configuration.find( "color" ) != std::end( _configuration ) )
+    , m_useStdErr( _configuration.find( "stderr" ) != std::end( _configuration ) ) {}
 
   void StdLogger::log( std::string_view _message,
                        const Severity _severity,
@@ -64,8 +64,8 @@ namespace vx {
     output.reserve( _message.size() + overhead );
     output.append( timestamp() );
 
-    std::string severity = std::string( magic_enum::enum_name( _severity ) );
-    std::transform( severity.begin(), severity.end(), severity.begin(), []( unsigned char c ) { return ::toupper( c ); } );
+    std::string severity( magic_enum::enum_name( _severity ) );
+    std::transform( severity.begin(), severity.end(), severity.begin(), []( auto c ) { return ::toupper( c ); } );
     if ( m_useColor ) {
 
       switch ( _severity ) {

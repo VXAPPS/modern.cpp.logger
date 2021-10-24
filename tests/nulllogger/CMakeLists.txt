@@ -28,9 +28,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(tenkay)
+project(NullLoggerTest)
 
-include_directories(${CPPUNIT_INCLUDE_DIR})
+include_directories(${CPPUNIT_INCLUDE_DIR} ../../3rdparty)
 
 add_executable(${PROJECT_NAME}
   main.cpp
@@ -38,4 +38,9 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-add_test(tenkay ${PROJECT_NAME})
+string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
+string(TOUPPER ${FIRST} FIRST)
+string(LENGTH ${PROJECT_NAME} LENGTH)
+string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
+string(CONCAT TEST_NAME ${FIRST} ${NEXT} "Test")
+add_test(${TEST_NAME} ${PROJECT_NAME})
