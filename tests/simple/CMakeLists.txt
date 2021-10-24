@@ -38,12 +38,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
-string(TOUPPER ${FIRST} FIRST)
-string(LENGTH ${PROJECT_NAME} LENGTH)
-string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
-string(CONCAT TEST_NAME ${FIRST} ${NEXT})
-add_test(${TEST_NAME} ${PROJECT_NAME})
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(SimpleStdLogger)
 
@@ -55,12 +50,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
-string(TOUPPER ${FIRST} FIRST)
-string(LENGTH ${PROJECT_NAME} LENGTH)
-string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
-string(CONCAT TEST_NAME ${FIRST} ${NEXT})
-add_test(${TEST_NAME} ${PROJECT_NAME})
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(SimpleFileLogger)
 
@@ -74,12 +64,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
-string(TOUPPER ${FIRST} FIRST)
-string(LENGTH ${PROJECT_NAME} LENGTH)
-string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
-string(CONCAT TEST_NAME ${FIRST} ${NEXT})
-add_test(${TEST_NAME} ${PROJECT_NAME})
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(SimpleXmlLogger)
 
@@ -93,9 +78,4 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
 
-string(SUBSTRING ${PROJECT_NAME} 0 1 FIRST)
-string(TOUPPER ${FIRST} FIRST)
-string(LENGTH ${PROJECT_NAME} LENGTH)
-string(SUBSTRING ${PROJECT_NAME} 1 ${LENGTH}-1 NEXT)
-string(CONCAT TEST_NAME ${FIRST} ${NEXT})
-add_test(${TEST_NAME} ${PROJECT_NAME})
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
