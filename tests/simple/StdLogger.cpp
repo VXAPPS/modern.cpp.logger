@@ -67,15 +67,15 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  class StdLogger : public CppUnit::TestCase {
+  class StdLoggerTest : public CppUnit::TestCase {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( StdLogger );
-    CPPUNIT_TEST_SUITE( StdLogger );
+    CPPUNIT_TEST_SUITE_REGISTRATION( StdLoggerTest );
+    CPPUNIT_TEST_SUITE( StdLoggerTest );
     CPPUNIT_TEST( stdLogger );
     CPPUNIT_TEST_SUITE_END();
 
   public:
-    explicit StdLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    explicit StdLoggerTest( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
     void setUp() noexcept final { /* Setup things here. */ }
 
@@ -111,7 +111,7 @@ namespace vx {
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::StdLogger::suite() );
+  runner.addTest( vx::StdLoggerTest::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }
