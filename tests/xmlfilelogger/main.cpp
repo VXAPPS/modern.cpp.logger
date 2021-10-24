@@ -95,10 +95,12 @@ namespace vx {
 
     virtual void xmlFileLogger() noexcept {
 
-      std::string tmpDir = std::filesystem::temp_directory_path().string();
+      std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
+      tmpPath /= filename;
+      std::string tmpFile = tmpPath.string();
 
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      ConfigureLogger( { { "type", "xml" }, { "filename", tmpDir + filename }, { "reopen_interval", "1" } } );
+      ConfigureLogger( { { "type", "xml" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
       std::ostringstream s;
       s << logMessage;
@@ -114,13 +116,13 @@ namespace vx {
         LogVerbose( message );
       }
 
-      std::size_t count = TestHelper::countNewLines( tmpDir + filename );
+      std::size_t count = TestHelper::countNewLines( tmpFile );
       std::cout << count << std::endl;
 
-      bool removed = std::filesystem::remove( tmpDir + filename );
+      bool removed = std::filesystem::remove( tmpFile );
       if ( !removed ) {
 
-        CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpDir + filename );
+        CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
       }
 
       /* Count Severity enum and remove entries we are avoid to log */
