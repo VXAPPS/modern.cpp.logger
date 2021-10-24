@@ -33,7 +33,7 @@ project(SimpleNullLogger)
 include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
-  NullLogger.cpp
+  SimpleNullLogger.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
@@ -45,7 +45,7 @@ project(SimpleStdLogger)
 include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
-  StdLogger.cpp
+  SimpleStdLogger.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
@@ -57,7 +57,7 @@ project(SimpleFileLogger)
 include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
-  FileLogger.cpp
+  SimpleFileLogger.cpp
   ${TESTS_SHARED_DIR}/TestHelper.cpp
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
@@ -71,7 +71,7 @@ project(SimpleXmlLogger)
 include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
-  XmlLogger.cpp
+  SimpleXmlLogger.cpp
   ${TESTS_SHARED_DIR}/TestHelper.cpp
   ${TESTS_SHARED_DIR}/TestHelper.h
 )

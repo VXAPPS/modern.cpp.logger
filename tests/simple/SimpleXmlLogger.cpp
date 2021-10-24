@@ -47,8 +47,22 @@
   #pragma clang diagnostic pop
 #endif
 
+/* stl header */
+#include <filesystem>
+
+/* magic enum */
+#include <magic_enum.hpp>
+
 /* modern.cpp.logger header */
 #include <LoggerFactory.h>
+
+/* local header */
+#include "TestHelper.h"
+
+/**
+ * @brief Filename of temporary log file.
+ */
+constexpr auto filename = "test.xml";
 
 /**
  * @brief Count of log messages per thread.
@@ -67,22 +81,26 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  class NullLoggerTest : public CppUnit::TestCase {
+  class SimpleXmlLogger : public CppUnit::TestCase {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( NullLoggerTest );
-    CPPUNIT_TEST_SUITE( NullLoggerTest );
-    CPPUNIT_TEST( nullLogger );
+    CPPUNIT_TEST_SUITE_REGISTRATION( SimpleXmlLogger );
+    CPPUNIT_TEST_SUITE( SimpleXmlLogger );
+    CPPUNIT_TEST( xmlLogger );
     CPPUNIT_TEST_SUITE_END();
 
   public:
-    explicit NullLoggerTest( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    explicit SimpleXmlLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
     void setUp() noexcept final { /* Setup things here. */ }
 
-    virtual void nullLogger() noexcept {
+    virtual void xmlLogger() noexcept {
+
+      std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
+      tmpPath /= filename;
+      std::string tmpFile = tmpPath.string();
 
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      ConfigureLogger( { { "type", "" } } );
+      ConfigureLogger( { { "type", "xml" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
       std::ostringstream s;
       s << logMessage;
@@ -98,7 +116,18 @@ namespace vx {
         LogVerbose( message );
       }
 
-      CPPUNIT_ASSERT( true );
+      std::size_t count = TestHelper::countNewLines( tmpFile );
+      std::cout << count << std::endl;
+
+      bool removed = std::filesystem::remove( tmpFile );
+      if ( !removed ) {
+
+        CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
+      }
+
+      /* Count Severity enum and remove entries we are avoid to log */
+      std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
+      CPPUNIT_ASSERT_EQUAL( logMessageCount * differentLogTypes, count );
     }
 
     void tearDown() noexcept final { /* Clean up things here. */ }
@@ -111,7 +140,7 @@ namespace vx {
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::NullLoggerTest::suite() );
+  runner.addTest( vx::SimpleXmlLogger::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }
