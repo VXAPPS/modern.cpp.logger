@@ -76,7 +76,7 @@ namespace vx {
     }
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    std::transform( severity.begin(), severity.end(), severity.begin(), []( auto c ) { return ::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
     output.append( "<severity>" );
     output.append( severity );
     output.append( "</severity>" );
