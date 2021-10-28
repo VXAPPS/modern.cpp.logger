@@ -60,7 +60,7 @@ namespace vx {
       return;
     }
 
-    std::string output;
+    std::string output {};
     output.reserve( _message.size() + overhead );
     output.append( timestamp() );
 

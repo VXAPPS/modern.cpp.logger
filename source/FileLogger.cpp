@@ -114,7 +114,7 @@ namespace vx {
       return;
     }
 
-    std::string output;
+    std::string output {};
     output.reserve( _message.size() + fileOverhead );
     output.append( timestamp() );
 
@@ -153,8 +153,7 @@ namespace vx {
     std::shared_lock<std::shared_mutex> lock( m_mutex );
 
     /* check if it should be closed and reopened */
-    auto now = std::chrono::system_clock::now();
-
+    const auto now = std::chrono::system_clock::now();
     if ( now - m_lastReopen > m_reopenInterval ) {
 
       m_lastReopen = now;

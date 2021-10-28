@@ -56,7 +56,7 @@ namespace vx {
       return;
     }
 
-    std::string output;
+    std::string output {};
     output.reserve( _message.size() + xmlOverhead );
     output.append( "<entry>" );
     output.append( "<timestamp>" );

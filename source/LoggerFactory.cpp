@@ -45,44 +45,8 @@ namespace vx {
     try {
 
       m_creators.try_emplace( "", []( const std::unordered_map<std::string, std::string> &_configuration ) { return std::make_unique<Logger>( _configuration ); } );
-    }
-    catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
-
-      /* _exception.what() */
-    }
-    catch ( [[maybe_unused]] const std::exception &_exception ) {
-
-      /* _exception.what() */
-    }
-
-    try {
-
       m_creators.try_emplace( "std", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<StdLogger>( _configuration ); } );
-    }
-    catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
-
-      /* _exception.what() */
-    }
-    catch ( [[maybe_unused]] const std::exception &_exception ) {
-
-      /* _exception.what() */
-    }
-
-    try {
-
       m_creators.try_emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<FileLogger>( _configuration ); } );
-    }
-    catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
-
-      /* _exception.what() */
-    }
-    catch ( [[maybe_unused]] const std::exception &_exception ) {
-
-      /* _exception.what() */
-    }
-
-    try {
-
       m_creators.try_emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<XmlFileLogger>( _configuration ); } );
     }
     catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
