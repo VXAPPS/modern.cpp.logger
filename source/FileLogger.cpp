@@ -54,7 +54,7 @@ namespace vx {
     : Logger( _configuration ) {
 
     /* grab the file name */
-    auto name = _configuration.find( "filename" );
+    const auto name = _configuration.find( "filename" );
     if ( name == _configuration.end() ) {
 
       throw std::invalid_argument( "No output file provided to file logger." );
@@ -63,7 +63,7 @@ namespace vx {
 
     /* if we specify an interval */
     m_reopenInterval = std::chrono::seconds( reopenInterval );
-    auto interval = _configuration.find( "reopen_interval" );
+    const auto interval = _configuration.find( "reopen_interval" );
     if ( interval != _configuration.end() ) {
 
       try {
