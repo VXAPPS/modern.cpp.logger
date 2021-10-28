@@ -65,7 +65,7 @@ namespace vx {
     output.append( timestamp() );
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } )
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
     if ( m_useColor ) {
 
       switch ( _severity ) {
