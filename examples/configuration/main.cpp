@@ -50,24 +50,24 @@ constexpr auto logMessage = "This is a log message";
 /**
  * @brief Function for log some messages.
  */
-static void logSomeMessages() {
+static void logSomeMessages( vx::Logger *_logger ) {
 
-  LogFatal( logMessage );
-  LogError( logMessage );
-  LogWarning( logMessage );
-  LogInfo( logMessage );
-  LogDebug( logMessage );
-  LogVerbose( logMessage );
+  _logger->log( logMessage, vx::Severity::Fatal );
+  _logger->log( logMessage, vx::Severity::Error );
+  _logger->log( logMessage, vx::Severity::Warning );
+  _logger->log( logMessage, vx::Severity::Info );
+  _logger->log( logMessage, vx::Severity::Debug );
+  _logger->log( logMessage, vx::Severity::Verbose );
 }
 
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
   std::cout << "Log to std::cout" << std::endl;
-  ConfigureLogger( { { "type", "std" }, { "color", "true" } } );
+  std::unique_ptr<vx::Logger> stdLogger( vx::LoggerFactory::instance().produce( { { "type", "std" }, { "color", "true" } } ) );
 
   /* Log some messages */
-  logSomeMessages();
+  logSomeMessages( stdLogger.get() );
 
   /* create tmp file */
   std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
@@ -77,10 +77,10 @@ int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
   std::cout << "Log to file" << std::endl;
-  ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+  std::unique_ptr<vx::Logger> fileLogger( vx::LoggerFactory::instance().produce( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } ) );
 
   /* Log some messages */
-  logSomeMessages();
+  logSomeMessages( fileLogger.get() );
 
   /* remove tmp file */
   if ( !std::filesystem::remove( tmpFile ) ) {

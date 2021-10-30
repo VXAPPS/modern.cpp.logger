@@ -38,6 +38,7 @@
   #pragma GCC diagnostic ignored "-Weffc++"
 #endif
 #include <cppunit/TestCase.h>
+#include <cppunit/XmlOutputter.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
 #ifdef __GNUC__
@@ -131,5 +132,18 @@ int main() {
   CppUnit::TextUi::TestRunner runner;
   runner.addTest( vx::ThreadsNullLogger::suite() );
   bool wasSuccessful = runner.run();
+
+  std::ofstream xmlFileOut( "../ThreadsNullLogger.xml" );
+  CppUnit::XmlOutputter xmlOut( &runner.result(), xmlFileOut );
+  xmlOut.write();
+  try {
+
+    xmlFileOut.close();
+  }
+  catch ( [[maybe_unused]] const std::exception &_exception ) {
+
+    /* Do not throw exception here */
+  }
+
   return wasSuccessful ? 0 : 1;
 }
