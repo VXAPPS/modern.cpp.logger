@@ -85,7 +85,7 @@ namespace vx {
    * @brief Create thread-safe timestamp.
    * @return Timestamp as 'Y-m-dThh:mm:ss.xxxxxx'
    */
-  inline const std::string timestamp() noexcept {
+  inline std::string timestamp() noexcept {
 
     /* get a precise timestamp as a string */
     struct std::tm currentLocalTime {};

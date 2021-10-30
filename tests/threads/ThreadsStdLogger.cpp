@@ -93,7 +93,7 @@ namespace vx {
       threads.reserve( hardwareThreadCount );
       for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
 
-        threads.emplace_back( std::thread( [&] {
+        threads.emplace_back( std::thread( [&hardwareThreadCount] {
 
           std::ostringstream s;
           s << logMessage;

@@ -110,7 +110,7 @@ namespace vx {
       threads.reserve( hardwareThreadCount );
       for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
 
-        threads.emplace_back( std::thread( [&] {
+        threads.emplace_back( std::thread( [&hardwareThreadCount] {
 
           std::ostringstream s;
           s << logMessage;
@@ -135,8 +135,7 @@ namespace vx {
 
       std::size_t count = TestHelper::countNewLines( tmpFile );
 
-      bool removed = std::filesystem::remove( tmpFile );
-      if ( !removed ) {
+      if ( !std::filesystem::remove( tmpFile ) ) {
 
         CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
       }

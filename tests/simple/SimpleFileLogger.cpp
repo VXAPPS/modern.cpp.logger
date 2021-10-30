@@ -119,8 +119,7 @@ namespace vx {
 
       std::size_t count = TestHelper::countNewLines( tmpFile );
 
-      bool removed = std::filesystem::remove( tmpFile );
-      if ( !removed ) {
+      if ( !std::filesystem::remove( tmpFile ) ) {
 
         CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
       }

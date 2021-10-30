@@ -102,8 +102,7 @@ int main() {
   threads.clear();
 
   /* remove tmp file */
-  bool removed = std::filesystem::remove( tmpFile );
-  if ( !removed ) {
+  if ( !std::filesystem::remove( tmpFile ) ) {
 
     std::cout << "Tmp file cannot be removed: " << tmpFile << std::endl;
     return EXIT_FAILURE;

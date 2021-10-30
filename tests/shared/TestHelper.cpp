@@ -31,6 +31,7 @@
 /* stl header */
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 /* local header */
 #include "TestHelper.h"
@@ -51,7 +52,7 @@ namespace vx::TestHelper {
       catch ( [[maybe_unused]] const std::exception &_exception ) {
 
         /* nothing to do, file cannot be closed. */
-//        std::cout << _exception.what() << std::endl;
+        std::cout << _exception.what() << std::endl;
       }
     }
     return count;

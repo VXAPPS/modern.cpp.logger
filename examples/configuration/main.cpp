@@ -83,14 +83,11 @@ int main() {
   logSomeMessages();
 
   /* remove tmp file */
-  bool removed = std::filesystem::remove( tmpFile );
-  if ( !removed ) {
+  if ( !std::filesystem::remove( tmpFile ) ) {
 
     std::cout << "Tmp file cannot be removed: " << tmpFile << std::endl;
     return EXIT_FAILURE;
   }
   std::cout << "Tmp file was removed: " << tmpFile << std::endl;
-  return EXIT_SUCCESS;
-
   return EXIT_SUCCESS;
 }
