@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+# Copyright (c) 2021 Florian Becker <fb@vxapps.com> (VX APPS).
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,15 +28,13 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(logger)
-
-#include_directories(${3RDPARTY_DIR})
+project(simple)
 
 add_executable(${PROJECT_NAME}
   main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads modern.cpp.logger)
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger)
 
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)

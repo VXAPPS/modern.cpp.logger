@@ -28,7 +28,54 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(tests)
+project(ThreadsNullLogger)
 
-add_subdirectory(simple)
-add_subdirectory(threads)
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  ThreadsNullLogger.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
+
+project(ThreadsStdLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  ThreadsStdLogger.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
+
+project(ThreadsFileLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  ThreadsFileLogger.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})
+
+project(ThreadsXmlLogger)
+
+include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+add_executable(${PROJECT_NAME}
+  ThreadsXmlLogger.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.cpp
+  ${TESTS_SHARED_DIR}/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+
+add_test(${PROJECT_NAME} ${PROJECT_NAME})

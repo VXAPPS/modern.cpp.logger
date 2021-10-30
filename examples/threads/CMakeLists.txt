@@ -28,7 +28,23 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(tests)
+project(threads)
 
-add_subdirectory(simple)
-add_subdirectory(threads)
+add_executable(${PROJECT_NAME}
+  main.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads modern.cpp.logger)
+
+# Strip binary for release builds
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+  if(CMAKE_STRIP)
+    if(APPLE)
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} -S ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
+    else()
+      add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} --strip-all ${PROJECT_NAME} COMMENT "Striping symbols..." USES_TERMINAL)
+    endif()
+  endif()
+endif()
+
+install(TARGETS ${PROJECT_NAME} COMPONENT ${PROJECT_NAME} RUNTIME DESTINATION bin)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+ * Copyright (c) 2021 Florian Becker <fb@vxapps.com> (VX APPS).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,22 +31,18 @@
 /* stl header */
 #include <algorithm>
 #include <filesystem>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
 
 /* modern.cpp.logger */
-//#include <FileLogger.h>
 #include <LoggerFactory.h>
-//#include <Logger.h>
-//#include <StdLogger.h>
-//#include <XmlFileLogger.h>
-#include <iostream>
 
 /**
  * @brief Filename of temporary log file.
  */
-constexpr auto filename = "thread-test.log";
+constexpr auto filename = "thread-example.log";
 
 /**
  * @brief Count of log messages per thread.
@@ -80,7 +76,7 @@ static void work() {
 
 int main() {
 
-  std::cout << std::filesystem::temp_directory_path() << std::endl;
+  /* create tmp file */
   std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
   tmpPath /= filename;
   std::string tmpFile = tmpPath.string();
@@ -105,31 +101,7 @@ int main() {
   }
   threads.clear();
 
-  // = { { "type", "file" }, { "filename", "test2.log" }, { "reopen_interval", "1" } };
-
-  /* Log to /dev/null */
-  /* std::unordered_map<std::string, std::string> configuration;
-  Logger logger( configuration );
-  logger.log( logMessage, Severity::Fatal ); */
-
-  /* Log to stdout */
-//  std::unordered_map<std::string, std::string> configuration = { { "color", "" } };
-//  StdLogger logger( configuration );
-//  logger.log( logMessage, Severity::Fatal );
-
-  /* Log to file */
-  /* std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.log"} };
-  FileLogger logger( configuration );
-  logger.log( logMessage, Severity::Fatal ); */
-
-  /* Log to file */
-//  std::unordered_map<std::string, std::string> configuration = { { "color", "" }, {"filename", "logger.xml"} };
-//  XmlFileLogger logger( configuration );
-//  logger.log( logMessage, Severity::Fatal );
-
-  /* Log with logging factory */
-  LogFatal( logMessage );
-
+  /* remove tmp file */
   bool removed = std::filesystem::remove( tmpFile );
   if ( !removed ) {
 
@@ -137,6 +109,5 @@ int main() {
     return EXIT_FAILURE;
   }
   std::cout << "Tmp file was removed: " << tmpFile << std::endl;
-
   return EXIT_SUCCESS;
 }

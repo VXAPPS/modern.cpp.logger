@@ -49,6 +49,7 @@
 
 /* stl header */
 #include <filesystem>
+#include <thread>
 
 /* magic enum */
 #include <magic_enum.hpp>
@@ -62,7 +63,7 @@
 /**
  * @brief Filename of temporary log file.
  */
-constexpr auto filename = "test.xml";
+constexpr auto filename = "test.log";
 
 /**
  * @brief Count of log messages per thread.
@@ -81,40 +82,56 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  class SimpleXmlLogger : public CppUnit::TestCase {
+  class ThreadsFileLogger : public CppUnit::TestCase {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( SimpleXmlLogger );
-    CPPUNIT_TEST_SUITE( SimpleXmlLogger );
-    CPPUNIT_TEST( xmlLogger );
+    CPPUNIT_TEST_SUITE_REGISTRATION( ThreadsFileLogger );
+    CPPUNIT_TEST_SUITE( ThreadsFileLogger );
+    CPPUNIT_TEST( fileLogger );
     CPPUNIT_TEST_SUITE_END();
 
   public:
-    explicit SimpleXmlLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    explicit ThreadsFileLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
 
     void setUp() noexcept final { /* Setup things here. */ }
 
-    virtual void xmlLogger() noexcept {
+    virtual void fileLogger() noexcept {
 
       std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
       tmpPath /= filename;
       std::string tmpFile = tmpPath.string();
+      std::cout << tmpFile << std::endl;
 
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      ConfigureLogger( { { "type", "xml" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+      ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
-      std::ostringstream s;
-      s << logMessage;
+      unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
 
-      std::string message = s.str();
-      for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
+      std::vector<std::thread> threads {};
+      threads.reserve( hardwareThreadCount );
+      for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
 
-        LogFatal( message );
-        LogError( message );
-        LogWarning( message );
-        LogInfo( message );
-        LogDebug( message );
-        LogVerbose( message );
+        threads.emplace_back( std::thread( [&] {
+
+          std::ostringstream s;
+          s << logMessage;
+
+          std::string message = s.str();
+          for ( std::size_t i  = 0; i < logMessageCount / hardwareThreadCount; ++i ) {
+
+            LogFatal( message );
+            LogError( message );
+            LogWarning( message );
+            LogInfo( message );
+            LogDebug( message );
+            LogVerbose( message );
+          }
+        } ) );
       }
+      for ( auto &thread : threads ) {
+
+        thread.join();
+      }
+      threads.clear();
 
       std::size_t count = TestHelper::countNewLines( tmpFile );
 
@@ -139,7 +156,7 @@ namespace vx {
 int main() {
 
   CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::SimpleXmlLogger::suite() );
+  runner.addTest( vx::ThreadsFileLogger::suite() );
   bool wasSuccessful = runner.run();
   return wasSuccessful ? 0 : 1;
 }

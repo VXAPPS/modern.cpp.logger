@@ -30,4 +30,6 @@
 
 project(examples)
 
-add_subdirectory(logger)
+add_subdirectory(configuration)
+add_subdirectory(simple)
+add_subdirectory(threads)
