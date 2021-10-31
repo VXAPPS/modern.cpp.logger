@@ -106,7 +106,6 @@ namespace vx {
       ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
       unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
-      std::cout << "threads: " << hardwareThreadCount << std::endl;
 
       std::vector<std::thread> threads {};
       threads.reserve( hardwareThreadCount );
@@ -144,7 +143,7 @@ namespace vx {
 
       /* Count Severity enum and remove entries we are avoid to log */
       std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
-      CPPUNIT_ASSERT_EQUAL( logMessageCount * differentLogTypes, count );
+      CPPUNIT_ASSERT_EQUAL( ( ( logMessageCount / hardwareThreadCount ) * hardwareThreadCount ) * differentLogTypes, count );
     }
 
     void tearDown() noexcept final { /* Clean up things here. */ }

@@ -142,7 +142,7 @@ namespace vx {
 
       /* Count Severity enum and remove entries we are avoid to log */
       std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
-      CPPUNIT_ASSERT_EQUAL( logMessageCount * differentLogTypes, count );
+      CPPUNIT_ASSERT_EQUAL( ( ( logMessageCount / hardwareThreadCount ) * hardwareThreadCount ) * differentLogTypes, count );
     }
 
     void tearDown() noexcept final { /* Clean up things here. */ }
