@@ -124,7 +124,12 @@ namespace vx {
     output.append( timestamp() );
 
     std::string severity( magic_enum::enum_name( _severity ) );
+    /* Visual Studio 2017 does not handle toupper in std namespace */
+#if defined _MSC_VER && _MSC_VER < 1920
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
+#else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+#endif
     output.append( " [" + severity + "] " );
     if ( std::string( _location.file_name() ) != "unsupported" ) {
 

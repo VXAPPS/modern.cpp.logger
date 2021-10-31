@@ -8,7 +8,7 @@
 namespace nostd {
 struct source_location {
 public:
-#ifdef WIN32
+#ifdef _MSC_VER
   static constexpr source_location current(const char* fileName = "unsupported",
       const char* functionName = "unsupported",
       const uint_least32_t lineNumber = 0,
