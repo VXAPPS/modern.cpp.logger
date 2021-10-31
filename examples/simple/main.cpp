@@ -43,7 +43,7 @@ constexpr auto logMessage = "This is a log message";
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "std" }, { "color", "true" } } );
+  ConfigureLogger( { { "type", "std" }, { "color", "true" }, { "stderr", "true" } } );
 
   /* Log some messages */
   LogFatal( logMessage );

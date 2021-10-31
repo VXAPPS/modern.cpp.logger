@@ -65,7 +65,7 @@ namespace vx {
     output.append( timestamp() );
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
     if ( m_useColor ) {
 
       switch ( _severity ) {
@@ -121,7 +121,16 @@ namespace vx {
     /* though, we make sure to only call the << operator once on std::cout */
     /* otherwise the << operators from different threads could interleave */
     /* obviously we dont care if flushes interleave */
-    std::cout << _message;
+    std::string message( _message );
+    /* Not optimal to use find here, so if a message contains [FATAL] as text, it will match here */
+    if ( m_useStdErr && ( message.find( "[FATAL]" ) != std::string::npos || message.find( "[ERROR]" ) != std::string::npos ) ) {
+
+      std::cerr << _message;
+    }
+    else {
+
+      std::cout << _message;
+    }
     std::cout.flush();
   }
 }

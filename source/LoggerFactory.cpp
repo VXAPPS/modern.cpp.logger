@@ -49,13 +49,13 @@ namespace vx {
       m_creators.try_emplace( "file", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<FileLogger>( _configuration ); } );
       m_creators.try_emplace( "xml", []( const std::unordered_map<std::string, std::string> &_configuration ) -> std::unique_ptr<Logger> { return std::make_unique<XmlFileLogger>( _configuration ); } );
     }
-    catch ( [[maybe_unused]] const std::bad_alloc &_exception ) {
+    catch ( const std::bad_alloc &_exception ) {
 
-      /* _exception.what() */
+      std::cout << _exception.what() << std::endl;
     }
-    catch ( [[maybe_unused]] const std::exception &_exception ) {
+    catch ( const std::exception &_exception ) {
 
-      /* _exception.what() */
+      std::cout << _exception.what() << std::endl;
     }
   }
 

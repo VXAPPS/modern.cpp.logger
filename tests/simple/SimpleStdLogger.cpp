@@ -122,9 +122,10 @@ int main() {
 
     xmlFileOut.close();
   }
-  catch ( [[maybe_unused]] const std::exception &_exception ) {
+  catch ( const std::exception &_exception ) {
 
     /* Do not throw exception here */
+    std::cout << _exception.what() << std::endl;
   }
 
   return wasSuccessful ? 0 : 1;

@@ -30,6 +30,7 @@
 
 /* stl header */
 #include <algorithm>
+#include <iostream>
 #include <mutex>
 
 /* magic enum */
@@ -70,17 +71,20 @@ namespace vx {
 
         m_reopenInterval = std::chrono::seconds( std::stoul( interval->second ) );
       }
-      catch ( [[maybe_unused]] const std::invalid_argument &_exception ) {
+      catch ( const std::invalid_argument &_exception ) {
 
+        std::cout << _exception.what() << std::endl;
         throw std::invalid_argument( interval->second + " is not a valid reopen interval." );
       }
-      catch ( [[maybe_unused]] const std::out_of_range &_exception ) {
+      catch ( const std::out_of_range &_exception ) {
 
+        std::cout << _exception.what() << std::endl;
         throw std::out_of_range( interval->second + " is out of range reopen interval." );
       }
-      catch ( [[maybe_unused]] const std::exception &_exception ) {
+      catch ( const std::exception &_exception ) {
 
         /* nothing to do */
+        std::cout << _exception.what() << std::endl;
       }
     }
 
@@ -99,9 +103,10 @@ namespace vx {
         m_file.close();
       }
     }
-    catch ( [[maybe_unused]] const std::exception &_exception ) {
+    catch ( const std::exception &_exception ) {
 
       /* nothing to do, file cannot be closed. */
+      std::cout << _exception.what() << std::endl;
     }
   }
 
@@ -119,7 +124,7 @@ namespace vx {
     output.append( timestamp() );
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
     output.append( " [" + severity + "] " );
     if ( std::string( _location.file_name() ) != "unsupported" ) {
 
@@ -166,9 +171,10 @@ namespace vx {
         }
         m_file.open( m_filename, std::ofstream::out | std::ofstream::app );
       }
-      catch ( [[maybe_unused]] const std::exception &_exception ) {
+      catch ( const std::exception &_exception ) {
 
         /* nothing to do, file is not open or cannot be closed. */
+        std::cout << _exception.what() << std::endl;
       }
       m_lastReopen = std::chrono::system_clock::now();
     }

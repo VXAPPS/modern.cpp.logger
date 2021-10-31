@@ -38,8 +38,6 @@
   #pragma GCC diagnostic ignored "-Weffc++"
 #endif
 #include <cppunit/TestCase.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
 #include <cppunit/XmlOutputter.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -167,9 +165,10 @@ int main() {
 
     xmlFileOut.close();
   }
-  catch ( [[maybe_unused]] const std::exception &_exception ) {
+  catch ( const std::exception &_exception ) {
 
     /* Do not throw exception here */
+    std::cout << _exception.what() << std::endl;
   }
 
   return wasSuccessful ? 0 : 1;
