@@ -51,4 +51,27 @@ add_library(${PROJECT_NAME}
   XmlFileLogger.h
 )
 
+target_precompile_headers(${PROJECT_NAME}
+  PUBLIC
+  "FileLogger.h"
+  "Logger.h"
+  "LoggerFactory.h"
+  "StdLogger.h"
+  "XmlFileLogger.h"
+  <Singleton.h>
+  PRIVATE
+  <algorithm>
+  <chrono>
+  <iomanip>
+  <iostream>
+  <memory>
+  <mutex>
+  <shared_mutex>
+  <sstream>
+  <stdexcept>
+  <string>
+  <unordered_map>
+  <magic_enum.hpp>
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_DIR} ${3RDPARTY_DIR})
