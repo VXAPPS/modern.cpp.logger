@@ -213,7 +213,6 @@ jobs:
             }
             elseif ( "${{matrix.compiler}}".StartsWith( "clang" ) ) {
               choco install ninja
-              echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $Env:GITHUB_ENV
               echo "CC=clang" >> $Env:GITHUB_ENV
               echo "CXX=clang++" >> $Env:GITHUB_ENV
             }
