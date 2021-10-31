@@ -200,7 +200,7 @@ jobs:
       - name: Dependencies (Windows)
         if: runner.os == 'Windows'
         run: |
-            dotnet add package cppunit
+            choco install cppunit
 
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
               choco install gcc --global
