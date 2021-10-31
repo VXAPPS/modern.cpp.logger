@@ -164,7 +164,11 @@ namespace vx {
 
     /* check if it should be closed and reopened */
     const auto now = std::chrono::system_clock::now();
-    if ( now - m_lastReopen > m_reopenInterval ) {
+    /* there seams to be some kind of issue, if you directly use this with */
+    /* clang-10 and clang-11 and c++2a - because this will return a */
+    /* zero-as-null-pointer-contant warning. */
+    const auto diff = std::chrono::duration_cast<std::chrono::seconds>( now - m_lastReopen );
+    if ( diff.count() > m_reopenInterval.count() ) {
 
       m_lastReopen = now;
 
