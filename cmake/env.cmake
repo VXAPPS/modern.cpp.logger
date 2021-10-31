@@ -61,8 +61,13 @@ set(TESTS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/shared)
 
 # Force C++17 or C++20 if available
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag(-std=c++20 HAVE_FLAG_STD_CXX20)
-check_cxx_compiler_flag(-std=c++2a HAVE_FLAG_STD_CXX2A)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  check_cxx_compiler_flag(/std:c++20 HAVE_FLAG_STD_CXX20)
+else()
+  check_cxx_compiler_flag(-std=c++20 HAVE_FLAG_STD_CXX20)
+  check_cxx_compiler_flag(-std=c++2a HAVE_FLAG_STD_CXX2A)
+endif()
+
 if(HAVE_FLAG_STD_CXX20 OR HAVE_FLAG_STD_CXX2A)
   set(CMAKE_CXX_STANDARD 20)
 else()
