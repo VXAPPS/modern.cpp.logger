@@ -27,7 +27,8 @@ jobs:
           ubuntu-20.04-clang-13,
           windows-2016-msvc2017,
           windows-2019-msvc2019,
-          windows-2019-msvc2019-clang,
+          windows-2019-clang,
+          windows-2019-gcc,
           windows-2022-msvc2022,
 #          macos-10.15-xcode-10,
           macos-10.15-xcode-11,
@@ -99,9 +100,14 @@ jobs:
             compiler: cl
             version: Visual Studio 16 2019
 
-          - name: windows-2019-msvc2019-clang
+          - name: windows-2019-clang
             os: windows-2019
             compiler: clang
+            version: Ninja
+
+          - name: windows-2019-gcc
+            os: windows-2019
+            compiler: gcc
             version: Ninja
 
           - name: windows-2022-msvc2022
@@ -207,7 +213,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
-              choco install gcc --global
+              choco install ninja
               echo "CC=gcc" >> $Env:GITHUB_ENV
               echo "CXX=g++" >> $Env:GITHUB_ENV
             }
