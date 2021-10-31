@@ -27,8 +27,8 @@ jobs:
           ubuntu-20.04-clang-13,
           windows-2016-msvc2017,
           windows-2019-msvc2019,
-          windows-2019-clang,
-          windows-2019-gcc,
+#          windows-2019-clang,
+#          windows-2019-gcc,
           windows-2022-msvc2022,
 #          macos-10.15-xcode-10,
           macos-10.15-xcode-11,
@@ -100,21 +100,24 @@ jobs:
             compiler: cl
             version: Visual Studio 16 2019
 
-          - name: windows-2019-clang
-            os: windows-2019
-            compiler: clang
-            version: Ninja
+# Build must be inspected
+#          - name: windows-2019-clang
+#            os: windows-2019
+#            compiler: clang
+#            version: Ninja
 
-          - name: windows-2019-gcc
-            os: windows-2019
-            compiler: gcc
-            version: Ninja
+# gcc-8.1 contains a bug with filesystem
+#          - name: windows-2019-gcc
+#            os: windows-2019
+#            compiler: gcc
+#            version: Ninja
 
           - name: windows-2022-msvc2022
             os: windows-2022
             compiler: cl
             version: Visual Studio 17 2022
 
+# Build must be inspected
 #          - name: macOS-10.15-xcode-10
 #            os: macOS-10.15
 #            compiler: xcode
@@ -214,6 +217,7 @@ jobs:
         run: |
             if ( "${{matrix.compiler}}" -eq "gcc" ) {
               choco install ninja
+              choco install msys2
               echo "CC=gcc" >> $Env:GITHUB_ENV
               echo "CXX=g++" >> $Env:GITHUB_ENV
             }
