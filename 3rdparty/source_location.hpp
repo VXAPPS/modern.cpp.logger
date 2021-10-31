@@ -8,7 +8,7 @@
 namespace std {
 struct source_location {
 public:
-#ifdef _MSC_VER
+#ifdef _WIN32
   static constexpr source_location current(const char* fileName = "unsupported",
       const char* functionName = "unsupported",
       const uint_least32_t lineNumber = 0,
