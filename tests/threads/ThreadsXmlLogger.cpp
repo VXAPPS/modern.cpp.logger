@@ -106,6 +106,29 @@ namespace vx {
 
       unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
 
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+      std::vector<std::jthread> threads {};
+      threads.reserve( hardwareThreadCount );
+      for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
+
+        threads.emplace_back( std::jthread( [&hardwareThreadCount] {
+
+          std::ostringstream s;
+          s << logMessage;
+
+          std::string message = s.str();
+          for ( std::size_t i  = 0; i < logMessageCount / hardwareThreadCount; ++i ) {
+
+            LogFatal( message );
+            LogError( message );
+            LogWarning( message );
+            LogInfo( message );
+            LogDebug( message );
+            LogVerbose( message );
+          }
+        } ) );
+      }
+#else
       std::vector<std::thread> threads {};
       threads.reserve( hardwareThreadCount );
       for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
@@ -127,6 +150,7 @@ namespace vx {
           }
         } ) );
       }
+#endif
       for ( auto &thread : threads ) {
 
         thread.join();

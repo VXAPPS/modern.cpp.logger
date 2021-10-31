@@ -30,6 +30,9 @@
 
 /* stl header */
 #include <algorithm>
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+  #include <ranges>
+#endif
 #include <stdexcept>
 
 /* local header */
@@ -69,7 +72,11 @@ namespace vx {
     }
 
     /* grab the logger */
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+    const auto logger = std::ranges::find_if( m_creators, [&type]( const auto & creator ) { return creator.first == type->second; } );
+#else
     const auto logger = std::find_if( std::begin( m_creators ), std::end( m_creators ), [&type]( const auto & creator ) { return creator.first == type->second; } );
+#endif
     if ( logger != m_creators.end() ) {
 
       return logger->second( _configuration );

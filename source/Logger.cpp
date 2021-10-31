@@ -37,7 +37,7 @@ namespace vx {
 
   void Logger::log( [[maybe_unused]] std::string_view _message,
                     [[maybe_unused]] const Severity _severity,
-                    [[maybe_unused]] const nostd::source_location &_location ) noexcept { /* /dev/null logger */ }
+                    [[maybe_unused]] const std::source_location &_location ) noexcept { /* /dev/null logger */ }
 
   void Logger::log( [[maybe_unused]] std::string_view _message ) noexcept { /* /dev/null logger */ }
 }

@@ -89,12 +89,21 @@ int main() {
   unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
   std::cout << "Using threads: " << hardwareThreadCount << std::endl;
 
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+  std::vector<std::jthread> threads {};
+  threads.reserve( hardwareThreadCount );
+  for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
+
+    threads.emplace_back( std::jthread( work ) );
+  }
+#else
   std::vector<std::thread> threads {};
   threads.reserve( hardwareThreadCount );
   for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
 
     threads.emplace_back( std::thread( work ) );
   }
+#endif
   for ( auto &thread : threads ) {
 
     thread.join();

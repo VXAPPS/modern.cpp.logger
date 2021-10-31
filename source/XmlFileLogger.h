@@ -68,6 +68,6 @@ namespace vx {
      */
     void log( std::string_view _message,
               const Severity _severity,
-              const nostd::source_location &_location = nostd::source_location::current() ) noexcept override;
+              const std::source_location &_location = std::source_location::current() ) noexcept override;
   };
 }

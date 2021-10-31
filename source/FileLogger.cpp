@@ -32,6 +32,9 @@
 #include <algorithm>
 #include <iostream>
 #include <mutex>
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+  #include <ranges>
+#endif
 
 /* magic enum */
 #include <magic_enum.hpp>
@@ -112,7 +115,7 @@ namespace vx {
 
   void FileLogger::log( std::string_view _message,
                         const Severity _severity,
-                        const nostd::source_location &_location ) noexcept {
+                        const std::source_location &_location ) noexcept {
 
     if ( avoidLogBelow > _severity ) {
 
@@ -128,7 +131,11 @@ namespace vx {
 #if defined _MSC_VER && _MSC_VER < 1920
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
 #else
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+    std::ranges::transform( severity, std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+#else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+#endif
 #endif
     output.append( " [" + severity + "] " );
     if ( std::string( _location.file_name() ) != "unsupported" ) {

@@ -33,12 +33,14 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
+#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1920
+#include <source_location>
+#else
+#include <source_location.hpp>
+#endif
 #include <sstream>
 #include <string>
 #include <unordered_map>
-
-/* nostd header */
-#include <source_location.hpp>
 
 /**
  * @brief vx (VX APPS) namespace.
@@ -142,7 +144,7 @@ namespace vx {
      */
     virtual void log( std::string_view _message,
                       const Severity _severity,
-                      const nostd::source_location &_location = nostd::source_location::current() ) noexcept;
+                      const std::source_location &_location = std::source_location::current() ) noexcept;
 
     /**
      * @brief Output the log message.

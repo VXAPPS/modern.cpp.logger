@@ -120,7 +120,7 @@ namespace {
    */
   inline void Log( const std::string &_message,
                    const vx::Severity _severity,
-                   const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                   const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, _severity, _location );
   }
@@ -140,7 +140,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogVerbose( const std::string &_message,
-                          const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                          const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Verbose, _location );
   }
@@ -151,7 +151,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogDebug( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                        const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Debug, _location );
   }
@@ -162,7 +162,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogInfo( const std::string &_message,
-                       const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                       const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Info, _location );
   }
@@ -173,7 +173,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogWarning( const std::string &_message,
-                          const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                          const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Warning, _location );
   }
@@ -184,7 +184,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogError( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                        const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Error, _location );
   }
@@ -195,7 +195,7 @@ namespace {
    * @param _location   Source location information.
    */
   inline void LogFatal( const std::string &_message,
-                        const nostd::source_location &_location = nostd::source_location::current() ) noexcept {
+                        const std::source_location &_location = std::source_location::current() ) noexcept {
 
     instance().log( _message, vx::Severity::Fatal, _location );
   }
