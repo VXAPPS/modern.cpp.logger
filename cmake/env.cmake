@@ -76,6 +76,16 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# IPO/LTO
+include(CheckIPOSupported)
+check_ipo_supported(RESULT result OUTPUT output)
+if(result)
+  # It's available, set it for all following items
+  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+else()
+  message(WARNING "IPO is not supported: ${output}")
+endif()
+
 # Warning flags
 # Case insensitive match
 if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]")
@@ -98,7 +108,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]")
     endforeach()
   endif()
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Werror -Weffc++")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS_SPACED}")
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
