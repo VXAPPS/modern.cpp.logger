@@ -68,6 +68,12 @@ else()
   check_cxx_compiler_flag(-std=c++2a HAVE_FLAG_STD_CXX2A)
 endif()
 
+# Clang-8 have some issues, that are not repairable
+if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS_EQUAL "8")
+  unset(HAVE_FLAG_STD_CXX20)
+  unset(HAVE_FLAG_STD_CXX2A)
+endif()
+
 if(HAVE_FLAG_STD_CXX20 OR HAVE_FLAG_STD_CXX2A)
   set(CMAKE_CXX_STANDARD 20)
 else()

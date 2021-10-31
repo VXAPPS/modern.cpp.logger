@@ -235,7 +235,9 @@ jobs:
 
       - name: Test
         working-directory: ${{runner.workspace}}/build
-        run: ctest -C ${{matrix.config}}
+        run: |
+            ctest -C ${{matrix.config}}
+            cat /Users/runner/work/modern.cpp.logger/build/Testing/Temporary/LastTest.log
 
       - name: Perform CodeQL Analysis
         if: runner.os != 'Windows'
