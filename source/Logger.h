@@ -33,7 +33,7 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
-#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1920
+#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1929
 #include <source_location>
 #else
 #include <source_location.hpp>

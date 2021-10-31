@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <iostream>
 #include <mutex>
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
   #include <ranges>
 #endif
 
@@ -131,7 +131,7 @@ namespace vx {
 #if defined _MSC_VER && _MSC_VER < 1920
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
 #else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
     std::ranges::transform( severity, std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
 #else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );

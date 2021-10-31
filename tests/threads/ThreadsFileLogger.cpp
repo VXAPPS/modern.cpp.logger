@@ -107,7 +107,7 @@ namespace vx {
 
       unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
 
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1920
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1928
       std::vector<std::jthread> threads {};
       threads.reserve( hardwareThreadCount );
       for ( unsigned int n = 0; n < hardwareThreadCount; ++n ) {
