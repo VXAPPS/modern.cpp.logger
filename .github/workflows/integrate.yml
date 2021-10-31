@@ -212,7 +212,6 @@ jobs:
               echo "CXX=g++" >> $Env:GITHUB_ENV
             }
             elseif ( "${{matrix.compiler}}".StartsWith( "clang" ) ) {
-#              choco install llvm --global
               choco install ninja
               echo "PATH=$PATH:C:\msys64\mingw64\bin" >> $Env:GITHUB_ENV
               echo "CC=clang" >> $Env:GITHUB_ENV
