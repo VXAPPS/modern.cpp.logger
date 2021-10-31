@@ -59,8 +59,15 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
 set(3RDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 set(TESTS_SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/shared)
 
-# Force C++17
-set(CMAKE_CXX_STANDARD 17)
+# Force C++17 or C++20 if available
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-std=c++20 HAVE_FLAG_STD_CXX20)
+check_cxx_compiler_flag(-std=c++2a HAVE_FLAG_STD_CXX2A)
+if(HAVE_FLAG_STD_CXX20 OR HAVE_FLAG_STD_CXX2A)
+  set(CMAKE_CXX_STANDARD 20)
+else()
+  set(CMAKE_CXX_STANDARD 17)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

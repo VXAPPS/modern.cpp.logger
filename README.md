@@ -1,5 +1,5 @@
 # modern.cpp.logger
-Modern C++ logger classes for logging functions (thread-safe) in most native and modern C++17.
+Modern C++ logger classes for logging functions (thread-safe) in most native and modern C++17 or C++20.
 
 ## Features
 - Log a message to /dev/null, stdout, file and file as xml.
