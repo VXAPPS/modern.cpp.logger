@@ -106,6 +106,7 @@ namespace vx {
       ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
       unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
+      std::cout << "threads: " << hardwareThreadCount << std::endl;
 
       std::vector<std::thread> threads {};
       threads.reserve( hardwareThreadCount );
