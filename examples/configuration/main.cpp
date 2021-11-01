@@ -70,7 +70,13 @@ int main() {
   logSomeMessages( stdLogger.get() );
 
   /* create tmp file */
-  std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
+  std::error_code errorCode {};
+  std::filesystem::path tmpPath = std::filesystem::temp_directory_path( errorCode );
+  if ( errorCode ) {
+
+    std::cout << "Error getting temp_directory_path: " << errorCode.message() << " Code: " << errorCode.value() << std::endl;
+    return EXIT_FAILURE;
+  }
   tmpPath /= filename;
   std::string tmpFile = tmpPath.string();
   std::cout << "Create tmp file: " << tmpFile << std::endl;

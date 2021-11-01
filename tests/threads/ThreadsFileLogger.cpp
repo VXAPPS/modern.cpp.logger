@@ -97,7 +97,12 @@ namespace vx {
 
     virtual void fileLogger() noexcept {
 
-      std::filesystem::path tmpPath = std::filesystem::temp_directory_path();
+      std::error_code errorCode {};
+      std::filesystem::path tmpPath = std::filesystem::temp_directory_path( errorCode );
+      if ( errorCode ) {
+
+        CPPUNIT_FAIL( "Error getting temp_directory_path: " + errorCode.message() + " Code: " +std::to_string( errorCode.value() ) );
+      }
       tmpPath /= filename;
       std::string tmpFile = tmpPath.string();
       std::cout << tmpFile << std::endl;
