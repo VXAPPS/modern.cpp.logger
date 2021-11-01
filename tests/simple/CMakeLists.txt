@@ -36,7 +36,7 @@ add_executable(${PROJECT_NAME}
   SimpleNullLogger.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
@@ -48,7 +48,7 @@ add_executable(${PROJECT_NAME}
   SimpleStdLogger.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
@@ -62,7 +62,7 @@ add_executable(${PROJECT_NAME}
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
@@ -76,6 +76,6 @@ add_executable(${PROJECT_NAME}
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
