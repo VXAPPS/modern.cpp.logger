@@ -34,7 +34,7 @@ add_executable(${PROJECT_NAME}
   main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger)
 
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)
