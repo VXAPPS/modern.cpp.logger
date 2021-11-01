@@ -132,10 +132,10 @@ struct enum_range {
 };
 
 static_assert(MAGIC_ENUM_RANGE_MIN <= 0, "MAGIC_ENUM_RANGE_MIN must be less or equals than 0.");
-static_assert(MAGIC_ENUM_RANGE_MIN > (std::numeric_limits<std::int16_t>::min)(), "MAGIC_ENUM_RANGE_MIN must be greater than INT16_MIN.");
+static_assert(MAGIC_ENUM_RANGE_MIN > std::numeric_limits<std::int16_t>::min(), "MAGIC_ENUM_RANGE_MIN must be greater than INT16_MIN.");
 
 static_assert(MAGIC_ENUM_RANGE_MAX > 0, "MAGIC_ENUM_RANGE_MAX must be greater than 0.");
-static_assert(MAGIC_ENUM_RANGE_MAX < (std::numeric_limits<std::int16_t>::max)(), "MAGIC_ENUM_RANGE_MAX must be less than INT16_MAX.");
+static_assert(MAGIC_ENUM_RANGE_MAX < std::numeric_limits<std::int16_t>::max(), "MAGIC_ENUM_RANGE_MAX must be less than INT16_MAX.");
 
 static_assert(MAGIC_ENUM_RANGE_MAX > MAGIC_ENUM_RANGE_MIN, "MAGIC_ENUM_RANGE_MAX must be greater than MAGIC_ENUM_RANGE_MIN.");
 
@@ -202,6 +202,9 @@ constexpr string_view pretty_name(string_view name) noexcept {
     if (!((name[i - 1] >= '0' && name[i - 1] <= '9') ||
           (name[i - 1] >= 'a' && name[i - 1] <= 'z') ||
           (name[i - 1] >= 'A' && name[i - 1] <= 'Z') ||
+#if defined(MAGIC_ENUM_ENABLE_NONASCII)
+          (name[i - 1] & 0x80) ||
+#endif
           (name[i - 1] == '_'))) {
       name.remove_prefix(i);
       break;
@@ -210,6 +213,9 @@ constexpr string_view pretty_name(string_view name) noexcept {
 
   if (name.size() > 0 && ((name.front() >= 'a' && name.front() <= 'z') ||
                           (name.front() >= 'A' && name.front() <= 'Z') ||
+#if defined(MAGIC_ENUM_ENABLE_NONASCII)
+                          (name.front() & 0x80) ||
+#endif
                           (name.front() == '_'))) {
     return name;
   }
@@ -225,6 +231,7 @@ constexpr std::size_t find(string_view str, char c) noexcept {
 #else
   constexpr bool workaround = false;
 #endif
+
   if constexpr (workaround) {
     for (std::size_t i = 0; i < str.size(); ++i) {
       if (str[i] == c) {
@@ -252,12 +259,9 @@ constexpr bool cmp_equal(string_view lhs, string_view rhs, BinaryPredicate&& p) 
 #else
   constexpr bool workaround = false;
 #endif
-  constexpr bool default_predicate = std::is_same_v<std::decay_t<BinaryPredicate>, char_equal_to>;
+  constexpr bool custom_predicate = std::negation_v<std::is_same<std::decay_t<BinaryPredicate>, char_equal_to>>;
 
-  if constexpr (default_predicate && !workaround) {
-    static_cast<void>(p);
-    return lhs == rhs;
-  } else {
+  if constexpr (custom_predicate || workaround) {
     if (lhs.size() != rhs.size()) {
       return false;
     }
@@ -270,6 +274,10 @@ constexpr bool cmp_equal(string_view lhs, string_view rhs, BinaryPredicate&& p) 
     }
 
     return true;
+  } else {
+    static_cast<void>(p);
+
+    return lhs == rhs;
   }
 }
 
@@ -280,6 +288,10 @@ constexpr bool cmp_less(L lhs, R rhs) noexcept {
   if constexpr (std::is_signed_v<L> == std::is_signed_v<R>) {
     // If same signedness (both signed or both unsigned).
     return lhs < rhs;
+  } else if constexpr (std::is_same_v<L, bool>) { // bool special case due to msvc's C4804, C4018
+      return static_cast<R>(lhs) < rhs;
+  } else if constexpr (std::is_same_v<R, bool>) { // bool special case due to msvc's C4804, C4018
+      return lhs < static_cast<L>(rhs);
   } else if constexpr (std::is_signed_v<R>) {
     // If 'right' is negative, then result is 'false', otherwise cast & compare.
     return rhs > 0 && lhs < static_cast<std::make_unsigned_t<R>>(rhs);
@@ -380,14 +392,14 @@ constexpr int reflected_min() noexcept {
     return 0;
   } else {
     constexpr auto lhs = customize::enum_range<E>::min;
-    static_assert(lhs > (std::numeric_limits<std::int16_t>::min)(), "magic_enum::enum_range requires min must be greater than INT16_MIN.");
-    constexpr auto rhs = (std::numeric_limits<U>::min)();
+    static_assert(lhs > std::numeric_limits<std::int16_t>::min(), "magic_enum::enum_range requires min must be greater than INT16_MIN.");
+    constexpr auto rhs = std::numeric_limits<U>::min();
 
-    if constexpr (cmp_less(lhs, rhs)) {
-      return rhs;
-    } else {
+    if constexpr (cmp_less(rhs, lhs)) {
       static_assert(!is_valid<E, value<E, lhs - 1, IsFlags>(0)>(), "magic_enum::enum_range detects enum value smaller than min range size.");
       return lhs;
+    } else {
+      return rhs;
     }
   }
 }
@@ -400,8 +412,8 @@ constexpr int reflected_max() noexcept {
     return std::numeric_limits<U>::digits - 1;
   } else {
     constexpr auto lhs = customize::enum_range<E>::max;
-    static_assert(lhs < (std::numeric_limits<std::int16_t>::max)(), "magic_enum::enum_range requires max must be less than INT16_MAX.");
-    constexpr auto rhs = (std::numeric_limits<U>::max)();
+    static_assert(lhs < std::numeric_limits<std::int16_t>::max(), "magic_enum::enum_range requires max must be less than INT16_MAX.");
+    constexpr auto rhs = std::numeric_limits<U>::max();
 
     if constexpr (cmp_less(lhs, rhs)) {
       static_assert(!is_valid<E, value<E, lhs + 1, IsFlags>(0)>(), "magic_enum::enum_range detects enum value larger than max range size.");
@@ -457,7 +469,7 @@ constexpr auto values() noexcept {
   constexpr auto max = reflected_max_v<E, IsFlags>;
   constexpr auto range_size = max - min + 1;
   static_assert(range_size > 0, "magic_enum::enum_range requires valid size.");
-  static_assert(range_size < (std::numeric_limits<std::uint16_t>::max)(), "magic_enum::enum_range requires valid size.");
+  static_assert(range_size < std::numeric_limits<std::uint16_t>::max(), "magic_enum::enum_range requires valid size.");
 
   return values<E, IsFlags, reflected_min_v<E, IsFlags>>(std::make_index_sequence<range_size>{});
 }
@@ -484,7 +496,7 @@ constexpr std::size_t range_size() noexcept {
   constexpr auto min = IsFlags ? log2(min_v<E, IsFlags>) : min_v<E, IsFlags>;
   constexpr auto range_size = max - min + U{1};
   static_assert(range_size > 0, "magic_enum::enum_range requires valid size.");
-  static_assert(range_size < (std::numeric_limits<std::uint16_t>::max)(), "magic_enum::enum_range requires valid size.");
+  static_assert(range_size < std::numeric_limits<std::uint16_t>::max(), "magic_enum::enum_range requires valid size.");
 
   return static_cast<std::size_t>(range_size);
 }
@@ -493,7 +505,7 @@ template <typename E, bool IsFlags = false>
 inline constexpr auto range_size_v = range_size<E, IsFlags>();
 
 template <typename E, bool IsFlags = false>
-using index_t = std::conditional_t<range_size_v<E, IsFlags> < (std::numeric_limits<std::uint8_t>::max)(), std::uint8_t, std::uint16_t>;
+using index_t = std::conditional_t<range_size_v<E, IsFlags> < std::numeric_limits<std::uint8_t>::max(), std::uint8_t, std::uint16_t>;
 
 template <typename E, bool IsFlags = false>
 inline constexpr auto invalid_index_v = (std::numeric_limits<index_t<E, IsFlags>>::max)();
@@ -678,6 +690,16 @@ template <typename E>
   } else {
     return assert((index < detail::count_v<D>)), detail::value<D, detail::min_v<D>>(index);
   }
+}
+
+// Returns enum value at specified index.
+template <typename E, std::size_t I>
+[[nodiscard]] constexpr auto enum_value() noexcept -> detail::enable_if_enum_t<E, std::decay_t<E>> {
+  using D = std::decay_t<E>;
+  static_assert(detail::count_v<D> > 0, "magic_enum requires enum implementation and valid max and min.");
+  static_assert(I < detail::count_v<D>, "magic_enum::enum_value out of range.");
+
+  return detail::values_v<D>[I];
 }
 
 // Returns std::array with enum values, sorted by enum value.
@@ -911,6 +933,16 @@ template <typename E>
 
     return assert((index < detail::count_v<D, true>)), detail::value<D, min, true>(index);
   }
+}
+
+// Returns enum-flags value at specified index.
+template <typename E, std::size_t I>
+[[nodiscard]] constexpr auto enum_value() noexcept -> detail::enable_if_enum_t<E, std::decay_t<E>> {
+  using D = std::decay_t<E>;
+  static_assert(detail::count_v<D> > 0, "magic_enum::flags requires enum implementation and valid max and min.");
+  static_assert(I < detail::count_v<D>, "magic_enum::flags::enum_value out of range.");
+
+  return detail::values_v<D, true>[I];
 }
 
 // Returns std::array with enum-flags values, sorted by enum-flags value.
