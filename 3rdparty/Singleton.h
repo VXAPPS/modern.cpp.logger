@@ -61,6 +61,11 @@ namespace vx {
     }
 
     /**
+     * @brief @~english Delete copy constructor. @~german Entfernt den kopierenden Konstruktor.
+     */
+    Singleton( Singleton & ) = delete;
+
+    /**
      * @brief @~english Delete move constructor. @~german Entfernt den verschobenen Konstruktor.
      */
     Singleton( Singleton && ) = delete;

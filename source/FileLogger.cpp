@@ -114,7 +114,7 @@ namespace vx {
   }
 
   void FileLogger::log( std::string_view _message,
-                        const Severity _severity,
+                        Severity _severity,
                         const std::source_location &_location ) noexcept {
 
     if ( avoidLogBelow > _severity ) {

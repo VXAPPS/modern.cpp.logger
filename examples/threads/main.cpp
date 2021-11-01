@@ -65,12 +65,12 @@ static void work() {
   std::string message = s.str();
   for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
 
-    LogFatal( message );
-    LogError( message );
-    LogWarning( message );
-    LogInfo( message );
-    LogDebug( message );
-    LogVerbose( message );
+    vx::LogFatal( message );
+    vx::LogError( message );
+    vx::LogWarning( message );
+    vx::LogInfo( message );
+    vx::LogDebug( message );
+    vx::LogVerbose( message );
   }
 }
 
@@ -89,7 +89,7 @@ int main() {
   std::cout << "Create tmp file: " << tmpFile << std::endl;
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+  vx::ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
   unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );

@@ -43,15 +43,15 @@ constexpr auto logMessage = "This is a log message";
 int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
-  ConfigureLogger( { { "type", "std" }, { "color", "true" }, { "stderr", "true" } } );
+  vx::ConfigureLogger( { { "type", "std" }, { "color", "true" }, { "stderr", "true" } } );
 
   /* Log some messages */
-  LogFatal( logMessage );
-  LogError( logMessage );
-  LogWarning( logMessage );
-  LogInfo( logMessage );
-  LogDebug( logMessage );
-  LogVerbose( logMessage );
+  vx::LogFatal( logMessage );
+  vx::LogError( logMessage );
+  vx::LogWarning( logMessage );
+  vx::LogInfo( logMessage );
+  vx::LogDebug( logMessage );
+  vx::LogVerbose( logMessage );
 
   return EXIT_SUCCESS;
 }
