@@ -47,7 +47,7 @@ namespace vx {
      * @brief @~english C++11 Singleton thread-safe. @~german C++11 Singleton thread-safe.
      * @return @~english Singleton of T. @~german Einzige Instanz von T.
      */
-    static T &instance() {
+    static T &instance() noexcept {
 
 #ifdef __clang__
 #pragma clang diagnostic push
