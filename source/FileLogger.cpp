@@ -94,7 +94,7 @@ namespace vx {
     m_file.exceptions( std::ofstream::failbit | std::ofstream::badbit );
 
     /* open the file */
-    reopen();
+    open();
   }
 
   FileLogger::~FileLogger() noexcept {
@@ -159,15 +159,9 @@ namespace vx {
 
     m_file << _message;
     m_file.flush();
-
-    lock.unlock();
-
-    reopen();
   }
 
-  void FileLogger::reopen() noexcept {
-
-    std::shared_lock<std::shared_mutex> lock( m_mutex );
+  void FileLogger::open() noexcept {
 
     /* check if it should be closed and reopened */
     const auto now = std::chrono::system_clock::now();
