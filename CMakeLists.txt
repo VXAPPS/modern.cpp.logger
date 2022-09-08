@@ -34,9 +34,11 @@ project(modern.cpp.logger VERSION 0.5 DESCRIPTION "Thread-Safe Modern C++ Logger
 include(cmake/env.cmake)
 
 add_subdirectory(source)
-add_subdirectory(examples)
+if(LOGGER_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
 
-if(CPPUNIT_FOUND)
+if(LOGGER_BUILD_TESTS AND CPPUNIT_FOUND)
   enable_testing()
   add_subdirectory(tests)
 endif()

@@ -31,6 +31,10 @@
 # for debugging of build steps
 option(CMAKE_VERBOSE_MAKEFILE "Show the complete build commands" OFF)
 
+# possibility to disable build steps
+option(LOGGER_BUILD_EXAMPLES "Build examples" ON)
+option(LOGGER_BUILD_TESTS "Build tests" ON)
+
 # for remove log severities
 # Possible values:
 # LOGGINGALL
