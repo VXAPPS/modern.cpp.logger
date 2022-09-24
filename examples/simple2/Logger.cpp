@@ -41,6 +41,7 @@
   #include <ranges>
 #endif
 #include <regex>
+#include <sstream>
 
 /* magic enum */
 #include <magic_enum.hpp>
@@ -73,7 +74,17 @@ namespace vx::logger {
     }
 
     // LINUX clang and gcc
-    result = std::regex_replace( result, std::regex( "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
+    result = std::regex_replace( result, std::regex( "__cxx11::" ), "" );
+//    result = std::regex_replace( result, std::regex( "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
+//    result = std::regex_replace( result, std::regex( "std::basic_string_view<char, std::char_traits<char> >" ), "std::string_view" );
+
+    // MAC AppleClang
+    result = std::regex_replace( result, std::regex( "__1::" ), "" );
+//    result = std::regex_replace( result, std::regex( "std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >" ), "std::string" );
+//    result = std::regex_replace( result, std::regex( "std::__1::basic_string_view<char, std::__1::char_traits<char> >" ), "std::string_view" );
+
+    // All, after general cleanup
+    result = std::regex_replace( result, std::regex( "std::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
     result = std::regex_replace( result, std::regex( "std::basic_string_view<char, std::char_traits<char> >" ), "std::string_view" );
 
 //    result = std::regex_replace( result, std::regex( "char const*" ), "const char *" );
