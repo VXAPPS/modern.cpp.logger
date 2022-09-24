@@ -30,31 +30,31 @@
 
 project(ThreadsNullLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   ThreadsNullLogger.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${GOOGLETEST_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(ThreadsStdLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   ThreadsStdLogger.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${GOOGLETEST_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(ThreadsFileLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   ThreadsFileLogger.cpp
@@ -62,13 +62,13 @@ add_executable(${PROJECT_NAME}
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${GOOGLETEST_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
 project(ThreadsXmlLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   ThreadsXmlLogger.cpp
@@ -76,6 +76,6 @@ add_executable(${PROJECT_NAME}
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${CPPUNIT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger Threads::Threads ${GOOGLETEST_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})

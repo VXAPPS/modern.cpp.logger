@@ -30,52 +30,56 @@
 
 project(SimpleNullLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
 add_executable(${PROJECT_NAME}
   SimpleNullLogger.cpp
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
-
-add_test(${PROJECT_NAME} ${PROJECT_NAME})
-
-project(SimpleStdLogger)
-
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
-
-add_executable(${PROJECT_NAME}
-  SimpleStdLogger.cpp
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
-
-add_test(${PROJECT_NAME} ${PROJECT_NAME})
-
-project(SimpleFileLogger)
-
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
-
-add_executable(${PROJECT_NAME}
-  SimpleFileLogger.cpp
   ${TESTS_SHARED_DIR}/TestHelper.cpp
   ${TESTS_SHARED_DIR}/TestHelper.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+add_dependencies(${PROJECT_NAME} googletest)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${GOOGLETEST_LIBRARY})
 
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
-project(SimpleXmlLogger)
+#project(SimpleStdLogger)
 
-include_directories(${CPPUNIT_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+#include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
 
-add_executable(${PROJECT_NAME}
-  SimpleXmlLogger.cpp
-  ${TESTS_SHARED_DIR}/TestHelper.cpp
-  ${TESTS_SHARED_DIR}/TestHelper.h
-)
+#add_executable(${PROJECT_NAME}
+#  SimpleStdLogger.cpp
+#)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${CPPUNIT_LIBRARY})
+#target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${GOOGLETEST_LIBRARY})
 
-add_test(${PROJECT_NAME} ${PROJECT_NAME})
+#add_test(${PROJECT_NAME} ${PROJECT_NAME})
+
+#project(SimpleFileLogger)
+
+#include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+#add_executable(${PROJECT_NAME}
+#  SimpleFileLogger.cpp
+#  ${TESTS_SHARED_DIR}/TestHelper.cpp
+#  ${TESTS_SHARED_DIR}/TestHelper.h
+#)
+
+#target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${GOOGLETEST_LIBRARY})
+
+#add_test(${PROJECT_NAME} ${PROJECT_NAME})
+
+#project(SimpleXmlLogger)
+
+#include_directories(${GOOGLETEST_INCLUDE_DIR} ${TESTS_SHARED_DIR})
+
+#add_executable(${PROJECT_NAME}
+#  SimpleXmlLogger.cpp
+#  ${TESTS_SHARED_DIR}/TestHelper.cpp
+#  ${TESTS_SHARED_DIR}/TestHelper.h
+#)
+
+#target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.logger ${GOOGLETEST_LIBRARY})
+
+#add_test(${PROJECT_NAME} ${PROJECT_NAME})

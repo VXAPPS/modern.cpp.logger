@@ -129,12 +129,12 @@ namespace vx {
     std::string severity( magic_enum::enum_name( _severity ) );
     /* Visual Studio 2017 does not handle toupper in std namespace */
 #if defined _MSC_VER && _MSC_VER < 1920
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
 #else
 #if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
-    std::ranges::transform( severity, std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+    std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #else
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #endif
 #endif
     output.append( " [" + severity + "] " );
@@ -155,7 +155,7 @@ namespace vx {
 
   void FileLogger::log( std::string_view _message ) noexcept {
 
-    std::unique_lock<std::shared_mutex> lock( m_mutex );
+    const std::unique_lock<std::shared_mutex> lock( m_mutex );
 
     m_file << _message;
     m_file.flush();

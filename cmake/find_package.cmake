@@ -32,5 +32,3 @@ if (UNIX)
   set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 endif()
 find_package(Threads REQUIRED)
-
-find_package(CppUnit)

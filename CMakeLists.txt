@@ -38,7 +38,7 @@ if(LOGGER_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-if(LOGGER_BUILD_TESTS AND CPPUNIT_FOUND)
+if(LOGGER_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()

@@ -35,8 +35,6 @@ include_directories(${3RDPARTY_DIR})
 add_library(${PROJECT_NAME}
   ../.github/workflows/integrate.yml
   ../README.md
-  ${3RDPARTY_DIR}/magic_enum.hpp
-  ${3RDPARTY_DIR}/Singleton.h
   ${3RDPARTY_DIR}/source_location.hpp
   FileLogger.cpp
   FileLogger.h
@@ -51,6 +49,15 @@ add_library(${PROJECT_NAME}
   XmlFileLogger.h
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_DIR} ${3RDPARTY_DIR})
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+  ${SOURCE_DIR}
+  ${3RDPARTY_DIR}
+)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+  Threads::Threads
+  modern.cpp.core
+  magic_enum
+)

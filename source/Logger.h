@@ -33,6 +33,7 @@
 /* stl header */
 #include <chrono>
 #include <iomanip>
+#include <iterator>
 #if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1929
 #include <source_location>
 #else
@@ -41,6 +42,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 /**
  * @brief vx (VX APPS) namespace.
@@ -151,5 +153,15 @@ namespace vx {
      * @param _message   Message to log.
      */
     virtual void log( std::string_view _message ) noexcept;
+
+    inline Logger &operator<<( int _input ) { log( std::to_string( _input ) ); return *this; }
+    inline Logger &operator<<( double _input ) { log( std::to_string( _input ) ); return *this; }
+    inline Logger &operator<<( std::string_view _input ) { log( _input ); return *this; }
+    inline Logger &operator<<( const std::vector<int> &_input ) {
+
+      std::stringstream result {};
+      std::copy( std::begin( _input ), std::end( _input ), std::ostream_iterator<double>( result, " " ) );
+      log( result.str() ); return *this;
+    }
   };
 }

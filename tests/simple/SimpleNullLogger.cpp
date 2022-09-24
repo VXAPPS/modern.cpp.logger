@@ -37,10 +37,7 @@
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Weffc++"
 #endif
-#include <cppunit/TestCase.h>
-#include <cppunit/XmlOutputter.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/ui/text/TestRunner.h>
+#include <gtest/gtest.h>
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif
@@ -48,8 +45,25 @@
   #pragma clang diagnostic pop
 #endif
 
-/* modern.cpp.logger header */
+/* stl header */
+#include <filesystem>
+
+/* magic enum */
+#include <magic_enum.hpp>
+
+/* modern.cpp.logger */
 #include <LoggerFactory.h>
+
+/* local header */
+#include "TestHelper.h"
+
+using ::testing::InitGoogleTest;
+using ::testing::Test;
+
+/**
+ * @brief Filename of temporary log file.
+ */
+constexpr auto filename = "test.log";
 
 /**
  * @brief Count of log messages per thread.
@@ -63,70 +77,101 @@ constexpr auto logMessage = "This is a log message";
 
 #ifdef __clang__
   #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wexit-time-destructors"
-  #pragma clang diagnostic ignored "-Wweak-vtables"
+  #pragma clang diagnostic ignored "-Wglobal-constructors"
 #endif
 namespace vx {
 
-  class SimpleNullLogger : public CppUnit::TestCase {
+  /*TEST( Simple, Null ) {
 
-    CPPUNIT_TEST_SUITE_REGISTRATION( SimpleNullLogger );
-    CPPUNIT_TEST_SUITE( SimpleNullLogger );
-    CPPUNIT_TEST( nullLogger );
-    CPPUNIT_TEST_SUITE_END();
+    *//* configure logging, if you dont do, it defaults to standard out logging with colors */
+    /*ConfigureLogger( { { "type", "" } } );
 
-  public:
-    explicit SimpleNullLogger( const std::string &_name = {} ) noexcept : CppUnit::TestCase( _name ) {}
+    std::ostringstream s;
+    s << logMessage;
 
-    void setUp() noexcept final { /* Setup things here. */ }
+    std::string message = s.str();
+    for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
 
-    virtual void nullLogger() noexcept {
-
-      /* configure logging, if you dont do, it defaults to standard out logging with colors */
-      ConfigureLogger( { { "type", "" } } );
-
-      std::ostringstream s;
-      s << logMessage;
-
-      std::string message = s.str();
-      for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
-
-        LogFatal( message );
-        LogError( message );
-        LogWarning( message );
-        LogInfo( message );
-        LogDebug( message );
-        LogVerbose( message );
-      }
-
-      CPPUNIT_ASSERT( true );
+      LogFatal( message );
+      LogError( message );
+      LogWarning( message );
+      LogInfo( message );
+      LogDebug( message );
+      LogVerbose( message );
     }
 
-    void tearDown() noexcept final { /* Clean up things here. */ }
-  };
+    EXPECT_TRUE( true );
+  } */
+
+  /* TEST( Simple, Std ) {
+
+    *//* configure logging, if you dont do, it defaults to standard out logging with colors */
+    /*ConfigureLogger( { { "type", "std" }, { "color", "true" } } );
+
+    std::ostringstream s;
+    s << logMessage;
+
+    std::string message = s.str();
+    for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
+
+      LogFatal( message );
+      LogError( message );
+      LogWarning( message );
+      LogInfo( message );
+      LogDebug( message );
+      LogVerbose( message );
+    }
+  } */
+
+  TEST( Simple, File ) {
+
+    std::error_code errorCode {};
+    std::filesystem::path tmpPath = std::filesystem::temp_directory_path( errorCode );
+    if ( errorCode ) {
+
+      FAIL() << "Error getting temp_directory_path: " + errorCode.message() + " Code: " +std::to_string( errorCode.value() );
+//      CPPUNIT_FAIL( "Error getting temp_directory_path: " + errorCode.message() + " Code: " +std::to_string( errorCode.value() ) );
+    }
+    tmpPath /= filename;
+    std::string tmpFile = tmpPath.string();
+    std::cout << tmpFile << std::endl;
+
+    /* configure logging, if you dont do, it defaults to standard out logging with colors */
+    ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+
+    std::ostringstream s;
+    s << logMessage;
+
+    const std::string message = s.str();
+    for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
+
+      LogFatal( message );
+      LogError( message );
+      LogWarning( message );
+      LogInfo( message );
+      LogDebug( message );
+      LogVerbose( message );
+    }
+
+    const std::size_t count = TestHelper::countNewLines( tmpFile );
+
+    if ( !std::filesystem::remove( tmpFile ) ) {
+
+      FAIL() << "Tmp file cannot be removed: " + tmpFile;
+//      CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
+    }
+
+    /* Count Severity enum and remove entries we are avoid to log */
+    const std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
+    EXPECT_EQ( logMessageCount * differentLogTypes, count );
+  }
 }
 #ifdef __clang__
   #pragma clang diagnostic pop
 #endif
 
-int main() {
+int main( int argc, char **argv ) {
 
-  CppUnit::TextUi::TestRunner runner;
-  runner.addTest( vx::SimpleNullLogger::suite() );
-  bool wasSuccessful = runner.run();
-
-  std::ofstream xmlFileOut( "../SimpleNullLogger.xml" );
-  CppUnit::XmlOutputter xmlOut( &runner.result(), xmlFileOut );
-  xmlOut.write();
-  try {
-
-    xmlFileOut.close();
-  }
-  catch ( const std::exception &_exception ) {
-
-    /* Do not throw exception here */
-    std::cout << _exception.what() << std::endl;
-  }
-
-  return wasSuccessful ? 0 : 1;
+  InitGoogleTest( &argc, argv );
+  return RUN_ALL_TESTS();
 }

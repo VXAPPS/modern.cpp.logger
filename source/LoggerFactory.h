@@ -77,7 +77,7 @@ namespace vx {
    * @brief Create instance with default configuration for logger.
    * @param _configuration   Configuration for logger.
    */
-  inline Logger &instance( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) noexcept {
+  inline Logger &logger( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) noexcept {
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -106,7 +106,7 @@ namespace vx {
    */
   inline void ConfigureLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept {
 
-    instance( _configuration );
+    logger( _configuration );
   }
 
   /**
@@ -119,7 +119,7 @@ namespace vx {
                    Severity _severity,
                    const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, _severity, _location );
+    logger().log( _message, _severity, _location );
   }
 
   /**
@@ -128,7 +128,7 @@ namespace vx {
    */
   inline void Log( const std::string &_message ) noexcept {
 
-    instance().log( _message );
+    logger().log( _message );
   }
 
   /**
@@ -139,7 +139,7 @@ namespace vx {
   inline void LogVerbose( const std::string &_message,
                           const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Verbose, _location );
+    logger().log( _message, Severity::Verbose, _location );
   }
 
   /**
@@ -150,7 +150,7 @@ namespace vx {
   inline void LogDebug( const std::string &_message,
                         const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Debug, _location );
+    logger().log( _message, Severity::Debug, _location );
   }
 
   /**
@@ -161,7 +161,7 @@ namespace vx {
   inline void LogInfo( const std::string &_message,
                        const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Info, _location );
+    logger().log( _message, Severity::Info, _location );
   }
 
   /**
@@ -172,7 +172,7 @@ namespace vx {
   inline void LogWarning( const std::string &_message,
                           const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Warning, _location );
+    logger().log( _message, Severity::Warning, _location );
   }
 
   /**
@@ -183,7 +183,7 @@ namespace vx {
   inline void LogError( const std::string &_message,
                         const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Error, _location );
+    logger().log( _message, Severity::Error, _location );
   }
 
   /**
@@ -194,6 +194,6 @@ namespace vx {
   inline void LogFatal( const std::string &_message,
                         const std::source_location &_location = std::source_location::current() ) noexcept {
 
-    instance().log( _message, Severity::Fatal, _location );
+    logger().log( _message, Severity::Fatal, _location );
   }
 }

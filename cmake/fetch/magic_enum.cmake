@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 Florian Becker <fb@vxapps.com> (VX APPS).
+# Copyright (c) 2022 Florian Becker <fb@vxapps.com> (VX APPS).
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,24 +28,13 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-set(WARNING_FLAGS
+include(FetchContent)
 
-  # Own parameter
-  -Wno-c++98-compat # C++11
-  -Wno-c++98-compat-pedantic # C++11
-  -Wno-padded
-
-  -Wno-weak-vtables
+FetchContent_Declare(
+  magic_enum
+  GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
+  GIT_TAG v0.8.1
+  GIT_SHALLOW 1
 )
 
-set(WARNING_FLAGS_VERSION12
-
-  # macOS cppunit include path from brew
-  -Wno-poison-system-directories
-)
-
-set(WARNING_FLAGS_VERSION13
-
-  # cppunit
-  -Wno-reserved-identifier
-)
+FetchContent_MakeAvailable(magic_enum)

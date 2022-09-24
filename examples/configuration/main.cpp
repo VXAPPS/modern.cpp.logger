@@ -64,7 +64,7 @@ int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
   std::cout << "Log to std::cout" << std::endl;
-  std::unique_ptr<vx::Logger> stdLogger( vx::LoggerFactory::instance().produce( { { "type", "std" }, { "color", "true" } } ) );
+  const std::unique_ptr<vx::Logger> stdLogger( vx::LoggerFactory::instance().produce( { { "type", "std" }, { "color", "true" } } ) );
 
   /* Log some messages */
   logSomeMessages( stdLogger.get() );
@@ -83,7 +83,7 @@ int main() {
 
   /* configure logging, if you dont it defaults to standard out logging with colors */
   std::cout << "Log to file" << std::endl;
-  std::unique_ptr<vx::Logger> fileLogger( vx::LoggerFactory::instance().produce( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } ) );
+  const std::unique_ptr<vx::Logger> fileLogger( vx::LoggerFactory::instance().produce( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } ) );
 
   /* Log some messages */
   logSomeMessages( fileLogger.get() );

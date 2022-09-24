@@ -31,4 +31,4 @@
 project(tests)
 
 add_subdirectory(simple)
-add_subdirectory(threads)
+#add_subdirectory(threads)

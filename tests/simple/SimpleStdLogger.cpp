@@ -54,12 +54,12 @@
 /**
  * @brief Count of log messages per thread.
  */
-constexpr std::size_t logMessageCount = 10000;
+//constexpr std::size_t logMessageCount = 10000;
 
 /**
  * @brief Log message itself.
  */
-constexpr auto logMessage = "This is a log message";
+//constexpr auto logMessage = "This is a log message";
 
 #ifdef __clang__
   #pragma clang diagnostic push
@@ -85,10 +85,10 @@ namespace vx {
       /* configure logging, if you dont do, it defaults to standard out logging with colors */
       /* ConfigureLogger( { { "type", "std" }, { "color", "true" } } ); */
 
-      std::ostringstream s;
-      s << logMessage;
+//      std::ostringstream s;
+//      s << logMessage;
 
-      std::string message = s.str();
+      /*std::string message = s.str();
       for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
 
         LogFatal( message );
@@ -97,7 +97,9 @@ namespace vx {
         LogInfo( message );
         LogDebug( message );
         LogVerbose( message );
-      }
+      } */
+      std::vector<int> tmp { 1,3,4,5,8 };
+      vx::instance() << timestamp() << "test" << tmp;
 
       CPPUNIT_ASSERT( true );
     }

@@ -59,10 +59,10 @@ constexpr auto logMessage = "This is a log message";
  */
 static void work() {
 
-  std::ostringstream s;
-  s << logMessage;
+  std::ostringstream sstream;
+  sstream << logMessage;
 
-  std::string message = s.str();
+  const std::string message = sstream.str();
   for ( std::size_t i  = 0; i < logMessageCount; ++i ) {
 
     vx::LogFatal( message );
@@ -92,7 +92,7 @@ int main() {
   vx::ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
   /* start up some threads */
-  unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
+  const unsigned int hardwareThreadCount = std::max<unsigned int>( 1, std::thread::hardware_concurrency() );
   std::cout << "Using threads: " << hardwareThreadCount << std::endl;
 
 #if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1928
@@ -100,14 +100,14 @@ int main() {
   threads.reserve( hardwareThreadCount );
   for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
 
-    threads.emplace_back( std::jthread( work ) );
+    threads.emplace_back( work );
   }
 #else
   std::vector<std::thread> threads {};
   threads.reserve( hardwareThreadCount );
   for ( unsigned int i = 0; i < hardwareThreadCount; ++i ) {
 
-    threads.emplace_back( std::thread( work ) );
+    threads.emplace_back( work );
   }
 #endif
   for ( auto &thread : threads ) {

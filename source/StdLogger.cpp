@@ -70,12 +70,12 @@ namespace vx {
     std::string severity( magic_enum::enum_name( _severity ) );
     /* Visual Studio 2017 does not handle toupper in std namespace */
 #if defined _MSC_VER && _MSC_VER < 1920
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return ::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
 #else
 #if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
-    std::ranges::transform( severity, std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+    std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #else
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto c ) { return std::toupper( c ); } );
+    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #endif
 #endif
     if ( m_useColor ) {
@@ -111,7 +111,7 @@ namespace vx {
 
       if ( filename.find_last_of( '/' ) != std::string::npos ) {
 
-        std::size_t pos = filename.find_last_of( '/' );
+        const std::size_t pos = filename.find_last_of( '/' );
         filename = filename.substr( pos + 1, filename.size() - ( pos + 1 ) );
       }
       output.append( filename );
@@ -133,9 +133,8 @@ namespace vx {
     /* though, we make sure to only call the << operator once on std::cout */
     /* otherwise the << operators from different threads could interleave */
     /* obviously we dont care if flushes interleave */
-    std::string message( _message );
     /* Not optimal to use find here, so if a message contains [FATAL] as text, it will match here */
-    if ( m_useStdErr && ( message.find( "[FATAL]" ) != std::string::npos || message.find( "[ERROR]" ) != std::string::npos ) ) {
+    if ( m_useStdErr && ( _message.find( "[FATAL]" ) != std::string_view::npos || _message.find( "[ERROR]" ) != std::string_view::npos ) ) {
 
       std::cerr << _message;
     }
