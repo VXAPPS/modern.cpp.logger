@@ -29,7 +29,9 @@
  */
 
 /* c header */
+#ifndef _MSC_VER
 #include <cxxabi.h>
+#endif
 
 /* stl header */
 #include <algorithm>
@@ -46,13 +48,30 @@
 /* magic enum */
 #include <magic_enum.hpp>
 
+/* modern.cpp.core */
+#include <StringUtils.h>
+
 /* local header */
 #include "Logger.h"
 
 namespace vx::logger {
 
+#ifdef _MSC_VER
+  class WindowsBuffer : public std::stringbuf {
+
+  public:
+    virtual int sync() {
+
+      return 0;
+    }
+  };
+#endif
+
   std::string demangle( const std::string &_name ) {
 
+      std::string result = _name;
+
+#ifndef _MSC_VER
     /**
      *  0: The demangling operation succeeded.
      * -1: A memory allocation failiure occurred.
@@ -67,11 +86,18 @@ namespace vx::logger {
       std::free
     };
 
-    std::string result = _name;
     if ( status == 0 ) {
 
       result = res.get();
     }
+#endif
+
+    // WINDOWS
+    result = std::regex_replace( result, std::regex( "class" ), "" );
+    result = std::regex_replace( result, std::regex( "struct" ), "" );
+    result = std::regex_replace( result, std::regex( "__ptr64" ), "" );
+//    result = std::regex_replace( result, std::regex( "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >" ), "std::string" );
+//    result = std::regex_replace( result, std::regex( "class std::basic_string_view<char,struct std::char_traits<char> >" ), "std::string" );
 
     // LINUX clang and gcc
     result = std::regex_replace( result, std::regex( "__cxx11::" ), "" );
@@ -87,10 +113,13 @@ namespace vx::logger {
     result = std::regex_replace( result, std::regex( "std::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
     result = std::regex_replace( result, std::regex( "std::basic_string_view<char, std::char_traits<char> >" ), "std::string_view" );
 
+    // Will result to const char**??? Maybe, have an look at regex documentation...
+//    result = std::regex_replace( result, std::regex( "char const *" ), "const char *" );
 //    result = std::regex_replace( result, std::regex( "char const*" ), "const char *" );
 
     // Remove space before closing bracket - overall valid
     result = std::regex_replace( result, std::regex( " >" ), ">" );
+    result = string_utils::simplified( result );
 
     return result;
   }
@@ -99,7 +128,11 @@ namespace vx::logger {
                   const std::source_location &_location )
     : m_severity( _severity ),
       m_location( _location ),
+#ifdef _MSC_VER
+      m_stream( new WindowsBuffer() ) {
+#else
       m_stream( {} ) {
+#endif
 
     if ( _severity >= Severity::Error ) {
 

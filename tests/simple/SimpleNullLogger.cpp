@@ -63,7 +63,7 @@ using ::testing::Test;
 /**
  * @brief Filename of temporary log file.
  */
-constexpr auto filename = "test.log";
+constexpr auto logFilename = "test.log";
 
 /**
  * @brief Count of log messages per thread.
@@ -132,7 +132,7 @@ namespace vx {
       FAIL() << "Error getting temp_directory_path: " + errorCode.message() + " Code: " +std::to_string( errorCode.value() );
 //      CPPUNIT_FAIL( "Error getting temp_directory_path: " + errorCode.message() + " Code: " +std::to_string( errorCode.value() ) );
     }
-    tmpPath /= filename;
+    tmpPath /= logFilename;
     std::string tmpFile = tmpPath.string();
     std::cout << tmpFile << std::endl;
 

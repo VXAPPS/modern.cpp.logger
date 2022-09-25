@@ -32,6 +32,7 @@
 
 /* stl header */
 #include <any>
+#include <array>
 #include <functional>
 #include <iomanip>
 #include <list>
@@ -43,6 +44,8 @@
 #else
   #include <source_location.hpp>
 #endif
+#include <string>
+#include <string_view>
 #include <tuple>
 #include <typeindex>
 #include <unordered_map>
@@ -413,7 +416,7 @@ namespace vx::logger {
     return {
 
       std::type_index( typeid( Type ) ),
-      [function = _function]( vx::logger::Logger & _logger, const std::any & _any ) {
+      [function = _function]( vx::logger::Logger & _logger, [[maybe_unused]] const std::any & _any ) {
 
         if constexpr( std::is_void_v<Type> ) {
 
