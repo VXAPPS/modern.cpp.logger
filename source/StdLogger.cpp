@@ -31,7 +31,7 @@
 /* stl header */
 #include <algorithm>
 #include <iostream>
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929  || defined __clang__ && __clang_major__ >= 15
   #include <ranges>
 #endif
 #include <sstream>
@@ -72,7 +72,7 @@ namespace vx {
 #if defined _MSC_VER && _MSC_VER < 1920
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
 #else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929  || defined __clang__ && __clang_major__ >= 15
     std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );

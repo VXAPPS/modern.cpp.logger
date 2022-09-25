@@ -39,7 +39,7 @@
 #include <iomanip>
 #include <iostream> // std::streambuf, std::cout
 #include <memory> // std::unique_ptr
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
   #include <ranges>
 #endif
 #include <regex>
@@ -56,7 +56,7 @@
 
 namespace vx::logger {
 
-#ifdef _MSC_VER
+#ifdef _WIN32
   class WindowsBuffer : public std::stringbuf {
 
   public:
@@ -128,7 +128,7 @@ namespace vx::logger {
                   const std::source_location &_location )
     : m_severity( _severity ),
       m_location( _location ),
-#ifdef _MSC_VER
+#ifdef _WIN32
       m_stream( new WindowsBuffer() ) {
 #else
       m_stream( {} ) {
@@ -193,7 +193,7 @@ namespace vx::logger {
 #if defined _MSC_VER && _MSC_VER < 1920
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
 #else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
     std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
@@ -236,7 +236,7 @@ namespace vx::logger {
 #if defined _MSC_VER && _MSC_VER < 1920
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
 #else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
     std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
 #else
     std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );

@@ -39,7 +39,7 @@
 #include <map>
 #include <ostream>
 #include <set>
-#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1929
+#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
   #include <source_location>
 #else
   #include <source_location.hpp>
@@ -86,17 +86,23 @@ namespace vx::logger {
     Fatal /**< Fatal error level. */
   };
 
+  /**
+   * @brief The Flags enum.
+   */
   enum class Flags {
 
-    Space,
-    Quotes
+    Space, /**< Auto spaces. */
+    Quotes /**< Auto qoutes. */
   };
 
+  /**
+   * @brief The SourceLocation enum.
+   */
   enum class SourceLocation {
 
-    Absolute,
-    Relative,
-    FilenameOnly
+    Absolute, /**< Complete path. */
+    Relative, /**< Absolute path to project. */
+    FilenameOnly /**< Only the filename. */
   };
 
   class Logger {
@@ -170,14 +176,14 @@ namespace vx::logger {
     std::ostream &stream() { return m_stream; }
 
     template<typename Tuple>
-    void get_impl( std::size_t /* _unused */,
-                   const Tuple & /* _unused */,
-                   typename std::tuple_size<Tuple>::type  /* _unused */ ) {}
+    void get_impl( [[maybe_unused]] std::size_t _current,
+                   [[maybe_unused]] const Tuple & _tuple,
+                   [[maybe_unused]] typename std::tuple_size<Tuple>::type  _size ) {}
 
     template < std::size_t _pos, typename Tuple, typename = std::enable_if_t < std::tuple_size<Tuple>::value != _pos >>
     void get_impl( std::size_t _current,
                    const Tuple &_tuple,
-                   std::integral_constant<std::size_t, _pos>  /* unused */ ) {
+                   [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
 
       if ( _current == _pos ) {
 
@@ -190,29 +196,31 @@ namespace vx::logger {
     }
 
     template<typename Tuple>
-    void get( std::size_t _pos, const Tuple &_tuple ) {
+    void get( std::size_t _pos,
+              const Tuple &_tuple ) {
 
       get_impl( _pos, _tuple, std::integral_constant<std::size_t, 0>() );
     }
 
     template<typename Variant>
-    void getV_impl( std::size_t /* _unused */,
-                    const Variant & /* _unused */,
-                    typename std::variant_size<Variant>::type  /* _unused */ ) {}
+    void getV_impl( [[maybe_unused]] std::size_t _current,
+                    [[maybe_unused]] const Variant & _variant,
+                    [[maybe_unused]] typename std::variant_size<Variant>::type _size ) {}
 
     template < std::size_t _pos, typename Variant, typename = std::enable_if_t < std::variant_size<Variant>::value != _pos >>
     void getV_impl( std::size_t _current,
                     const Variant &_variant,
-                    std::integral_constant<std::size_t, _pos>  /* unused */ ) {
+                    [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
 
       if ( _current == _pos ) {
 
         try {
-          logger() << std::get<_pos>( _variant ); //std::get<float>(w); // w contains int, not float: will throw
+
+          logger() << std::get<_pos>( _variant );
         }
-        catch ( const std::bad_variant_access & /* _exception */ ) {
+        catch ( [[maybe_unused]] const std::bad_variant_access &_exception ) {
+
           /* Nothing to do here. */
-          // std::cout << ex.what() << '\n';
         }
       }
       else {
@@ -222,7 +230,8 @@ namespace vx::logger {
     }
 
     template<typename Variant>
-    void getV( std::size_t _pos, const Variant &_variant ) {
+    void getV( std::size_t _pos,
+               const Variant &_variant ) {
 
       getV_impl( _pos, _variant, std::integral_constant<std::size_t, 0>() );
     }
@@ -416,7 +425,7 @@ namespace vx::logger {
     return {
 
       std::type_index( typeid( Type ) ),
-      [function = _function]( vx::logger::Logger & _logger, [[maybe_unused]] const std::any & _any ) {
+      [function = _function]( Logger & _logger, [[maybe_unused]] const std::any & _any ) {
 
         if constexpr( std::is_void_v<Type> ) {
 
