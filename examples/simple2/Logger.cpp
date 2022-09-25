@@ -146,9 +146,14 @@ namespace vx::logger {
     printSeverity( m_severity );
     if ( std::string filename = _location.file_name(); filename != "unsupported" ) {
 
-      if ( m_sourceLocation == SourceLocation::FilenameOnly && filename.find_last_of( '/' ) != std::string::npos ) {
+#ifdef _WIN32
+      char delimiter = '\\';
+#else
+      char delimiter = '/';
+#endif
+      if ( m_sourceLocation == SourceLocation::FilenameOnly && filename.find_last_of( delimiter ) != std::string::npos ) {
 
-        const std::size_t pos = filename.find_last_of( '/' );
+        const std::size_t pos = filename.find_last_of( delimiter );
         filename = filename.substr( pos + 1, filename.size() - ( pos + 1 ) );
       }
       m_stream << filename << ':' << _location.line() << ' ' << _location.function_name() << ' ';

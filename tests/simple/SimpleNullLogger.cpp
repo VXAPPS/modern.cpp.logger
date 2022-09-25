@@ -81,10 +81,10 @@ constexpr auto logMessage = "This is a log message";
 #endif
 namespace vx {
 
-  /*TEST( Simple, Null ) {
+  TEST( Simple, Null ) {
 
-    *//* configure logging, if you dont do, it defaults to standard out logging with colors */
-    /*ConfigureLogger( { { "type", "" } } );
+    /* configure logging, if you dont do, it defaults to standard out logging with colors */
+    ConfigureLogger( { { "type", "" } } );
 
     std::ostringstream s;
     s << logMessage;
@@ -101,7 +101,7 @@ namespace vx {
     }
 
     EXPECT_TRUE( true );
-  } */
+  }
 
   /* TEST( Simple, Std ) {
 
@@ -123,7 +123,7 @@ namespace vx {
     }
   } */
 
-  TEST( Simple, File ) {
+/*  TEST( Simple, File ) {
 
     std::error_code errorCode {};
     std::filesystem::path tmpPath = std::filesystem::temp_directory_path( errorCode );
@@ -136,8 +136,8 @@ namespace vx {
     std::string tmpFile = tmpPath.string();
     std::cout << tmpFile << std::endl;
 
-    /* configure logging, if you dont do, it defaults to standard out logging with colors */
-    ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
+    *//* configure logging, if you dont do, it defaults to standard out logging with colors */
+    /*ConfigureLogger( { { "type", "file" }, { "filename", tmpFile }, { "reopen_interval", "1" } } );
 
     std::ostringstream s;
     s << logMessage;
@@ -161,10 +161,10 @@ namespace vx {
 //      CPPUNIT_FAIL( "Tmp file cannot be removed: " + tmpFile );
     }
 
-    /* Count Severity enum and remove entries we are avoid to log */
-    const std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
+    *//* Count Severity enum and remove entries we are avoid to log */
+    /*const std::size_t differentLogTypes = magic_enum::enum_count<Severity>() - magic_enum::enum_integer( avoidLogBelow );
     EXPECT_EQ( logMessageCount * differentLogTypes, count );
-  }
+  } */
 }
 #ifdef __clang__
   #pragma clang diagnostic pop

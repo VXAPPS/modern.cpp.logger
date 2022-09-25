@@ -39,7 +39,7 @@
 #include <map>
 #include <ostream>
 #include <set>
-#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
+#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 15
   #include <source_location>
 #else
   #include <source_location.hpp>

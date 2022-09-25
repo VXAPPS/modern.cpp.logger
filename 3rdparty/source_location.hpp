@@ -9,10 +9,10 @@ namespace std {
 struct source_location {
 public:
 #ifdef _WIN32
-  static constexpr source_location current(const char* fileName = "unsupported",
-      const char* functionName = "unsupported",
-      const uint_least32_t lineNumber = 0,
-      const uint_least32_t columnOffset = 0) noexcept
+  static constexpr source_location current(const char* fileName = __builtin_FILE(),
+      const char* functionName = __builtin_FUNCTION(),
+      const uint_least32_t lineNumber = __builtin_LINE(),
+      const uint_least32_t columnOffset = __builtin_COLUMN()) noexcept
 #else
 #if defined(__clang__) and (__clang_major__ >= 9)
     static constexpr source_location current(const char* fileName = __builtin_FILE(),
