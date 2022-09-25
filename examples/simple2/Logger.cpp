@@ -29,7 +29,7 @@
  */
 
 /* c header */
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <cxxabi.h>
 #endif
 
@@ -71,7 +71,7 @@ namespace vx::logger {
 
       std::string result = _name;
 
-#ifndef _MSC_VER
+#ifndef _WIN32
     /**
      *  0: The demangling operation succeeded.
      * -1: A memory allocation failiure occurred.

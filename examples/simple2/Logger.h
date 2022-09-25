@@ -79,11 +79,11 @@ namespace vx::logger {
   enum class Severity {
 
     Verbose, /**< Verbose level. */
-    Debug, /**< Debug level. */
-    Info, /**< Info level. */
+    Debug,   /**< Debug level. */
+    Info,    /**< Info level. */
     Warning, /**< Warning level. */
-    Error, /**< Error level. */
-    Fatal /**< Fatal error level. */
+    Error,   /**< Error level. */
+    Fatal    /**< Fatal error level. */
   };
 
   /**
@@ -100,8 +100,8 @@ namespace vx::logger {
    */
   enum class SourceLocation {
 
-    Absolute, /**< Complete path. */
-    Relative, /**< Absolute path to project. */
+    Absolute,    /**< Complete path. */
+    Relative,    /**< Absolute path to project. */
     FilenameOnly /**< Only the filename. */
   };
 
@@ -154,31 +154,115 @@ namespace vx::logger {
     inline bool autoQuotes() const { return m_autoQuotes; }
     inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
 
-    inline Logger &space() { m_autoSpace = true; m_stream << ' '; return *this; }
-    inline Logger &nospace() { m_autoSpace = false; return *this; }
-    inline Logger &maybeSpace() { if ( m_autoSpace ) { m_stream << ' '; } return *this; }
+    inline Logger &space() {
+
+      m_autoSpace = true;
+      m_stream << ' ';
+      return *this;
+    }
+
+    inline Logger &nospace() {
+
+      m_autoSpace = false;
+      return *this;
+    }
+
+    inline Logger &maybeSpace() {
+
+      if ( m_autoSpace ) {
+
+        m_stream << ' ';
+      }
+      return *this;
+    }
 
     Logger &operator<<( Severity _severity );
 
-    inline Logger &operator<<( bool _input ) { m_stream << ( _input ? "true" : "false" ); return maybeSpace(); }
-    inline Logger &operator<<( char _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( int _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( unsigned int _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( std::size_t _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( float _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( double _input ) { m_stream << _input; return maybeSpace(); }
-    inline Logger &operator<<( const char *_input ) { printString( _input ); return maybeSpace(); }
-    inline Logger &operator<<( std::string_view _input ) { printString( _input ); m_stream << 's' << 'v'; return maybeSpace(); }
-    inline Logger &operator<<( const std::string &_input ) { printString( _input ); return maybeSpace(); }
-    inline Logger &operator<<( const void *_input ) { if ( _input == nullptr ) { m_stream << "(nullptr)"; } else { m_stream << '(' << _input << ')'; } return maybeSpace(); }
-    inline Logger &operator<<( std::nullptr_t ) { m_stream << "(nullptr_t)"; return maybeSpace(); }
+    inline Logger &operator<<( bool _input ) {
+
+      m_stream << ( _input ? "true" : "false" );
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( char _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( int _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( unsigned int _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::size_t _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( float _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( double _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( const char *_input ) {
+
+      printString( _input );
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::string_view _input ) {
+
+      printString( _input );
+      m_stream << 's' << 'v';
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( const std::string &_input ) {
+
+      printString( _input );
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( const void *_input ) {
+
+      if ( _input == nullptr ) {
+
+        m_stream << "(nullptr)";
+      }
+      else {
+
+        m_stream << '(' << _input << ')';
+      }
+      return maybeSpace();
+    }
+    inline Logger &operator<<( std::nullptr_t ) {
+
+      m_stream << "(nullptr_t)";
+      return maybeSpace();
+    }
 
     std::ostream &stream() { return m_stream; }
 
-    template<typename Tuple>
+    template <typename Tuple>
     void get_impl( [[maybe_unused]] std::size_t _current,
-                   [[maybe_unused]] const Tuple & _tuple,
-                   [[maybe_unused]] typename std::tuple_size<Tuple>::type  _size ) {}
+                   [[maybe_unused]] const Tuple &_tuple,
+                   [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) {}
 
     template < std::size_t _pos, typename Tuple, typename = std::enable_if_t < std::tuple_size<Tuple>::value != _pos >>
     void get_impl( std::size_t _current,
@@ -195,16 +279,16 @@ namespace vx::logger {
       }
     }
 
-    template<typename Tuple>
+    template <typename Tuple>
     void get( std::size_t _pos,
               const Tuple &_tuple ) {
 
       get_impl( _pos, _tuple, std::integral_constant<std::size_t, 0>() );
     }
 
-    template<typename Variant>
+    template <typename Variant>
     void getV_impl( [[maybe_unused]] std::size_t _current,
-                    [[maybe_unused]] const Variant & _variant,
+                    [[maybe_unused]] const Variant &_variant,
                     [[maybe_unused]] typename std::variant_size<Variant>::type _size ) {}
 
     template < std::size_t _pos, typename Variant, typename = std::enable_if_t < std::variant_size<Variant>::value != _pos >>
@@ -229,7 +313,7 @@ namespace vx::logger {
       }
     }
 
-    template<typename Variant>
+    template <typename Variant>
     void getV( std::size_t _pos,
                const Variant &_variant ) {
 
@@ -247,7 +331,7 @@ namespace vx::logger {
     std::ostream m_stream;
   };
 
-  template<typename Key, typename T>
+  template <typename Key, typename T>
   inline Logger &operator<<( Logger &_logger,
                              const std::pair<Key, T> &_pair ) {
 
@@ -286,7 +370,7 @@ namespace vx::logger {
     return _logger.maybeSpace();
   }
 
-  template<typename T, std::size_t N>
+  template <typename T, std::size_t N>
   inline Logger &operator<<( Logger &_logger,
                              const std::array<T, N> &_array ) {
 
@@ -386,7 +470,7 @@ namespace vx::logger {
     return _logger.maybeSpace();
   }
 
-  template<typename... Types>
+  template <typename... Types>
   inline Logger &operator<<( Logger &_logger,
                              const std::tuple<Types...> &_values ) {
 
@@ -418,15 +502,14 @@ namespace vx::logger {
     return printVariant( _logger, demangle( typeid( std::variant<Types...> ).name() ), _values );
   }
 
-  template<typename Type, typename Function>
+  template <typename Type, typename Function>
   inline std::pair<const std::type_index, std::function<void( vx::logger::Logger &, const std::any & )>>
   to_any_visitor( const Function &_function ) {
 
     return {
 
       std::type_index( typeid( Type ) ),
-      [function = _function]( Logger & _logger, [[maybe_unused]] const std::any & _any ) {
-
+      [ function = _function ]( Logger & _logger, [[maybe_unused]] const std::any & _any ) {
         if constexpr( std::is_void_v<Type> ) {
 
           function( _logger );
@@ -476,7 +559,7 @@ namespace vx::logger {
     to_any_visitor<std::set<const char *>>( []( Logger & _logger, const std::set<const char *> &_input ) { _logger << _input; } ),
     to_any_visitor<std::set<std::string_view>>( []( Logger & _logger, const std::set<std::string_view> &_input ) { _logger << _input; } ),
     to_any_visitor<std::set<std::string>>( []( Logger & _logger, const std::set<std::string> &_input ) { _logger << _input; } ),
-// MAC found that ambiguous...    to_any_visitor<std::vector<bool>>( []( Logger & _logger, const std::vector<bool> &_input ) { _logger << _input; } ),
+    // MAC found that ambiguous...    to_any_visitor<std::vector<bool>>( []( Logger & _logger, const std::vector<bool> &_input ) { _logger << _input; } ),
     to_any_visitor<std::vector<char>>( []( Logger & _logger, const std::vector<char> &_input ) { _logger << _input; } ),
     to_any_visitor<std::vector<int>>( []( Logger & _logger, const std::vector<int> &_input ) { _logger << _input; } ),
     to_any_visitor<std::vector<unsigned int>>( []( Logger & _logger, const std::vector<unsigned int> &_input ) { _logger << _input; } ),
@@ -505,14 +588,17 @@ namespace vx::logger {
     }
   }
 
-  template<typename Type, typename Function>
+  template <typename Type, typename Function>
   inline void register_any_visitor( const Function &_function ) {
 
     any_visitor.insert( to_any_visitor<Type>( _function ) );
   }
 
   inline Logger &operator<<( Logger &_logger,
-                             const std::any &_input ) { process( _logger, _input ); return _logger.maybeSpace(); }
+                             const std::any &_input ) {
+    process( _logger, _input );
+    return _logger.maybeSpace();
+  }
 }
 
 #define log vx::logger::Logger().logger
