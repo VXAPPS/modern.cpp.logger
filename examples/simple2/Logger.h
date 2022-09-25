@@ -196,7 +196,7 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-#if defined _MSC_VER && _MSC_VER >= 1920
+#if !defined _MSC_VER || defined _MSC_VER && _MSC_VER >= 1920
     inline Logger &operator<<( unsigned int _input ) {
 
       m_stream << _input;
