@@ -63,7 +63,7 @@ using ::testing::Test;
 /**
  * @brief Filename of temporary log file.
  */
-constexpr auto logFilename = "test.log";
+//constexpr auto logFilename = "test.log";
 
 /**
  * @brief Count of log messages per thread.
