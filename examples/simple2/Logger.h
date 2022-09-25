@@ -196,11 +196,13 @@ namespace vx::logger {
       return maybeSpace();
     }
 
+#if defined _MSC_VER && _MSC_VER >= 1920
     inline Logger &operator<<( unsigned int _input ) {
 
       m_stream << _input;
       return maybeSpace();
     }
+#endif
 
     inline Logger &operator<<( std::size_t _input ) {
 
@@ -510,14 +512,8 @@ namespace vx::logger {
 
       std::type_index( typeid( Type ) ),
       [ function = _function ]( Logger & _logger, [[maybe_unused]] const std::any & _any ) {
-        if constexpr( std::is_void_v<Type> ) {
 
-          function( _logger );
-        }
-        else {
-
-          function( _logger, std::any_cast<const Type &>( _any ) );
-        }
+        function( _logger, std::any_cast<const Type &>( _any ) );
       }
     };
   }
@@ -569,7 +565,7 @@ namespace vx::logger {
     to_any_visitor<std::vector<const char *>>( []( Logger & _logger, const std::vector<const char *> &_input ) { _logger << _input; } ),
     to_any_visitor<std::vector<std::string_view>>( []( Logger & _logger, const std::vector<std::string_view> &_input ) { _logger << _input; } ),
     to_any_visitor<std::vector<std::string>>( []( Logger & _logger, const std::vector<std::string> &_input ) { _logger << _input; } ),
-    to_any_visitor<void>( []( Logger & _logger ) { _logger << "{}"; } ),
+    // VC2017 issue    to_any_visitor<void>( []( Logger & _logger, [[maybe_unused]] void *_input ) { _logger << _input; } ),
   };
 #ifdef __clang__
   #pragma clang diagnostic pop
