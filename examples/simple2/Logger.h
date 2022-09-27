@@ -136,11 +136,17 @@ namespace vx::logger {
     Logger &operator=( Logger && ) = delete;
 
     Logger &logger() { return *this; }
+
     Logger &logVerbose() { return *this; }
+
     Logger &logDebug() { return *this; }
+
     Logger &logInfo() { return *this; }
+
     Logger &logWarning() { return *this; }
+
     Logger &logError() { return *this; }
+
     Logger &logFatal() { return *this; }
 
     void printTimestamp();
@@ -149,9 +155,11 @@ namespace vx::logger {
     void printString( std::string_view _input );
 
     inline bool autoSpace() const { return m_autoSpace; }
+
     inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
 
     inline bool autoQuotes() const { return m_autoQuotes; }
+
     inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
 
     inline Logger &space() {
@@ -253,6 +261,7 @@ namespace vx::logger {
       }
       return maybeSpace();
     }
+
     inline Logger &operator<<( std::nullptr_t ) {
 
       m_stream << "(nullptr_t)";

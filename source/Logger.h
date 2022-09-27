@@ -93,6 +93,7 @@ namespace vx {
 
     /* get a precise timestamp as a string */
     struct std::tm currentLocalTime {};
+
     const auto now = std::chrono::system_clock::now();
     const auto nowAsTimeT = std::chrono::system_clock::to_time_t( now );
     const auto nowMs = std::chrono::duration_cast<std::chrono::microseconds>( now.time_since_epoch() ) % 1000000;
