@@ -35,9 +35,9 @@
 #include <iomanip>
 #include <iterator>
 #if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 15
-#include <source_location>
+  #include <source_location>
 #else
-#include <source_location.hpp>
+  #include <source_location.hpp>
 #endif
 #include <sstream>
 #include <string>
@@ -55,29 +55,29 @@ namespace vx {
   enum class Severity {
 
     Verbose, /**< Verbose level. */
-    Debug, /**< Debug level. */
-    Info, /**< Info level. */
+    Debug,   /**< Debug level. */
+    Info,    /**< Info level. */
     Warning, /**< Warning level. */
-    Error, /**< Error level. */
-    Fatal /**< Fatal error level. */
+    Error,   /**< Error level. */
+    Fatal    /**< Fatal error level. */
   };
 
-#if defined(LOGGINGALL) || defined(LOGGINGVERBOSE)
+#if defined( LOGGINGALL ) || defined( LOGGINGVERBOSE )
   /** Avoid log below verbose. */
   constexpr Severity avoidLogBelow = Severity::Verbose;
-#elif defined(LOGGINGDEBUG)
+#elif defined( LOGGINGDEBUG )
   /** Avoid log below debug. */
   constexpr Severity avoidLogBelow = Severity::Debug;
-#elif defined(LOGGINGWARNING)
+#elif defined( LOGGINGWARNING )
   /** Avoid log below warning. */
   constexpr Severity avoidLogBelow = Severity::Warning;
-#elif defined(LOGGINGERROR)
+#elif defined( LOGGINGERROR )
   /** Avoid log below error. */
   constexpr Severity avoidLogBelow = Severity::Error;
-#elif defined(LOGGINGFATAL)
+#elif defined( LOGGINGFATAL )
   /** Avoid log below fatal. */
   constexpr Severity avoidLogBelow = Severity::Fatal;
-#elif defined(LOGGINGNONE)
+#elif defined( LOGGINGNONE )
   /** Avoid log below fatal + 1. */
   constexpr Severity avoidLogBelow = Severity::Fatal + 1;
 #else
@@ -154,14 +154,30 @@ namespace vx {
      */
     virtual void log( std::string_view _message ) noexcept;
 
-    inline Logger &operator<<( int _input ) { log( std::to_string( _input ) ); return *this; }
-    inline Logger &operator<<( double _input ) { log( std::to_string( _input ) ); return *this; }
-    inline Logger &operator<<( std::string_view _input ) { log( _input ); return *this; }
+    inline Logger &operator<<( int _input ) {
+
+      log( std::to_string( _input ) );
+      return *this;
+    }
+
+    inline Logger &operator<<( double _input ) {
+
+      log( std::to_string( _input ) );
+      return *this;
+    }
+
+    inline Logger &operator<<( std::string_view _input ) {
+
+      log( _input );
+      return *this;
+    }
+
     inline Logger &operator<<( const std::vector<int> &_input ) {
 
       std::stringstream result {};
       std::copy( std::begin( _input ), std::end( _input ), std::ostream_iterator<double>( result, " " ) );
-      log( result.str() ); return *this;
+      log( result.str() );
+      return *this;
     }
   };
 }

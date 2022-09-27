@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <iostream>
 #include <mutex>
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929  || defined __clang__ && __clang_major__ >= 15
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
   #include <ranges>
 #endif
 
@@ -58,7 +58,7 @@ namespace vx {
   constexpr int reopenInterval = 300;
 
   FileLogger::FileLogger( const std::unordered_map<std::string, std::string> &_configuration )
-    : Logger( _configuration ) {
+      : Logger( _configuration ) {
 
     /* grab the file name */
     const auto name = _configuration.find( "filename" );

@@ -78,14 +78,30 @@ namespace vx {
      */
     void log( std::string_view _message ) noexcept override;
 
-    inline StdLogger &operator<<( int _input ) { log( std::to_string( _input ) ); return *this; }
-    inline StdLogger &operator<<( double _input ) { log( std::to_string( _input ) ); return *this; }
-    inline StdLogger &operator<<( std::string_view _input ) { log( _input ); return *this; }
+    inline StdLogger &operator<<( int _input ) {
+
+      log( std::to_string( _input ) );
+      return *this;
+    }
+
+    inline StdLogger &operator<<( double _input ) {
+
+      log( std::to_string( _input ) );
+      return *this;
+    }
+
+    inline StdLogger &operator<<( std::string_view _input ) {
+
+      log( _input );
+      return *this;
+    }
+
     inline StdLogger &operator<<( const std::vector<int> &_input ) {
 
       std::stringstream result {};
       std::copy( std::begin( _input ), std::end( _input ), std::ostream_iterator<double>( result, " " ) );
-      log( result.str() ); return *this;
+      log( result.str() );
+      return *this;
     }
 
   private:

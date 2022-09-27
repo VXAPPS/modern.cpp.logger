@@ -51,7 +51,7 @@ namespace vx {
   constexpr int xmlOverhead = 256;
 
   XmlFileLogger::XmlFileLogger( const std::unordered_map<std::string, std::string> &_configuration )
-    : FileLogger( _configuration ) {}
+      : FileLogger( _configuration ) {}
 
   void XmlFileLogger::log( std::string_view _message,
                            Severity _severity,

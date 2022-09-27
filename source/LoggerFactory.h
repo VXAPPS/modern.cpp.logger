@@ -80,8 +80,8 @@ namespace vx {
   inline Logger &logger( const std::unordered_map<std::string, std::string> &_configuration = { { "type", "std" }, { "color", "" } } ) noexcept {
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wexit-time-destructors"
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wexit-time-destructors"
 #endif
     std::unique_ptr<Logger> logger {};
     try {
@@ -96,7 +96,7 @@ namespace vx {
     static std::unique_ptr<Logger> singleton( std::move( logger ) );
     return *singleton;
 #ifdef __clang__
-#pragma clang diagnostic pop
+  #pragma clang diagnostic pop
 #endif
   }
 

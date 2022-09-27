@@ -29,7 +29,7 @@
  */
 
 /* stl header */
-//#include <format>
+// #include <format>
 #include <memory> // std::unique_ptr
 
 /* fmt header */
@@ -38,9 +38,9 @@
 /* modern.cpp.logger */
 #include "Logger.h"
 
-//using fmt::format;
+// using fmt::format;
 
-//using vx::logger::Logger::logDebug;
+// using vx::logger::Logger::logDebug;
 
 /*namespace std {
 
@@ -55,13 +55,14 @@ class MyClass {
 
 public:
   explicit MyClass( std::string_view _something )
-    : m_something( _something ) {}
+      : m_something( _something ) {}
 
   friend std::ostream &operator<<( std::ostream &out, MyClass val ) {
 
     out << val.m_something;
     return out;
   }
+
   friend vx::logger::Logger &operator<<( vx::logger::Logger &_debug, MyClass _vec ) {
 
     _debug.stream() << _vec;
@@ -109,21 +110,21 @@ int main() {
 
   verbose() << std::make_pair( 1, "hello" );
 
-//  test_debug() << std::make_any<int>(1) << std::make_any<double>(1.234) << std::make_any<std::string>("hello");
+  //  test_debug() << std::make_any<int>(1) << std::make_any<double>(1.234) << std::make_any<std::string>("hello");
   const std::any blubAny = 1;
-  debug() << blubAny << std::make_any<std::string>( "hello" ) << std::make_any<std::vector<int>>( {1, 2, 3, 4} );
+  debug() << blubAny << std::make_any<std::string>( "hello" ) << std::make_any<std::vector<int>>( { 1, 2, 3, 4 } );
 
   using namespace std::literals;
-  const std::unordered_map<int, std::string_view> testsv {{2, "ghj"sv}, {1, "def"sv}, {3, "abc"sv}};
-  ( void )testsv;
+  const std::unordered_map<int, std::string_view> testsv { { 2, "ghj"sv }, { 1, "def"sv }, { 3, "abc"sv } };
+  (void)testsv;
 
-//  std::unordered_map testsv2{{2, "ghj"sv}, {1, "def"sv}, {3, "abc"sv}};
+  //  std::unordered_map testsv2{{2, "ghj"sv}, {1, "def"sv}, {3, "abc"sv}};
 
   info() << MyClass( "Blub" );
 
   std::vector<std::any> anyList {};
   anyList.emplace_back( std::make_any<std::string>( "hello" ) );
-  anyList.emplace_back( std::make_any<std::vector<int>>( {1, 2, 3, 4} ) );
+  anyList.emplace_back( std::make_any<std::vector<int>>( { 1, 2, 3, 4 } ) );
   warning() << anyList;
 
   const std::set<int> set { 1, 2, 3, 3 };
@@ -145,8 +146,8 @@ int main() {
   constexpr int theAnswerOfEverything = 42;
   constexpr double someDouble = 4.2;
 
-  const std::tuple tupl{ theAnswerOfEverything, 'a', someDouble }; // Another C++17 feature: class template argument deduction
-  std::apply( []( auto &&... args ) {( ( debug() << args ), ... );}, tupl );
+  const std::tuple tupl { theAnswerOfEverything, 'a', someDouble }; // Another C++17 feature: class template argument deduction
+  std::apply( []( auto &&...args ) { ( ( debug() << args ), ... ); }, tupl );
 
   return EXIT_SUCCESS;
 }

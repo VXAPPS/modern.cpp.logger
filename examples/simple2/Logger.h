@@ -266,7 +266,7 @@ namespace vx::logger {
                    [[maybe_unused]] const Tuple &_tuple,
                    [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) {}
 
-    template < std::size_t _pos, typename Tuple, typename = std::enable_if_t < std::tuple_size<Tuple>::value != _pos >>
+    template <std::size_t _pos, typename Tuple, typename = std::enable_if_t<std::tuple_size<Tuple>::value != _pos>>
     void get_impl( std::size_t _current,
                    const Tuple &_tuple,
                    [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
@@ -277,7 +277,7 @@ namespace vx::logger {
       }
       else {
 
-        get_impl( _current, _tuple, std::integral_constant < std::size_t, _pos + 1 > () );
+        get_impl( _current, _tuple, std::integral_constant<std::size_t, _pos + 1>() );
       }
     }
 
@@ -293,7 +293,7 @@ namespace vx::logger {
                     [[maybe_unused]] const Variant &_variant,
                     [[maybe_unused]] typename std::variant_size<Variant>::type _size ) {}
 
-    template < std::size_t _pos, typename Variant, typename = std::enable_if_t < std::variant_size<Variant>::value != _pos >>
+    template <std::size_t _pos, typename Variant, typename = std::enable_if_t<std::variant_size<Variant>::value != _pos>>
     void getV_impl( std::size_t _current,
                     const Variant &_variant,
                     [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
@@ -311,7 +311,7 @@ namespace vx::logger {
       }
       else {
 
-        getV_impl( _current, _variant, std::integral_constant < std::size_t, _pos + 1 > () );
+        getV_impl( _current, _variant, std::integral_constant<std::size_t, _pos + 1>() );
       }
     }
 
@@ -505,14 +505,12 @@ namespace vx::logger {
   }
 
   template <typename Type, typename Function>
-  inline std::pair<const std::type_index, std::function<void( vx::logger::Logger &, const std::any & )>>
-  to_any_visitor( const Function &_function ) {
+  inline std::pair<const std::type_index, std::function<void( vx::logger::Logger &, const std::any & )>> to_any_visitor( const Function &_function ) {
 
     return {
 
       std::type_index( typeid( Type ) ),
-      [ function = _function ]( Logger & _logger, [[maybe_unused]] const std::any & _any ) {
-
+      [ function = _function ]( Logger &_logger, [[maybe_unused]] const std::any &_any ) {
         function( _logger, std::any_cast<const Type &>( _any ) );
       }
     };
@@ -523,48 +521,48 @@ namespace vx::logger {
   #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Wglobal-constructors"
 #endif
-  static std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>>
-  any_visitor {
-    to_any_visitor<bool>( []( Logger & _logger, bool _input ) { _logger << _input; } ),
-    to_any_visitor<char>( []( Logger & _logger, char _input ) { _logger << _input; } ),
-    to_any_visitor<int>( []( Logger & _logger, int _input ) { _logger << _input; } ),
-    to_any_visitor<unsigned int>( []( Logger & _logger, unsigned int _input ) { _logger << _input; } ),
-    to_any_visitor<std::size_t>( []( Logger & _logger, std::size_t _input ) { _logger << _input; } ),
-    to_any_visitor<float>( []( Logger & _logger, float _input ) { _logger << _input; } ),
-    to_any_visitor<double>( []( Logger & _logger, double _input ) { _logger << _input; } ),
-    to_any_visitor<const char *>( []( Logger & _logger, const char *_input ) { _logger << _input; } ),
-    to_any_visitor<std::string_view>( []( Logger & _logger, std::string_view _input ) { _logger << _input; } ),
-    to_any_visitor<std::string>( []( Logger & _logger, const std::string & _input ) { _logger << _input; } ),
-    to_any_visitor<std::list<bool>>( []( Logger & _logger, const std::list<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<char>>( []( Logger & _logger, const std::list<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<int>>( []( Logger & _logger, const std::list<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<unsigned int>>( []( Logger & _logger, const std::list<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::size_t>>( []( Logger & _logger, const std::list<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<float>>( []( Logger & _logger, const std::list<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<double>>( []( Logger & _logger, const std::list<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<const char *>>( []( Logger & _logger, const std::list<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::string_view>>( []( Logger & _logger, const std::list<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::string>>( []( Logger & _logger, const std::list<std::string> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<bool>>( []( Logger & _logger, const std::set<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<char>>( []( Logger & _logger, const std::set<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<int>>( []( Logger & _logger, const std::set<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<unsigned int>>( []( Logger & _logger, const std::set<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::size_t>>( []( Logger & _logger, const std::set<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<float>>( []( Logger & _logger, const std::set<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<double>>( []( Logger & _logger, const std::set<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<const char *>>( []( Logger & _logger, const std::set<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::string_view>>( []( Logger & _logger, const std::set<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::string>>( []( Logger & _logger, const std::set<std::string> &_input ) { _logger << _input; } ),
+  static std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>> any_visitor {
+
+    to_any_visitor<bool>( []( Logger &_logger, bool _input ) { _logger << _input; } ),
+    to_any_visitor<char>( []( Logger &_logger, char _input ) { _logger << _input; } ),
+    to_any_visitor<int>( []( Logger &_logger, int _input ) { _logger << _input; } ),
+    to_any_visitor<unsigned int>( []( Logger &_logger, unsigned int _input ) { _logger << _input; } ),
+    to_any_visitor<std::size_t>( []( Logger &_logger, std::size_t _input ) { _logger << _input; } ),
+    to_any_visitor<float>( []( Logger &_logger, float _input ) { _logger << _input; } ),
+    to_any_visitor<double>( []( Logger &_logger, double _input ) { _logger << _input; } ),
+    to_any_visitor<const char *>( []( Logger &_logger, const char *_input ) { _logger << _input; } ),
+    to_any_visitor<std::string_view>( []( Logger &_logger, std::string_view _input ) { _logger << _input; } ),
+    to_any_visitor<std::string>( []( Logger &_logger, const std::string &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<bool>>( []( Logger &_logger, const std::list<bool> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<char>>( []( Logger &_logger, const std::list<char> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<int>>( []( Logger &_logger, const std::list<int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<unsigned int>>( []( Logger &_logger, const std::list<unsigned int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<std::size_t>>( []( Logger &_logger, const std::list<std::size_t> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<float>>( []( Logger &_logger, const std::list<float> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<double>>( []( Logger &_logger, const std::list<double> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<const char *>>( []( Logger &_logger, const std::list<const char *> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<std::string_view>>( []( Logger &_logger, const std::list<std::string_view> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::list<std::string>>( []( Logger &_logger, const std::list<std::string> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<bool>>( []( Logger &_logger, const std::set<bool> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<char>>( []( Logger &_logger, const std::set<char> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<int>>( []( Logger &_logger, const std::set<int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<unsigned int>>( []( Logger &_logger, const std::set<unsigned int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<std::size_t>>( []( Logger &_logger, const std::set<std::size_t> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<float>>( []( Logger &_logger, const std::set<float> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<double>>( []( Logger &_logger, const std::set<double> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<const char *>>( []( Logger &_logger, const std::set<const char *> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<std::string_view>>( []( Logger &_logger, const std::set<std::string_view> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::set<std::string>>( []( Logger &_logger, const std::set<std::string> &_input ) { _logger << _input; } ),
     // MAC found that ambiguous...    to_any_visitor<std::vector<bool>>( []( Logger & _logger, const std::vector<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<char>>( []( Logger & _logger, const std::vector<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<int>>( []( Logger & _logger, const std::vector<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<unsigned int>>( []( Logger & _logger, const std::vector<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::size_t>>( []( Logger & _logger, const std::vector<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<float>>( []( Logger & _logger, const std::vector<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<double>>( []( Logger & _logger, const std::vector<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<const char *>>( []( Logger & _logger, const std::vector<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::string_view>>( []( Logger & _logger, const std::vector<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::string>>( []( Logger & _logger, const std::vector<std::string> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<char>>( []( Logger &_logger, const std::vector<char> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<int>>( []( Logger &_logger, const std::vector<int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<unsigned int>>( []( Logger &_logger, const std::vector<unsigned int> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<std::size_t>>( []( Logger &_logger, const std::vector<std::size_t> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<float>>( []( Logger &_logger, const std::vector<float> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<double>>( []( Logger &_logger, const std::vector<double> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<const char *>>( []( Logger &_logger, const std::vector<const char *> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<std::string_view>>( []( Logger &_logger, const std::vector<std::string_view> &_input ) { _logger << _input; } ),
+    to_any_visitor<std::vector<std::string>>( []( Logger &_logger, const std::vector<std::string> &_input ) { _logger << _input; } ),
     // VC2017 issue    to_any_visitor<void>( []( Logger & _logger, [[maybe_unused]] void *_input ) { _logger << _input; } ),
   };
 #ifdef __clang__

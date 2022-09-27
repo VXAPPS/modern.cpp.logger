@@ -31,7 +31,7 @@
 /* stl header */
 #include <algorithm>
 #include <iostream>
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929  || defined __clang__ && __clang_major__ >= 15
+#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
   #include <ranges>
 #endif
 #include <sstream>
@@ -53,9 +53,9 @@ namespace vx {
   constexpr int overhead = 64;
 
   StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
-    : Logger( _configuration )
-    , m_useColor( _configuration.find( "color" ) != std::end( _configuration ) )
-    , m_useStdErr( _configuration.find( "stderr" ) != std::end( _configuration ) ) {}
+      : Logger( _configuration ),
+        m_useColor( _configuration.find( "color" ) != std::end( _configuration ) ),
+        m_useStdErr( _configuration.find( "stderr" ) != std::end( _configuration ) ) {}
 
   void StdLogger::log( std::string_view _message,
                        Severity _severity,
