@@ -33,7 +33,14 @@
 #include <memory> // std::unique_ptr
 
 /* fmt header */
+#ifdef __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Weverything"
+#endif
 #include <fmt/core.h>
+#ifdef __clang__
+  #pragma clang diagnostic pop
+#endif
 
 /* modern.cpp.logger */
 #include "Logger.h"

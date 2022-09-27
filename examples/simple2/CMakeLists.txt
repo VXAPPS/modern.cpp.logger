@@ -44,6 +44,8 @@ target_link_libraries(${PROJECT_NAME}
   modern.cpp.core
 )
 
+add_dependencies(${PROJECT_NAME} fmt)
+
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)
   if(CMAKE_STRIP)

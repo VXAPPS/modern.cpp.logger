@@ -34,12 +34,4 @@ set(WARNING_FLAGS
   -Wno-c++98-compat # C++11
   -Wno-c++98-compat-pedantic # C++11
   -Wno-padded
-
-  # FMT documentation command
-  -Wno-c++20-compat # C++11
-  -Wno-documentation-unknown-command
-  -Wno-undefined-func-template
-  -Wno-switch-enum
-#  -fcomment-block-commands=rst
-#  -fcomment-block-commands=endrst
 )
