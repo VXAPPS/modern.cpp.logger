@@ -107,18 +107,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "[cC][lL][aA][nN][gG]")
     set(WARNING_FLAGS_SPACED "${WARNING_FLAGS_SPACED} ${WARNING_FLAG}")
   endforeach()
 
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12")
-    foreach(WARNING_FLAG ${WARNING_FLAGS_VERSION12})
-      set(WARNING_FLAGS_SPACED "${WARNING_FLAGS_SPACED} ${WARNING_FLAG}")
-    endforeach()
-  endif()
-
-  if(NOT CMAKE_CXX_COMPILER_ID MATCHES "[aA][pP][pP][lL][eE][cC][lL][aA][nN][gG]" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13")
-    foreach(WARNING_FLAG ${WARNING_FLAGS_VERSION13})
-      set(WARNING_FLAGS_SPACED "${WARNING_FLAGS_SPACED} ${WARNING_FLAG}")
-    endforeach()
-  endif()
-
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weverything -Werror -Weffc++")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS_SPACED}")
 
@@ -163,6 +151,7 @@ include(${CMAKE}/fetch/magic_enum.cmake)
 include(${CMAKE}/fetch/modern.cpp.core.cmake)
 
 # External Project Dependencies
+include(${CMAKE}/external/fmt.cmake)
 if(LOGGER_BUILD_TESTS)
   include(${CMAKE}/external/googletest.cmake)
 endif()

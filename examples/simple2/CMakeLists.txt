@@ -30,7 +30,7 @@
 
 project(simple2)
 
-include_directories(${3RDPARTY_DIR})
+include_directories(${3RDPARTY_DIR} ${FMT_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
   main.cpp
@@ -38,7 +38,11 @@ add_executable(${PROJECT_NAME}
   Logger.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE modern.cpp.core)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  ${FMT_LIBRARY}
+  modern.cpp.core
+)
 
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)

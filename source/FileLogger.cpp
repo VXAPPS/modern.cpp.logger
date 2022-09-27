@@ -39,6 +39,9 @@
 /* magic enum */
 #include <magic_enum.hpp>
 
+/* modern.cpp.core */
+#include <StringUtils.h>
+
 /* local header */
 #include "FileLogger.h"
 
@@ -127,17 +130,7 @@ namespace vx {
     output.append( timestamp() );
 
     std::string severity( magic_enum::enum_name( _severity ) );
-
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
-    std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-#else
-    /* Visual Studio 2017 does not handle toupper in std namespace */
-  #if defined _MSC_VER && _MSC_VER < 1920
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
-  #else
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-  #endif
-#endif
+    string_utils::toUpper( severity );
     output.append( " [" + severity + "] " );
     if ( std::string( _location.file_name() ) != "unsupported" ) {
 

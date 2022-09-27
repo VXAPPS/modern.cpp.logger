@@ -32,8 +32,24 @@
 //#include <format>
 #include <memory> // std::unique_ptr
 
+/* fmt header */
+#include <fmt/core.h>
+
 /* modern.cpp.logger */
 #include "Logger.h"
+
+//using fmt::format;
+
+//using vx::logger::Logger::logDebug;
+
+/*namespace std {
+
+  template<typename... T>
+  [[nodiscard]] inline auto format( fmt::format_string<T...> fmt, T &&... args ) -> std::string {
+
+    return fmt::format( fmt, args... );
+  }
+} */
 
 class MyClass {
 
@@ -124,13 +140,13 @@ int main() {
   const std::variant<int, double> variant { magicArr3 };
   log() << variant;
 
-//  fatal() << std::format( "The answer is {}.", 42 );
+  fatal() << fmt::format( "The answer is {}.", 42 );
 
   constexpr int theAnswerOfEverything = 42;
   constexpr double someDouble = 4.2;
 
   const std::tuple tupl{ theAnswerOfEverything, 'a', someDouble }; // Another C++17 feature: class template argument deduction
-  std::apply([](auto&&... args) {((debug() << args), ...);}, tupl);
+  std::apply( []( auto &&... args ) {( ( debug() << args ), ... );}, tupl );
 
   return EXIT_SUCCESS;
 }

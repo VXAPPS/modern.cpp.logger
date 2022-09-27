@@ -30,7 +30,7 @@
 
 project(modern.cpp.logger)
 
-include_directories(${3RDPARTY_DIR})
+include_directories(${3RDPARTY_DIR} ${FMT_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME}
   ../.github/workflows/integrate.yml
@@ -49,6 +49,8 @@ add_library(${PROJECT_NAME}
   XmlFileLogger.h
 )
 
+add_dependencies(${PROJECT_NAME} fmt)
+
 target_include_directories(${PROJECT_NAME}
   PUBLIC
   ${SOURCE_DIR}
@@ -57,7 +59,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
-  Threads::Threads
-  modern.cpp.core
+  ${FMT_LIBRARY}
   magic_enum
+  modern.cpp.core
+  Threads::Threads
 )

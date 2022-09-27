@@ -35,17 +35,11 @@ set(WARNING_FLAGS
   -Wno-c++98-compat-pedantic # C++11
   -Wno-padded
 
-  -Wno-weak-vtables
-)
-
-set(WARNING_FLAGS_VERSION12
-
-  # macOS cppunit include path from brew
-  -Wno-poison-system-directories
-)
-
-set(WARNING_FLAGS_VERSION13
-
-  # cppunit
-  -Wno-reserved-identifier
+  # FMT documentation command
+  -Wno-c++20-compat # C++11
+  -Wno-documentation-unknown-command
+  -Wno-undefined-func-template
+  -Wno-switch-enum
+#  -fcomment-block-commands=rst
+#  -fcomment-block-commands=endrst
 )

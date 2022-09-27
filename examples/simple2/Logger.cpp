@@ -147,9 +147,9 @@ namespace vx::logger {
     if ( std::string filename = _location.file_name(); filename != "unsupported" ) {
 
 #ifdef _WIN32
-      char delimiter = '\\';
+      constexpr char delimiter = '\\';
 #else
-      char delimiter = '/';
+      constexpr char delimiter = '/';
 #endif
       if ( m_sourceLocation == SourceLocation::FilenameOnly && filename.find_last_of( delimiter ) != std::string::npos ) {
 
@@ -194,17 +194,7 @@ namespace vx::logger {
   void Logger::printSeverity( Severity _severity ) {
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    /* Visual Studio 2017 does not handle toupper in std namespace */
-#if defined _MSC_VER && _MSC_VER < 1920
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
-#else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
-    std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-#else
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-#endif
-#endif
-
+    string_utils::toUpper( severity );
     switch ( _severity ) {
 
       case Severity::Verbose:
@@ -237,17 +227,7 @@ namespace vx::logger {
   Logger &Logger::operator<<( Severity _severity ) {
 
     std::string severity( magic_enum::enum_name( _severity ) );
-    /* Visual Studio 2017 does not handle toupper in std namespace */
-#if defined _MSC_VER && _MSC_VER < 1920
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return ::toupper( chr ); } );
-#else
-#if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
-    std::ranges::transform( severity, std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-#else
-    std::transform( std::begin( severity ), std::end( severity ), std::begin( severity ), []( auto chr ) { return std::toupper( chr ); } );
-#endif
-#endif
-
+    string_utils::toUpper( severity );
     switch ( _severity ) {
 
       case Severity::Verbose:
