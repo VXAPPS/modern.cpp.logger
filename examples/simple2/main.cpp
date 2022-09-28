@@ -29,47 +29,38 @@
  */
 
 /* stl header */
-// #include <format>
+#include <format>
+#include <functional>
+#include <iostream>
 #include <memory> // std::unique_ptr
 
-/* fmt header */
-#ifdef __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Weverything"
-#endif
-#ifdef __GNUC__
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Weffc++"
-#endif
-#include <fmt/core.h>
-#ifdef __GNUC__
-  #pragma GCC diagnostic pop
-#endif
-#ifdef __clang__
-  #pragma clang diagnostic pop
-#endif
+/* magic_enum */
+#include <magic_enum.hpp>
 
 /* modern.cpp.logger */
 #include "Logger.h"
 
-// using fmt::format;
+//using debug = vx::logger::Logger( vx::logger::Severity::Debug );
 
-// using vx::logger::Logger::logDebug;
+using vx::logger::Logger;
+//using myLogger = vx::logger::Logger;
 
-/*namespace std {
+/*namespace vx::logger {
 
-  template<typename... T>
-  [[nodiscard]] inline auto format( fmt::format_string<T...> fmt, T &&... args ) -> std::string {
+  std::function<( Logger & ( Logger ) )> f_add_display = &Logger::debug(); //::debug();
+}*/
 
-    return fmt::format( fmt, args... );
-  }
-} */
+//using myInt = int;
+
+using namespace magic_enum::ostream_operators;
 
 class MyClass {
 
 public:
   explicit MyClass( std::string_view _something )
       : m_something( _something ) {}
+
+  void test() { std::cout << m_something << std::endl; }
 
   friend std::ostream &operator<<( std::ostream &out, MyClass val ) {
 
@@ -88,6 +79,41 @@ private:
 };
 
 int main() {
+
+  //  std::function<void( Foo3 * )> f2 = &Foo3::doSomething;
+  //  std::function<int( Foo3 *, int )> f3 = &Foo3::doSomething2;
+  //  auto f = Foo {};
+
+  std::function<void( MyClass * )> f4 = &MyClass::test;
+
+  auto legger = std::mem_fn( &Logger::loggerWithoutDefine );
+  legger( Logger() ) << 1 << 2 << "3";
+  //  std::function<Logger &( void )> g = []() { return Logger().loggerWithoutDefine(); };
+  //  log2() << 1 << 2 << 3 << 4;
+
+  //  std::function<void( Logger * )> lug = &Logger::printTimestamp;
+  //  std::function<Logger &( Logger * )> deb = &Logger::loggerWithoutDefine;
+  //  deb( Logger() ) << 1 << 2 << "3";
+  //  qwe = &vx::logger::Logger::debug();
+
+  //  auto greet = std::mem_fn( &Foo::display_greeting );
+  //  greet( f );
+
+  //  auto print_num = std::mem_fn( &Foo::display_number );
+  //  print_num( f, 42 );
+
+  //  vx::logger::Logger leg;
+  //  auto greet2 = std::mem_fn( &Foo3::doSomething() );
+  //  using func = std::function<myLogger &( myLogger & MyLogger )>;
+  //  func f_add_display = &myLogger::printTimestamp();
+
+  // Store member function binding
+  //  MyClass myClass;
+  //  auto callable = std::mem_fn( &MyClass::test() );
+
+  // Call with late supplied 'this'
+  //  MyClass myInst;
+  //  callable( &leg );
 
   constexpr int aInt = 17;
   constexpr int bInt = 12;
@@ -126,7 +152,8 @@ int main() {
 
   //  test_debug() << std::make_any<int>(1) << std::make_any<double>(1.234) << std::make_any<std::string>("hello");
   const std::any blubAny = 1;
-  debug() << blubAny << std::make_any<std::string>( "hello" ) << std::make_any<std::vector<int>>( { 1, 2, 3, 4 } );
+  std::any helo = std::make_any<std::string>( "hello" );
+  debug() << blubAny << helo << std::make_any<std::vector<int>>( { 1, 2, 3, 4 } );
 
   using namespace std::literals;
   const std::unordered_map<int, std::string_view> testsv { { 2, "ghj"sv }, { 1, "def"sv }, { 3, "abc"sv } };
@@ -155,13 +182,25 @@ int main() {
   const std::variant<int, double> variant { magicArr3 };
   log() << variant;
 
-  fatal() << fmt::format( "The answer is {}.", 42 );
-
   constexpr int theAnswerOfEverything = 42;
+  fatal() << std::format( "The answer is {}.", theAnswerOfEverything );
+
   constexpr double someDouble = 4.2;
 
   const std::tuple tupl { theAnswerOfEverything, 'a', someDouble }; // Another C++17 feature: class template argument deduction
   std::apply( []( auto &&...args ) { ( ( debug() << args ), ... ); }, tupl );
+
+  constexpr auto severities = magic_enum::enum_entries<vx::logger::SourceLocation>();
+  for ( const auto &severity : severities ) {
+
+    fatal() << severity.first << severity.second;
+  }
+
+  //  fmt::format("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
+  //  log() << std::format( "{}", vec );
+  log() << std::format( "int: {0:d};  hex: {0:#x};  oct: {0:#o};  bin: {0:#b}", theAnswerOfEverything );
+
+  //  log() << vx::logger::SourceLocation::Absolute;
 
   return EXIT_SUCCESS;
 }

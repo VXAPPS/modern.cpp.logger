@@ -53,6 +53,8 @@
 #include <variant>
 #include <vector>
 
+#include <magic_enum.hpp>
+
 /**
  * @todo Configuration LoggerConfiguration::instance oder ähnliches
  * @todo API Dokumentation
@@ -134,6 +136,8 @@ namespace vx::logger {
      * @return @~english Nothing. @~german Keine Rückgabe.
      */
     Logger &operator=( Logger && ) = delete;
+
+    Logger &loggerWithoutDefine() { return *this; }
 
     Logger &logger() { return *this; }
 
@@ -514,7 +518,7 @@ namespace vx::logger {
   }
 
   template <typename Type, typename Function>
-  inline std::pair<const std::type_index, std::function<void( vx::logger::Logger &, const std::any & )>> to_any_visitor( const Function &_function ) {
+  inline std::pair<const std::type_index, std::function<void( Logger &, const std::any & )>> to_any_visitor( const Function &_function ) {
 
     return {
 
@@ -599,10 +603,39 @@ namespace vx::logger {
 
   inline Logger &operator<<( Logger &_logger,
                              const std::any &_input ) {
+
     process( _logger, _input );
     return _logger.maybeSpace();
   }
+
+  template <typename Char, typename Traits, typename E, magic_enum::detail::enable_if_t<E, int> = 0>
+  inline Logger &operator<<( Logger &_logger, E value ) {
+
+    using D = std::decay_t<E>;
+    using U = magic_enum::underlying_type_t<D>;
+
+    if constexpr ( magic_enum::detail::supported<D>::value ) {
+
+      if ( const auto name = enum_flags_name<D>( value ); !name.empty() ) {
+
+        for ( const auto c : name ) {
+
+          _logger << c;
+        }
+        return _logger.maybeSpace();
+      }
+    }
+    return ( _logger << static_cast<U>( value ) );
+  }
+
+  template <typename Char, typename Traits, typename E, magic_enum::detail::enable_if_t<E, int> = 0>
+  inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> value ) {
+
+    return value ? ( _logger << *value ) : _logger;
+  }
 }
+
+//static inline vx::logger::Logger &log2() { return vx::logger::Logger().logDebug(); }
 
 #define log vx::logger::Logger().logger
 #define verbose vx::logger::Logger( vx::logger::Severity::Verbose ).logVerbose

@@ -227,29 +227,7 @@ namespace vx::logger {
 
   Logger &Logger::operator<<( Severity _severity ) {
 
-    std::string severity( magic_enum::enum_name( _severity ) );
-    string_utils::toUpper( severity );
-    switch ( _severity ) {
-
-      case Severity::Verbose:
-        m_stream << "\x1b[37;1m[" << severity << "]\x1b[0m";
-        break;
-      case Severity::Debug:
-        m_stream << "\x1b[34;1m[" << severity << "]\x1b[0m";
-        break;
-      case Severity::Info:
-        m_stream << "\x1b[32;1m[" << severity << "]\x1b[0m";
-        break;
-      case Severity::Warning:
-        m_stream << "\x1b[33;1m[" << severity << "]\x1b[0m";
-        break;
-      case Severity::Error:
-        m_stream << "\x1b[31;1m[" << severity << "]\x1b[0m";
-        break;
-      case Severity::Fatal:
-        m_stream << "\x1b[41;1m[" << severity << "]\x1b[0m";
-        break;
-    }
-    return maybeSpace();
+    printSeverity( _severity );
+    return *this;
   }
 }

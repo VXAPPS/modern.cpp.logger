@@ -28,28 +28,32 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-cmake_minimum_required(VERSION 3.18)
+include(CheckCSourceCompiles)
+include(CheckIncludeFiles)
 
-project(modern.cpp.logger VERSION 0.5 DESCRIPTION "Thread-Safe Modern C++ Logger" HOMEPAGE_URL "https://vxapps.com" LANGUAGES CXX)
-include(cmake/env.cmake)
-include(cmake/checks.cmake)
-
-# Fetch Content Dependencies
-include(${CMAKE}/fetch/magic_enum.cmake)
-include(${CMAKE}/fetch/modern.cpp.core.cmake)
-
-# External Project Dependencies
-if(NOT HAVE_FORMAT)
-  include(${CMAKE}/external/fmt.cmake)
+check_include_file_cxx(format HAVE_FORMAT_INCLUDE)
+if(HAVE_FORMAT_INCLUDE)
+  check_cxx_source_compiles(
+    "#include <format>
+    int main() { std::format( \"The answer is {}.\", 42 ); return 0; }"
+    HAVE_FORMAT
+  )
 endif()
 
-add_subdirectory(source)
-if(LOGGER_BUILD_EXAMPLES)
-  add_subdirectory(examples)
+check_include_file_cxx(source_location HAVE_SOURCE_LOCATION_INCLUDE)
+if(HAVE_SOURCE_LOCATION_INCLUDE)
+  check_cxx_source_compiles(
+    "#include <source_location>
+    int main() { const std::source_location location = std::source_location::current(); return 0; }"
+    HAVE_SOURCE_LOCATION
+  )
 endif()
 
-if(LOGGER_BUILD_TESTS)
-  include(${CMAKE}/external/googletest.cmake)
-  enable_testing()
-  add_subdirectory(tests)
+check_include_file_cxx(span HAVE_SPAN_INCLUDE)
+if(HAVE_SPAN_INCLUDE)
+  check_cxx_source_compiles(
+    "#include <span>
+    int main(int argc, char **argv) { std::span args( argv, static_cast<std::size_t>( argc ) ); return 0; }"
+    HAVE_SPAN
+  )
 endif()
