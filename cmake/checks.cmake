@@ -35,7 +35,7 @@ check_include_file_cxx(format HAVE_FORMAT_INCLUDE)
 if(HAVE_FORMAT_INCLUDE)
   check_cxx_source_compiles(
     "#include <format>
-    int main() { std::format( \"The answer is {}.\", 42 ); return 0; }"
+    int main() { std::string nodiscard = std::format( \"The answer is {}.\", 42 ); return 0; }"
     HAVE_FORMAT
   )
 endif()

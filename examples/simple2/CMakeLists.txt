@@ -30,7 +30,11 @@
 
 project(simple2)
 
-include_directories(${3RDPARTY_DIR} ${FMT_INCLUDE_DIR})
+if(NOT HAVE_FORMAT)
+  set(${PROJECT_NAME}_includes ${FMT_INCLUDE_DIR})
+endif()
+
+include_directories(${3RDPARTY_DIR} ${${PROJECT_NAME}_includes})
 
 add_executable(${PROJECT_NAME}
   main.cpp
@@ -38,13 +42,19 @@ add_executable(${PROJECT_NAME}
   Logger.h
 )
 
+if(NOT HAVE_FORMAT)
+  set(${PROJECT_NAME}_libs ${FMT_LIBRARY})
+endif()
+
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-  ${FMT_LIBRARY}
   modern.cpp.core
+  ${${PROJECT_NAME}_libs}
 )
 
-add_dependencies(${PROJECT_NAME} fmt)
+if(NOT HAVE_FORMAT)
+  add_dependencies(${PROJECT_NAME} fmt)
+endif()
 
 # Strip binary for release builds
 if(CMAKE_BUILD_TYPE STREQUAL Release)
