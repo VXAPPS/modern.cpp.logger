@@ -35,7 +35,7 @@ check_include_file_cxx(format HAVE_FORMAT_INCLUDE)
 if(HAVE_FORMAT_INCLUDE)
   check_cxx_source_compiles(
     "#include <format>
-    int main() { std::string nodiscard = std::format( \"The answer is {}.\", 42 ); return 0; }"
+    int main() { std::string nodiscard = std::format( \"The answer is {}.\", 42 ); (void)nodiscard; return 0; }"
     HAVE_FORMAT
   )
 endif()
@@ -44,7 +44,7 @@ check_include_file_cxx(source_location HAVE_SOURCE_LOCATION_INCLUDE)
 if(HAVE_SOURCE_LOCATION_INCLUDE)
   check_cxx_source_compiles(
     "#include <source_location>
-    int main() { const std::source_location location = std::source_location::current(); return 0; }"
+    int main() { const std::source_location location = std::source_location::current(); (void)location; return 0; }"
     HAVE_SOURCE_LOCATION
   )
 endif()

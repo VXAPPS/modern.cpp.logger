@@ -33,23 +33,29 @@ namespace std {
     source_location( source_location && ) = default;
 
     [[nodiscard]] constexpr const char *file_name() const noexcept {
+
       return fileName;
     }
 
     [[nodiscard]] constexpr const char *function_name() const noexcept {
+
       return functionName;
     }
 
     [[nodiscard]] constexpr uint_least32_t line() const noexcept {
+
       return lineNumber;
     }
 
     [[nodiscard]] constexpr std::uint_least32_t column() const noexcept {
+
       return columnOffset;
     }
 
   private:
-    constexpr source_location( const char *_fileName, const char *_functionName, const uint_least32_t _lineNumber,
+    constexpr source_location( const char *_fileName,
+                               const char *_functionName,
+                               const uint_least32_t _lineNumber,
                                const uint_least32_t _columnOffset ) noexcept
         : fileName( _fileName ),
           functionName( _functionName ),

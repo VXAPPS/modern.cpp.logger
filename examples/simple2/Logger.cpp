@@ -151,9 +151,25 @@ namespace vx::logger {
 #else
       constexpr char delimiter = '/';
 #endif
-      if ( m_sourceLocation == SourceLocation::FilenameOnly && filename.find_last_of( delimiter ) != std::string::npos ) {
+      if ( m_locationPath == Path::Filename && filename.find_last_of( delimiter ) != std::string::npos ) {
 
         const std::size_t pos = filename.find_last_of( delimiter );
+        filename = filename.substr( pos + 1, filename.size() - ( pos + 1 ) );
+      }
+      else if ( m_locationPath == Path::Relative && filename.find_last_of( delimiter ) != std::string::npos ) {
+
+        /* TODO: Find a better solution for the real project_source_dir, instead of two folders back if available */
+        std::size_t pos = filename.find_last_of( delimiter );
+        const std::size_t secondPos = filename.find_last_of( delimiter, pos - 1 );
+        if ( secondPos != std::string::npos ) {
+
+          pos = secondPos;
+          const std::size_t thirdPos = filename.find_last_of( delimiter, pos - 1 );
+          if ( thirdPos != std::string::npos ) {
+
+            pos = thirdPos;
+          }
+        }
         filename = filename.substr( pos + 1, filename.size() - ( pos + 1 ) );
       }
       m_stream << filename << ':' << _location.line() << ' ' << _location.function_name() << ' ';
@@ -223,11 +239,5 @@ namespace vx::logger {
   void Logger::printString( std::string_view _input ) {
 
     m_autoQuotes ? m_stream << std::quoted( _input ) : m_stream << _input;
-  }
-
-  Logger &Logger::operator<<( Severity _severity ) {
-
-    printSeverity( _severity );
-    return *this;
   }
 }

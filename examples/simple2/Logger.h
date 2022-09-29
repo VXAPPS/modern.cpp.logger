@@ -37,9 +37,10 @@
 #include <iomanip>
 #include <list>
 #include <map>
+#include <optional>
 #include <ostream>
 #include <set>
-#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 15
+#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 16
   #include <source_location>
 #else
   #include <source_location.hpp>
@@ -53,6 +54,7 @@
 #include <variant>
 #include <vector>
 
+/* magic_enum */
 #include <magic_enum.hpp>
 
 /**
@@ -60,7 +62,8 @@
  * @todo API Dokumentation
  * @todo Switch to filename, /dev/null at runtime
  * @todo Severity eingrenzen - bsp: nur ab error ausgaben
- * @todo Interface für Format bereitstellen - wie sieht ein log eintrag aus, in welchem format wird ein eintrag ausgegeben (z.B. als xml)
+ * @todo Interface für LogFormat bereitstellen - wie sieht ein log eintrag aus, in welchem format wird ein eintrag ausgegeben (z.B. als xml)
+ * @todo Types with every layer
  * @todo syslog
  * @todo Windows Log
  * @todo macOS log
@@ -71,9 +74,11 @@ namespace vx::logger {
    * @brief demangle
    * @param _name  R
    * @return R
-   * @todo Add even cleaner demangle function, clean up spaces between > > and remove allocator or extra supid unused shit for readability
    */
   std::string demangle( const std::string &_name );
+
+  // TODO(FB): Write extreme demangle function.
+  //  std::string demangleExtreme( const std::string &_typeInfo );
 
   /**
    * @brief The Severity enum.
@@ -98,19 +103,19 @@ namespace vx::logger {
   };
 
   /**
-   * @brief The SourceLocation enum.
+   * @brief The Path enum.
    */
-  enum class SourceLocation {
+  enum class Path {
 
-    Absolute,    /**< Complete path. */
-    Relative,    /**< Absolute path to project. */
-    FilenameOnly /**< Only the filename. */
+    Absolute, /**< Complete path. */
+    Relative, /**< Absolute path to project. */
+    Filename  /**< Only the filename. */
   };
 
   class Logger {
 
   public:
-    explicit Logger( Severity _severity = Severity::Info,
+    explicit Logger( Severity _severity = Severity::Debug,
                      const std::source_location &_location = std::source_location::current() );
 
     ~Logger();
@@ -137,21 +142,7 @@ namespace vx::logger {
      */
     Logger &operator=( Logger && ) = delete;
 
-    Logger &loggerWithoutDefine() { return *this; }
-
     Logger &logger() { return *this; }
-
-    Logger &logVerbose() { return *this; }
-
-    Logger &logDebug() { return *this; }
-
-    Logger &logInfo() { return *this; }
-
-    Logger &logWarning() { return *this; }
-
-    Logger &logError() { return *this; }
-
-    Logger &logFatal() { return *this; }
 
     void printTimestamp();
     void printSeverity( Severity _severity );
@@ -187,8 +178,6 @@ namespace vx::logger {
       }
       return *this;
     }
-
-    Logger &operator<<( Severity _severity );
 
     inline Logger &operator<<( bool _input ) {
 
@@ -255,20 +244,19 @@ namespace vx::logger {
 
     inline Logger &operator<<( const void *_input ) {
 
-      if ( _input == nullptr ) {
-
-        m_stream << "(nullptr)";
-      }
-      else {
-
-        m_stream << '(' << _input << ')';
-      }
+      _input == nullptr ? m_stream << "(nullptr)" : m_stream << '(' << _input << ')';
       return maybeSpace();
     }
 
     inline Logger &operator<<( std::nullptr_t ) {
 
       m_stream << "(nullptr_t)";
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::nullopt_t ) {
+
+      m_stream << "(nullopt_t)";
       return maybeSpace();
     }
 
@@ -339,12 +327,32 @@ namespace vx::logger {
     bool m_autoSpace = true;
     bool m_autoQuotes = true;
 
-    Severity m_severity = Severity::Info;
-    SourceLocation m_sourceLocation = SourceLocation::FilenameOnly;
+    Severity m_severity = Severity::Debug;
+    Path m_locationPath = Path::Filename;
 
     std::source_location m_location;
     std::ostream m_stream;
   };
+
+  template <typename T>
+  inline Logger &operator<<( Logger &_logger,
+                             const std::optional<T> &_optional ) {
+
+    const bool saveState = _logger.autoSpace();
+    _logger.setAutoQuotes( false );
+    _logger.nospace() << "std::optional" /* << demangle( typeid( T ).name() ) << '>' */ << ' ';
+    if ( !_optional ) {
+
+      _logger << "(nullopt)";
+    }
+    _logger.setAutoQuotes( true );
+    if ( _optional ) {
+
+      _logger << *_optional;
+    }
+    _logger.setAutoSpace( saveState );
+    return _logger.maybeSpace();
+  }
 
   template <typename Key, typename T>
   inline Logger &operator<<( Logger &_logger,
@@ -518,7 +526,7 @@ namespace vx::logger {
   }
 
   template <typename Type, typename Function>
-  inline std::pair<const std::type_index, std::function<void( Logger &, const std::any & )>> to_any_visitor( const Function &_function ) {
+  inline std::pair<const std::type_index, std::function<void( Logger &, const std::any & )>> add( const Function &_function ) {
 
     return {
 
@@ -534,58 +542,58 @@ namespace vx::logger {
   #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Wglobal-constructors"
 #endif
-  static std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>> any_visitor {
+  static std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>> visitors {
 
-    to_any_visitor<bool>( []( Logger &_logger, bool _input ) { _logger << _input; } ),
-    to_any_visitor<char>( []( Logger &_logger, char _input ) { _logger << _input; } ),
-    to_any_visitor<int>( []( Logger &_logger, int _input ) { _logger << _input; } ),
-    to_any_visitor<unsigned int>( []( Logger &_logger, unsigned int _input ) { _logger << _input; } ),
-    to_any_visitor<std::size_t>( []( Logger &_logger, std::size_t _input ) { _logger << _input; } ),
-    to_any_visitor<float>( []( Logger &_logger, float _input ) { _logger << _input; } ),
-    to_any_visitor<double>( []( Logger &_logger, double _input ) { _logger << _input; } ),
-    to_any_visitor<const char *>( []( Logger &_logger, const char *_input ) { _logger << _input; } ),
-    to_any_visitor<std::string_view>( []( Logger &_logger, std::string_view _input ) { _logger << _input; } ),
-    to_any_visitor<std::string>( []( Logger &_logger, const std::string &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<bool>>( []( Logger &_logger, const std::list<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<char>>( []( Logger &_logger, const std::list<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<int>>( []( Logger &_logger, const std::list<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<unsigned int>>( []( Logger &_logger, const std::list<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::size_t>>( []( Logger &_logger, const std::list<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<float>>( []( Logger &_logger, const std::list<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<double>>( []( Logger &_logger, const std::list<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<const char *>>( []( Logger &_logger, const std::list<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::string_view>>( []( Logger &_logger, const std::list<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::list<std::string>>( []( Logger &_logger, const std::list<std::string> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<bool>>( []( Logger &_logger, const std::set<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<char>>( []( Logger &_logger, const std::set<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<int>>( []( Logger &_logger, const std::set<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<unsigned int>>( []( Logger &_logger, const std::set<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::size_t>>( []( Logger &_logger, const std::set<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<float>>( []( Logger &_logger, const std::set<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<double>>( []( Logger &_logger, const std::set<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<const char *>>( []( Logger &_logger, const std::set<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::string_view>>( []( Logger &_logger, const std::set<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::set<std::string>>( []( Logger &_logger, const std::set<std::string> &_input ) { _logger << _input; } ),
-    // MAC found that ambiguous...    to_any_visitor<std::vector<bool>>( []( Logger & _logger, const std::vector<bool> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<char>>( []( Logger &_logger, const std::vector<char> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<int>>( []( Logger &_logger, const std::vector<int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<unsigned int>>( []( Logger &_logger, const std::vector<unsigned int> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::size_t>>( []( Logger &_logger, const std::vector<std::size_t> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<float>>( []( Logger &_logger, const std::vector<float> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<double>>( []( Logger &_logger, const std::vector<double> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<const char *>>( []( Logger &_logger, const std::vector<const char *> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::string_view>>( []( Logger &_logger, const std::vector<std::string_view> &_input ) { _logger << _input; } ),
-    to_any_visitor<std::vector<std::string>>( []( Logger &_logger, const std::vector<std::string> &_input ) { _logger << _input; } ),
-    // VC2017 issue    to_any_visitor<void>( []( Logger & _logger, [[maybe_unused]] void *_input ) { _logger << _input; } ),
+    add<bool>( []( Logger &_logger, bool _input ) { _logger << _input; } ),
+    add<char>( []( Logger &_logger, char _input ) { _logger << _input; } ),
+    add<int>( []( Logger &_logger, int _input ) { _logger << _input; } ),
+    add<unsigned int>( []( Logger &_logger, unsigned int _input ) { _logger << _input; } ),
+    add<std::size_t>( []( Logger &_logger, std::size_t _input ) { _logger << _input; } ),
+    add<float>( []( Logger &_logger, float _input ) { _logger << _input; } ),
+    add<double>( []( Logger &_logger, double _input ) { _logger << _input; } ),
+    add<const char *>( []( Logger &_logger, const char *_input ) { _logger << _input; } ),
+    add<std::string_view>( []( Logger &_logger, std::string_view _input ) { _logger << _input; } ),
+    add<std::string>( []( Logger &_logger, const std::string &_input ) { _logger << _input; } ),
+    add<std::list<bool>>( []( Logger &_logger, const std::list<bool> &_input ) { _logger << _input; } ),
+    add<std::list<char>>( []( Logger &_logger, const std::list<char> &_input ) { _logger << _input; } ),
+    add<std::list<int>>( []( Logger &_logger, const std::list<int> &_input ) { _logger << _input; } ),
+    add<std::list<unsigned int>>( []( Logger &_logger, const std::list<unsigned int> &_input ) { _logger << _input; } ),
+    add<std::list<std::size_t>>( []( Logger &_logger, const std::list<std::size_t> &_input ) { _logger << _input; } ),
+    add<std::list<float>>( []( Logger &_logger, const std::list<float> &_input ) { _logger << _input; } ),
+    add<std::list<double>>( []( Logger &_logger, const std::list<double> &_input ) { _logger << _input; } ),
+    add<std::list<const char *>>( []( Logger &_logger, const std::list<const char *> &_input ) { _logger << _input; } ),
+    add<std::list<std::string_view>>( []( Logger &_logger, const std::list<std::string_view> &_input ) { _logger << _input; } ),
+    add<std::list<std::string>>( []( Logger &_logger, const std::list<std::string> &_input ) { _logger << _input; } ),
+    add<std::set<bool>>( []( Logger &_logger, const std::set<bool> &_input ) { _logger << _input; } ),
+    add<std::set<char>>( []( Logger &_logger, const std::set<char> &_input ) { _logger << _input; } ),
+    add<std::set<int>>( []( Logger &_logger, const std::set<int> &_input ) { _logger << _input; } ),
+    add<std::set<unsigned int>>( []( Logger &_logger, const std::set<unsigned int> &_input ) { _logger << _input; } ),
+    add<std::set<std::size_t>>( []( Logger &_logger, const std::set<std::size_t> &_input ) { _logger << _input; } ),
+    add<std::set<float>>( []( Logger &_logger, const std::set<float> &_input ) { _logger << _input; } ),
+    add<std::set<double>>( []( Logger &_logger, const std::set<double> &_input ) { _logger << _input; } ),
+    add<std::set<const char *>>( []( Logger &_logger, const std::set<const char *> &_input ) { _logger << _input; } ),
+    add<std::set<std::string_view>>( []( Logger &_logger, const std::set<std::string_view> &_input ) { _logger << _input; } ),
+    add<std::set<std::string>>( []( Logger &_logger, const std::set<std::string> &_input ) { _logger << _input; } ),
+    // MAC found that ambiguous...    add<std::vector<bool>>( []( Logger & _logger, const std::vector<bool> &_input ) { _logger << _input; } ),
+    add<std::vector<char>>( []( Logger &_logger, const std::vector<char> &_input ) { _logger << _input; } ),
+    add<std::vector<int>>( []( Logger &_logger, const std::vector<int> &_input ) { _logger << _input; } ),
+    add<std::vector<unsigned int>>( []( Logger &_logger, const std::vector<unsigned int> &_input ) { _logger << _input; } ),
+    add<std::vector<std::size_t>>( []( Logger &_logger, const std::vector<std::size_t> &_input ) { _logger << _input; } ),
+    add<std::vector<float>>( []( Logger &_logger, const std::vector<float> &_input ) { _logger << _input; } ),
+    add<std::vector<double>>( []( Logger &_logger, const std::vector<double> &_input ) { _logger << _input; } ),
+    add<std::vector<const char *>>( []( Logger &_logger, const std::vector<const char *> &_input ) { _logger << _input; } ),
+    add<std::vector<std::string_view>>( []( Logger &_logger, const std::vector<std::string_view> &_input ) { _logger << _input; } ),
+    add<std::vector<std::string>>( []( Logger &_logger, const std::vector<std::string> &_input ) { _logger << _input; } ),
+    // VC2017 issue    add<void>( []( Logger & _logger, [[maybe_unused]] void *_input ) { _logger << _input; } ),
   };
 #ifdef __clang__
   #pragma clang diagnostic pop
 #endif
 
-  inline void process( Logger &_logger,
-                       const std::any &_any ) {
+  inline void visit( Logger &_logger,
+                     const std::any &_any ) {
 
-    if ( const auto iterator = any_visitor.find( std::type_index( _any.type() ) ); iterator != any_visitor.cend() ) {
+    if ( const auto iterator = visitors.find( std::type_index( _any.type() ) ); iterator != visitors.cend() ) {
 
       iterator->second( _logger, _any );
     }
@@ -596,19 +604,19 @@ namespace vx::logger {
   }
 
   template <typename Type, typename Function>
-  inline void register_any_visitor( const Function &_function ) {
+  inline void registerVisitor( const Function &_function ) {
 
-    any_visitor.insert( to_any_visitor<Type>( _function ) );
+    visitors.insert( add<Type>( _function ) );
   }
 
   inline Logger &operator<<( Logger &_logger,
                              const std::any &_input ) {
 
-    process( _logger, _input );
+    visit( _logger, _input );
     return _logger.maybeSpace();
   }
 
-  template <typename Char, typename Traits, typename E, magic_enum::detail::enable_if_t<E, int> = 0>
+  template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
   inline Logger &operator<<( Logger &_logger, E value ) {
 
     using D = std::decay_t<E>;
@@ -618,29 +626,33 @@ namespace vx::logger {
 
       if ( const auto name = magic_enum::enum_flags_name<D>( value ); !name.empty() ) {
 
-        for ( const auto c : name ) {
-
-          _logger << c;
-        }
+        _logger << name;
         return _logger.maybeSpace();
       }
     }
-    return ( _logger << static_cast<U>( value ) );
+    _logger << static_cast<U>( value );
+    return _logger.maybeSpace();
   }
 
-  template <typename Char, typename Traits, typename E, magic_enum::detail::enable_if_t<E, int> = 0>
+  template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
   inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> value ) {
 
-    return value ? ( _logger << *value ) : _logger;
+    value ? _logger << *value : _logger << "(nullopt)";
+    return _logger.maybeSpace();
   }
 }
 
-//static inline vx::logger::Logger &log2() { return vx::logger::Logger().logDebug(); }
+inline vx::logger::Logger &log2() {
 
-#define log vx::logger::Logger().logger
-#define verbose vx::logger::Logger( vx::logger::Severity::Verbose ).logVerbose
-#define debug vx::logger::Logger( vx::logger::Severity::Debug ).logDebug
-#define info vx::logger::Logger( vx::logger::Severity::Info ).logInfo
-#define warning vx::logger::Logger( vx::logger::Severity::Warning ).logWarning
-#define error vx::logger::Logger( vx::logger::Severity::Error ).logError
-#define fatal vx::logger::Logger( vx::logger::Severity::Fatal ).logFatal
+  auto legger = std::mem_fn( &vx::logger::Logger::logger );
+  return legger( vx::logger::Logger( vx::logger::Severity::Debug ) );
+}
+
+//inline vx::logger::Logger &log2() { vx::logger::Logger( vx::logger::Severity::Debug ) logger; return &logger; }
+
+#define logVerbose vx::logger::Logger( vx::logger::Severity::Verbose ).logger
+#define logDebug vx::logger::Logger( vx::logger::Severity::Debug ).logger
+#define logInfo vx::logger::Logger( vx::logger::Severity::Info ).logger
+#define logWarning vx::logger::Logger( vx::logger::Severity::Warning ).logger
+#define logError vx::logger::Logger( vx::logger::Severity::Error ).logger
+#define logFatal vx::logger::Logger( vx::logger::Severity::Fatal ).logger
