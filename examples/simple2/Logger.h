@@ -616,7 +616,7 @@ namespace vx::logger {
 
     if constexpr ( magic_enum::detail::supported<D>::value ) {
 
-      if ( const auto name = enum_flags_name<D>( value ); !name.empty() ) {
+      if ( const auto name = magic_enum::enum_flags_name<D>( value ); !name.empty() ) {
 
         for ( const auto c : name ) {
 
