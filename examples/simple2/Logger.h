@@ -251,12 +251,12 @@ namespace vx::logger {
       std::string_view literal {};
       constexpr int hourInSeconds = 3600;
       constexpr int minuteInSesonds = 60;
-      if ( ratio.num == std::ratio<hourInSeconds, 1>::num && ratio.den == std::ratio<hourInSeconds, 1>::den ) { literal = "h"; }
-      else if ( ratio.num == std::ratio<minuteInSesonds, 1>::num && ratio.den == std::ratio<minuteInSesonds, 1>::den ) { literal = "min"; }
-      else if ( ratio.num == std::ratio<1, 1>::num && ratio.den == std::ratio<1, 1>::den ) { literal = "s"; }
-      else if ( ratio.num == std::milli::num && ratio.den == std::milli::den ) { literal = "ms"; }
-      else if ( ratio.num == std::micro::num && ratio.den == std::micro::den ) { literal = "us"; }
-      else if ( ratio.num == std::nano::num && ratio.den == std::nano::den ) { literal = "ns"; }
+      if constexpr ( ratio.num == std::ratio<hourInSeconds, 1>::num && ratio.den == std::ratio<hourInSeconds, 1>::den ) { literal = "h"; }
+      else if constexpr ( ratio.num == std::ratio<minuteInSesonds, 1>::num && ratio.den == std::ratio<minuteInSesonds, 1>::den ) { literal = "min"; }
+      else if constexpr ( ratio.num == std::ratio<1, 1>::num && ratio.den == std::ratio<1, 1>::den ) { literal = "s"; }
+      else if constexpr ( ratio.num == std::milli::num && ratio.den == std::milli::den ) { literal = "ms"; }
+      else if constexpr ( ratio.num == std::micro::num && ratio.den == std::micro::den ) { literal = "us"; }
+      else if constexpr ( ratio.num == std::nano::num && ratio.den == std::nano::den ) { literal = "ns"; }
 
       m_stream << _input.count() << ' ';
 
