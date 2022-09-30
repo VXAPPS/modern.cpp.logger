@@ -35,8 +35,6 @@
 
 /* stl header */
 #include <algorithm>
-#include <chrono>
-#include <iomanip>
 #include <iostream> // std::streambuf, std::cout
 #include <memory>   // std::unique_ptr
 #if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
@@ -50,6 +48,7 @@
 
 /* modern.cpp.core */
 #include <StringUtils.h>
+#include <Timestamp.h>
 
 /* local header */
 #include "Logger.h"
@@ -183,29 +182,7 @@ namespace vx::logger {
 
   void Logger::printTimestamp() {
 
-    /* get a precise timestamp as a string */
-    struct std::tm currentLocalTime {};
-
-    const auto now = std::chrono::system_clock::now();
-    const auto nowAsTimeT = std::chrono::system_clock::to_time_t( now );
-    const auto nowMs = std::chrono::duration_cast<std::chrono::microseconds>( now.time_since_epoch() ) % 1000000;
-    constexpr int mirosecondsPrecision = 6;
-
-#ifdef _WIN32
-    localtime_s( &currentLocalTime, &nowAsTimeT );
-#else
-    localtime_r( &nowAsTimeT, &currentLocalTime );
-#endif
-
-    std::ostringstream nowSs;
-    nowSs
-        << std::put_time( &currentLocalTime, "%Y-%m-%dT%T" )
-        << '.' << std::setfill( '0' ) << std::setw( mirosecondsPrecision ) << nowMs.count()
-        << std::put_time( &currentLocalTime, "%z" );
-    std::string result = nowSs.str();
-    /* somewhat special - maybe see systemtimeformatter */
-    result.replace( result.end() - 2, result.end() - 2, ":" );
-    m_stream << result << ' ';
+    m_stream << vx::timestampIso8601( Precision::MilliSeconds ) << ' ';
   }
 
   void Logger::printSeverity( Severity _severity ) {

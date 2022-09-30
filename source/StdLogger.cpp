@@ -41,6 +41,7 @@
 
 /* modern.cpp.core */
 #include <StringUtils.h>
+#include <Timestamp.h>
 
 /* local header */
 #include "StdLogger.h"
@@ -68,7 +69,7 @@ namespace vx {
 
     std::string output {};
     output.reserve( _message.size() + overhead );
-    output.append( timestamp() );
+    output.append( timestampIso8601( Precision::MicroSeconds ) );
 
     std::string severity( magic_enum::enum_name( _severity ) );
     string_utils::toUpper( severity );

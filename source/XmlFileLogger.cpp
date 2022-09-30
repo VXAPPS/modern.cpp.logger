@@ -39,6 +39,7 @@
 
 /* modern.cpp.core */
 #include <StringUtils.h>
+#include <Timestamp.h>
 
 /* local header */
 #include "XmlFileLogger.h"
@@ -66,7 +67,7 @@ namespace vx {
     output.reserve( _message.size() + xmlOverhead );
     output.append( "<entry>" );
     output.append( "<timestamp>" );
-    output.append( timestamp() );
+    output.append( timestampIso8601( Precision::MicroSeconds ) );
     output.append( "</timestamp>" );
     if ( std::string( _location.file_name() ) != "unsupported" ) {
 

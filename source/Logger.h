@@ -31,8 +31,6 @@
 #pragma once
 
 /* stl header */
-#include <chrono>
-#include <iomanip>
 #include <iterator>
 #if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 15
   #include <source_location>
@@ -86,36 +84,6 @@ namespace vx {
 #endif
 
   /**
-   * @brief Create thread-safe timestamp.
-   * @return Timestamp as 'Y-m-dThh:mm:ss.xxxxxx'
-   */
-  inline std::string timestamp() noexcept {
-
-    /* get a precise timestamp as a string */
-    struct std::tm currentLocalTime {};
-
-    const auto now = std::chrono::system_clock::now();
-    const auto nowAsTimeT = std::chrono::system_clock::to_time_t( now );
-    const auto nowMs = std::chrono::duration_cast<std::chrono::microseconds>( now.time_since_epoch() ) % 1000000;
-
-#ifdef _WIN32
-    localtime_s( &currentLocalTime, &nowAsTimeT );
-#else
-    localtime_r( &nowAsTimeT, &currentLocalTime );
-#endif
-
-    std::ostringstream nowSs;
-    nowSs
-        << std::put_time( &currentLocalTime, "%Y-%m-%dT%T" )
-        << '.' << std::setfill( '0' ) << std::setw( 6 ) << nowMs.count()
-        << std::put_time( &currentLocalTime, "%z" );
-    std::string result = nowSs.str();
-    /* somewhat special - maybe see systemtimeformatter */
-    result.replace( result.end() - 2, result.end() - 2, ":" );
-    return result;
-  }
-
-  /**
    * @brief The Logger class.
    * @note Not pure virtual to use as /dev/null logger.
    * @author Florian Becker <fb\@vxapps.com> (VX APPS)
@@ -154,31 +122,5 @@ namespace vx {
      * @param _message   Message to log.
      */
     virtual void log( std::string_view _message ) noexcept;
-
-    inline Logger &operator<<( int _input ) {
-
-      log( std::to_string( _input ) );
-      return *this;
-    }
-
-    inline Logger &operator<<( double _input ) {
-
-      log( std::to_string( _input ) );
-      return *this;
-    }
-
-    inline Logger &operator<<( std::string_view _input ) {
-
-      log( _input );
-      return *this;
-    }
-
-    inline Logger &operator<<( const std::vector<int> &_input ) {
-
-      std::stringstream result {};
-      std::copy( std::begin( _input ), std::end( _input ), std::ostream_iterator<double>( result, " " ) );
-      log( result.str() );
-      return *this;
-    }
   };
 }
