@@ -249,15 +249,14 @@ namespace vx::logger {
 
       Ratio ratio;
       std::string_view literal {};
-      const std::milli milli;
-      const std::micro micro;
-      const std::nano nano;
-      if ( ratio.num == 3600 && ratio.den == 1 ) { literal = "h"; }
-      else if ( ratio.num == 60 && ratio.den == 1 ) { literal = "min"; }
-      else if ( ratio.num == 1 && ratio.den == 1 ) { literal = "s"; }
-      else if ( ratio.num == milli.num && ratio.den == milli.den ) { literal = "ms"; }
-      else if ( ratio.num == micro.num && ratio.den == micro.den ) { literal = "us"; }
-      else if ( ratio.num == nano.num && ratio.den == nano.den ) { literal = "ns"; }
+      constexpr int hourInSeconds = 3600;
+      constexpr int minuteInSesonds = 60;
+      if ( ratio.num == std::ratio<hourInSeconds, 1>::num && ratio.den == std::ratio<hourInSeconds, 1>::den ) { literal = "h"; }
+      else if ( ratio.num == std::ratio<minuteInSesonds, 1>::num && ratio.den == std::ratio<minuteInSesonds, 1>::den ) { literal = "min"; }
+      else if ( ratio.num == std::ratio<1, 1>::num && ratio.den == std::ratio<1, 1>::den ) { literal = "s"; }
+      else if ( ratio.num == std::milli::num && ratio.den == std::milli::den ) { literal = "ms"; }
+      else if ( ratio.num == std::micro::num && ratio.den == std::micro::den ) { literal = "us"; }
+      else if ( ratio.num == std::nano::num && ratio.den == std::nano::den ) { literal = "ns"; }
 
       m_stream << _input.count() << ' ';
 

@@ -36,8 +36,6 @@
 /* modern.cpp.logger */
 #include "Logger.h"
 
-using vx::logger::Path;
-
 using namespace std::literals;
 
 class MyClass {
