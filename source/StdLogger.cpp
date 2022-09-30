@@ -48,6 +48,8 @@
 
 namespace vx {
 
+  using timestamp::Precision;
+
   /**
    * @brief Reserved overhead for new log entry.
    */
@@ -69,7 +71,7 @@ namespace vx {
 
     std::string output {};
     output.reserve( _message.size() + overhead );
-    output.append( timestampIso8601( Precision::MicroSeconds ) );
+    output.append( timestamp::iso8601( Precision::MicroSeconds ) );
 
     std::string severity( magic_enum::enum_name( _severity ) );
     string_utils::toUpper( severity );

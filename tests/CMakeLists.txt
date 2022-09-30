@@ -28,7 +28,5 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(tests)
-
 add_subdirectory(simple)
 #add_subdirectory(threads)

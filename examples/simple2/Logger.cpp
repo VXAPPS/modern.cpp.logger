@@ -55,6 +55,8 @@
 
 namespace vx::logger {
 
+  using timestamp::Precision;
+
 #ifdef _WIN32
   class WindowsBuffer : public std::stringbuf {
 
@@ -182,7 +184,7 @@ namespace vx::logger {
 
   void Logger::printTimestamp() {
 
-    m_stream << vx::timestampIso8601( Precision::MilliSeconds ) << ' ';
+    m_stream << timestamp::iso8601( Precision::MilliSeconds ) << ' ';
   }
 
   void Logger::printSeverity( Severity _severity ) {

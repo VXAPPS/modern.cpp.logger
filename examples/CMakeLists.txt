@@ -28,8 +28,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-project(examples)
-
 add_subdirectory(configuration)
 add_subdirectory(simple)
 add_subdirectory(simple2)

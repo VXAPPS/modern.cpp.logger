@@ -30,29 +30,15 @@
 
 /* stl header */
 #include <format>
-#include <functional>
 #include <iostream>
 #include <memory> // std::unique_ptr
-
-/* magic_enum */
-#include <magic_enum.hpp>
 
 /* modern.cpp.logger */
 #include "Logger.h"
 
-//using debug = vx::logger::Logger( vx::logger::Severity::Debug );
+using vx::logger::Path;
 
-using vx::logger::Logger;
-//using myLogger = vx::logger::Logger;
-
-/*namespace vx::logger {
-
-  std::function<( Logger & ( Logger ) )> f_add_display = &Logger::debug(); //::debug();
-}*/
-
-//using myInt = int;
-
-using namespace magic_enum::ostream_operators;
+using namespace std::literals;
 
 class MyClass {
 
@@ -78,93 +64,7 @@ private:
   std::string_view m_something {};
 };
 
-/* template <int... I>
-struct indices {
-  static constexpr int N = sizeof...( I );
-};
-
-typedef indices<0, 2, 3> IS;
-
-template <class Tuple, int... Is>
-static void magic( Tuple &&args, indices<Is...> ) {
-  //    B<IS::N>::zoo(std::get<Is>(std::forward<Tuple>(args))...);
-  for ( std::size_t x = 0; x < std::tuple_size<Tuple>(); x++ ) {
-    std::cout << std::get<0>( args ) << std::endl;
-    std::cout << std::get<1>( args ) << std::endl;
-    std::cout << std::get<2>( args ) << std::endl;
-  }
-}
-
-template <typename... Args>
-static void foo( Args... args ) {
-  //    static_assert(sizeof...(args) == M, "");
-  magic( std::forward_as_tuple( args... ), IS {} );
-} */
-
-/* namespace cxx20 {
-  enum class long_long_long_name { x,
-                                   y };
-
-  static void using_enum_demo() {
-    std::cout << "C++20 `using enum`: __cpp_using_enum == ";
-    switch ( auto rnd = [] { return long_long_long_name::x; }; rnd() ) {
-#if defined( __cpp_using_enum )
-      using enum long_long_long_name;
-      case x:
-        std::cout << __cpp_using_enum << "; x\n";
-        break;
-      case y:
-        std::cout << __cpp_using_enum << "; y\n";
-        break;
-#else
-      case long_long_long_name::x:
-        std::cout << "?; x\n";
-        break;
-      case long_long_long_name::y:
-        std::cout << "?; y\n";
-        break;
-#endif
-    }
-  }
-} */
-
 int main() {
-
-  //  cxx20::using_enum_demo();
-  //  std::function<void( Foo3 * )> f2 = &Foo3::doSomething;
-  //  std::function<int( Foo3 *, int )> f3 = &Foo3::doSomething2;
-  //  auto f = Foo {};
-
-  std::function<void( MyClass * )> f4 = &MyClass::test;
-
-  auto legger = std::mem_fn( &Logger::logger );
-  legger( Logger() ) << 1 << 2 << "3";
-  //  std::function<Logger &( void )> g = []() { return Logger().loggerWithoutDefine(); };
-  //  log2() << 1 << 2 << 3 << 4;
-
-  //  std::function<void( Logger * )> lug = &Logger::printTimestamp;
-  //  std::function<Logger &( Logger * )> deb = &Logger::loggerWithoutDefine;
-  //  deb( Logger() ) << 1 << 2 << "3";
-  //  qwe = &vx::logger::Logger::debug();
-
-  //  auto greet = std::mem_fn( &Foo::display_greeting );
-  //  greet( f );
-
-  //  auto print_num = std::mem_fn( &Foo::display_number );
-  //  print_num( f, 42 );
-
-  //  vx::logger::Logger leg;
-  //  auto greet2 = std::mem_fn( &Foo3::doSomething() );
-  //  using func = std::function<myLogger &( myLogger & MyLogger )>;
-  //  func f_add_display = &myLogger::printTimestamp();
-
-  // Store member function binding
-  //  MyClass myClass;
-  //  auto callable = std::mem_fn( &MyClass::test() );
-
-  // Call with late supplied 'this'
-  //  MyClass myInst;
-  //  callable( &leg );
 
   constexpr int aInt = 17;
   constexpr int bInt = 12;
@@ -264,14 +164,28 @@ int main() {
   logInfo() << pathNames;
 
   //  fmt::format("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
-  //  log() << std::format( "{}", vec );
+  //  logInfo() << std::format( "{}", vec );
   logInfo() << std::format( "int: {0:d};  hex: {0:#x};  oct: {0:#o};  bin: {0:#b}", theAnswerOfEverything );
 
   const std::optional<std::string> opti = "myOptional";
   const std::optional<std::string> optiNull = std::nullopt;
   logInfo() << opti << optiNull << std::make_optional<std::vector<char>>( { 'a', 'b', 'c' } );
 
-  //  log() << vx::logger::SourceLocation::Absolute;
+  logInfo() << 2h;
+  logInfo() << 10min;
+  logInfo() << 5s;
+  logInfo() << 100ms;
+  logInfo() << 100us;
+  logInfo() << 100ns;
+
+  const auto now = std::chrono::system_clock::now();
+  const auto nowAsTimeT = std::chrono::system_clock::to_time_t( now );
+  logInfo() << nowAsTimeT;
+
+  const auto nowMilli = std::chrono::duration_cast<std::chrono::milliseconds>( now.time_since_epoch() ) % 1000;
+  logInfo() << nowMilli;
+
+  logInfo() << Path::Absolute;
 
   return EXIT_SUCCESS;
 }

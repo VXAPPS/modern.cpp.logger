@@ -33,12 +33,14 @@
 /* stl header */
 #include <any>
 #include <array>
+#include <chrono>
 #include <functional>
 #include <iomanip>
 #include <list>
 #include <map>
 #include <optional>
 #include <ostream>
+#include <ratio>
 #include <set>
 #if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 16
   #include <source_location>
@@ -58,12 +60,12 @@
 #include <magic_enum.hpp>
 
 /**
- * @todo Configuration LoggerConfiguration::instance oder ähnliches
- * @todo API Dokumentation
- * @todo Switch to filename, /dev/null at runtime
- * @todo Severity eingrenzen - bsp: nur ab error ausgaben
+ * @todo Types with every layer !!!
+ * @todo Switch to filename, /dev/null at runtime !!!!
  * @todo Interface für LogFormat bereitstellen - wie sieht ein log eintrag aus, in welchem format wird ein eintrag ausgegeben (z.B. als xml)
- * @todo Types with every layer
+ * @todo Configuration LoggerConfiguration::instance oder ähnliches
+ * @todo Severity eingrenzen - bsp: nur ab error ausgaben
+ * @todo API Dokumentation
  * @todo syslog
  * @todo Windows Log
  * @todo macOS log
@@ -242,19 +244,55 @@ namespace vx::logger {
       return maybeSpace();
     }
 
+    template <typename T, typename Ratio = std::ratio<1>>
+    inline Logger &operator<<( const std::chrono::duration<T, Ratio> &_input ) {
+
+      Ratio ratio;
+      std::string_view literal {};
+      const std::milli milli;
+      const std::micro micro;
+      const std::nano nano;
+      if ( ratio.num == 3600 && ratio.den == 1 ) { literal = "h"; }
+      else if ( ratio.num == 60 && ratio.den == 1 ) { literal = "min"; }
+      else if ( ratio.num == 1 && ratio.den == 1 ) { literal = "s"; }
+      else if ( ratio.num == milli.num && ratio.den == milli.den ) { literal = "ms"; }
+      else if ( ratio.num == micro.num && ratio.den == micro.den ) { literal = "us"; }
+      else if ( ratio.num == nano.num && ratio.den == nano.den ) { literal = "ns"; }
+
+      m_stream << _input.count() << ' ';
+
+      if ( literal.empty() ) { m_stream << "unsupported " << '(' << ratio.num << '/' << ratio.den << ')'; }
+      else { m_stream << literal; }
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::time_t _input ) {
+
+      struct std::tm currentLocalTime {};
+
+#ifdef _WIN32
+      localtime_s( &currentLocalTime, &_input );
+#else
+      localtime_r( &_input, &currentLocalTime );
+#endif
+
+      m_stream << std::put_time( &currentLocalTime, "%c %Z" );
+      return maybeSpace();
+    }
+
     inline Logger &operator<<( const void *_input ) {
 
       _input == nullptr ? m_stream << "(nullptr)" : m_stream << '(' << _input << ')';
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::nullptr_t ) {
+    inline Logger &operator<<( [[maybe_unused]] std::nullptr_t _input ) {
 
       m_stream << "(nullptr_t)";
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::nullopt_t ) {
+    inline Logger &operator<<( [[maybe_unused]] std::nullopt_t _input ) {
 
       m_stream << "(nullopt_t)";
       return maybeSpace();
@@ -599,7 +637,7 @@ namespace vx::logger {
     }
     else {
 
-      _logger << "Unregistered type:" << demangle( _any.type().name() );
+      _logger << "unregistered: " << demangle( _any.type().name() );
     }
   }
 
@@ -616,8 +654,10 @@ namespace vx::logger {
     return _logger.maybeSpace();
   }
 
+  /* MAGIC ENUM */
   template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
-  inline Logger &operator<<( Logger &_logger, E value ) {
+  inline Logger &operator<<( Logger &_logger,
+                             E value ) {
 
     using D = std::decay_t<E>;
     using U = magic_enum::underlying_type_t<D>;
@@ -641,14 +681,6 @@ namespace vx::logger {
     return _logger.maybeSpace();
   }
 }
-
-inline vx::logger::Logger &log2() {
-
-  auto legger = std::mem_fn( &vx::logger::Logger::logger );
-  return legger( vx::logger::Logger( vx::logger::Severity::Debug ) );
-}
-
-//inline vx::logger::Logger &log2() { vx::logger::Logger( vx::logger::Severity::Debug ) logger; return &logger; }
 
 #define logVerbose vx::logger::Logger( vx::logger::Severity::Verbose ).logger
 #define logDebug vx::logger::Logger( vx::logger::Severity::Debug ).logger
