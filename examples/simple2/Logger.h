@@ -100,8 +100,9 @@ namespace vx::logger {
    */
   enum class Flags {
 
-    Space, /**< Auto spaces. */
-    Quotes /**< Auto qoutes. */
+    Space,  /**< Auto spaces. */
+    Quotes, /**< Auto qoutes. */
+    Types   /**< Auto types. */
   };
 
   /**
@@ -117,9 +118,17 @@ namespace vx::logger {
   class Logger {
 
   public:
+    /**
+     * @brief Default constructor for Logger.
+     * @param _severity   Severity type.
+     * @param _location   Source location informations.
+     */
     explicit Logger( Severity _severity = Severity::Debug,
                      const std::source_location &_location = std::source_location::current() );
 
+    /**
+     * @brief Default destructor for Logger.
+     */
     ~Logger();
 
     /**
@@ -145,9 +154,6 @@ namespace vx::logger {
     Logger &operator=( Logger && ) = delete;
 
     Logger &logger() { return *this; }
-
-    void printTimestamp();
-    void printSeverity( Severity _severity );
 
     void printString( std::string_view _input );
 
@@ -369,6 +375,9 @@ namespace vx::logger {
 
     std::source_location m_location;
     std::ostream m_stream;
+
+    std::string timestamp() const;
+    std::string severity( Severity _severity ) const;
   };
 
   template <typename T>
@@ -579,7 +588,7 @@ namespace vx::logger {
   #pragma clang diagnostic ignored "-Wexit-time-destructors"
   #pragma clang diagnostic ignored "-Wglobal-constructors"
 #endif
-  static std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>> visitors {
+  const std::unordered_map<std::type_index, std::function<void( Logger &_logger, const std::any & )>> visitors {
 
     add<bool>( []( Logger &_logger, bool _input ) { _logger << _input; } ),
     add<char>( []( Logger &_logger, char _input ) { _logger << _input; } ),
