@@ -61,7 +61,7 @@ namespace vx::logger {
   class WindowsBuffer : public std::stringbuf {
 
   public:
-    virtual int sync() {
+    virtual int sync() override {
 
       return 0;
     }

@@ -42,11 +42,7 @@
 #include <ostream>
 #include <ratio>
 #include <set>
-#if defined __GNUC__ && __GNUC__ >= 11 || defined _MSC_VER && _MSC_VER >= 1930 || defined __clang__ && __clang_major__ >= 16
-  #include <source_location>
-#else
-  #include <source_location.hpp>
-#endif
+#include <source_location.hpp>
 #include <string>
 #include <string_view>
 #include <tuple>
