@@ -60,14 +60,7 @@
 #include <Singleton.h>
 
 /**
- * @todo Types with every layer !!!
- * @todo Switch to filename, /dev/null at runtime !!!!
- * @todo Interface für LogFormat bereitstellen - wie sieht ein log eintrag aus, in welchem format wird ein eintrag ausgegeben (z.B. als xml)
- * @todo Severity eingrenzen - bsp: nur ab error ausgaben
- * @todo API Dokumentation
- * @todo syslog
- * @todo Windows Log
- * @todo macOS log
+ * @brief vx (VX APPS) namespace.
  */
 namespace vx::logger {
 
@@ -108,23 +101,29 @@ namespace vx::logger {
   class Configuration : public Singleton<Configuration> {
 
   public:
-    inline std::string filename() const { return m_filename; }
+    [[nodiscard]] inline std::string filename() const { return m_filename; }
 
     void setFilename( const std::string &_filename ) { m_filename = _filename; }
 
     void setFlags() {}
 
-    inline bool autoSpace() const { return m_autoSpace; }
+    [[nodiscard]] inline bool autoSpace() const { return m_autoSpace; }
 
     inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
 
-    inline bool autoQuotes() const { return m_autoQuotes; }
+    [[nodiscard]] inline bool autoQuotes() const { return m_autoQuotes; }
 
     inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
+
+    [[nodiscard]] inline Severity avoidLogBelow() { return m_avoidLogBelow; }
+
+    inline void setAvoidLogBelow( Severity _severity ) { m_avoidLogBelow = _severity; }
 
   private:
     bool m_autoSpace = true;
     bool m_autoQuotes = true;
+
+    Severity m_avoidLogBelow = Severity::Warning;
     std::string m_filename {};
   };
 
@@ -172,11 +171,11 @@ namespace vx::logger {
 
     void printString( std::string_view _input );
 
-    inline bool autoSpace() const { return m_autoSpace; }
+    [[nodiscard]] inline bool autoSpace() const { return m_autoSpace; }
 
     inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
 
-    inline bool autoQuotes() const { return m_autoQuotes; }
+    [[nodiscard]] inline bool autoQuotes() const { return m_autoQuotes; }
 
     inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
 
@@ -348,7 +347,9 @@ namespace vx::logger {
 
       if ( _current == _pos ) {
 
-        logger() << std::get<_pos>( _tuple );
+        const bool saveState = autoSpace();
+        nospace() << std::get<_pos>( _tuple );
+        setAutoSpace( saveState );
       }
       else {
 
@@ -377,7 +378,9 @@ namespace vx::logger {
 
         try {
 
-          logger() << std::get<_pos>( _variant );
+          const bool saveState = autoSpace();
+          nospace() << std::get<_pos>( _variant );
+          setAutoSpace( saveState );
         }
         catch ( [[maybe_unused]] const std::bad_variant_access &_exception ) {
 
@@ -426,13 +429,16 @@ namespace vx::logger {
                              const std::optional<T> &_optional ) {
 
     _logger.stream() << demangleExtreme( typeid( _optional ).name() ) << ' ';
+    //    _logger << _optional.value_or( std::nullopt );
     if ( _optional ) {
 
-      _logger << *_optional;
+      const bool saveState = _logger.autoSpace();
+      _logger.nospace() << *_optional;
+      _logger.setAutoSpace( saveState );
     }
     else {
 
-      _logger << "(nullopt)";
+      _logger.stream() << "(nullopt)";
     }
     return _logger.maybeSpace();
   }
@@ -441,7 +447,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::pair<Key, T> &_pair ) {
 
-    _logger.stream() << demangleExtreme( typeid( _pair ).name() ) << ' ' << '{';
+    _logger.stream() << /* demangleExtreme( typeid( _pair ).name() ) << ' ' << */ '{';
     const bool saveState = _logger.autoSpace();
     _logger.nospace() << _pair.first;
     _logger.stream() << ',' << ' ';
@@ -465,7 +471,9 @@ namespace vx::logger {
     for ( const auto &value : _list ) {
 
       checkComma();
-      _logger << value;
+      const bool saveState = _logger.autoSpace();
+      _logger.nospace() << value;
+      _logger.setAutoSpace( saveState );
     }
     _logger.stream() << '}';
     return _logger.maybeSpace();
@@ -515,9 +523,11 @@ namespace vx::logger {
 
       checkComma();
       _logger.stream() << '{';
-      _logger << key;
+      const bool saveState = _logger.autoSpace();
+      _logger.nospace() << key;
       _logger.stream() << ',' << ' ';
       _logger << value;
+      _logger.setAutoSpace( saveState );
       _logger.stream() << '}';
     }
     _logger.stream() << '}';
@@ -667,7 +677,7 @@ namespace vx::logger {
     }
     else {
 
-      _logger << "unregistered: " << demangleExtreme( _any.type().name() );
+      _logger.stream() << "unregistered: " << demangleExtreme( _any.type().name() );
     }
   }
 
@@ -680,34 +690,36 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::any &_input ) {
 
-    visit( _logger, _input );
+    const bool saveState = _logger.autoSpace();
+    visit( _logger.nospace(), _input );
+    _logger.setAutoSpace( saveState );
     return _logger.maybeSpace();
   }
 
   /* MAGIC ENUM */
   template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
   inline Logger &operator<<( Logger &_logger,
-                             E value ) {
+                             E _value ) {
 
     using D = std::decay_t<E>;
     using U = magic_enum::underlying_type_t<D>;
 
     if constexpr ( magic_enum::detail::supported<D>::value ) {
 
-      if ( const auto name = magic_enum::enum_flags_name<D>( value ); !name.empty() ) {
+      if ( const auto name = magic_enum::enum_flags_name<D>( _value ); !name.empty() ) {
 
-        _logger << name;
+        _logger.stream() << name;
         return _logger.maybeSpace();
       }
     }
-    _logger << static_cast<U>( value );
+    _logger.stream() << static_cast<U>( _value );
     return _logger.maybeSpace();
   }
 
   template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
-  inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> value ) {
+  inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> _value ) {
 
-    value ? _logger << *value : _logger << "(nullopt)";
+    _value ? _logger << *_value : _logger.stream() << "(nullopt)";
     return _logger.maybeSpace();
   }
 }

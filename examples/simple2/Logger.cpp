@@ -64,13 +64,18 @@ namespace vx::logger {
 
   Logger::Logger( Severity _severity,
                   const std::source_location &_location )
-      : m_severity( _severity ),
-        m_location( _location ),
+    : m_severity( _severity ),
+      m_location( _location ),
 #ifdef _WIN32
-        m_stream( new WindowsBuffer() ) {
+      m_stream( new WindowsBuffer() ) {
 #else
-        m_stream( {} ) {
+      m_stream( {} ) {
 #endif
+
+    if ( Configuration::instance().avoidLogBelow() > _severity ) {
+
+      return;
+    }
 
     if ( _severity >= Severity::Error ) {
 
