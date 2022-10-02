@@ -151,6 +151,8 @@ namespace vx::logger {
 
     Logger &logger() { return *this; }
 
+    void printChar( char _input );
+
     void printString( std::string_view _input );
 
     inline bool autoSpace() const { return m_autoSpace; }
@@ -160,6 +162,8 @@ namespace vx::logger {
     inline bool autoQuotes() const { return m_autoQuotes; }
 
     inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
+
+    inline void flush() { m_stream.flush(); }
 
     inline Logger &space() {
 
@@ -183,6 +187,8 @@ namespace vx::logger {
       return *this;
     }
 
+    std::ostream &stream() { return m_stream; }
+
     inline Logger &operator<<( bool _input ) {
 
       m_stream << ( _input ? "true" : "false" );
@@ -191,7 +197,7 @@ namespace vx::logger {
 
     inline Logger &operator<<( char _input ) {
 
-      m_stream << _input;
+      printChar( _input );
       return maybeSpace();
     }
 
@@ -210,6 +216,18 @@ namespace vx::logger {
 #endif
 
     inline Logger &operator<<( std::size_t _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::int64_t _input ) {
+
+      m_stream << _input;
+      return maybeSpace();
+    }
+
+    inline Logger &operator<<( std::uint64_t _input ) {
 
       m_stream << _input;
       return maybeSpace();
@@ -299,8 +317,6 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    std::ostream &stream() { return m_stream; }
-
     template <typename Tuple>
     void get_impl( [[maybe_unused]] std::size_t _current,
                    [[maybe_unused]] const Tuple &_tuple,
@@ -380,19 +396,15 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::optional<T> &_optional ) {
 
-    const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << "std::optional" /* << demangle( typeid( T ).name() ) << '>' */ << ' ';
-    if ( !_optional ) {
-
-      _logger << "(nullopt)";
-    }
-    _logger.setAutoQuotes( true );
+    _logger.stream() << "std::optional" /* << demangle( typeid( T ).name() ) << '>' */ << ' ';
     if ( _optional ) {
 
       _logger << *_optional;
     }
-    _logger.setAutoSpace( saveState );
+    else {
+
+      _logger << "(nullopt)";
+    }
     return _logger.maybeSpace();
   }
 
@@ -400,13 +412,13 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::pair<Key, T> &_pair ) {
 
+    _logger.stream() << "std::pair<" << demangle( typeid( Key ).name() ) << ',' << ' ' << demangle( typeid( T ).name() ) << '>' << ' ' << '{';
     const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << "std::pair<" << demangle( typeid( Key ).name() ) << ',' << ' ' << demangle( typeid( T ).name() ) << '>' << ' ' << '{';
-    _logger.setAutoQuotes( true );
-    _logger << _pair.first << ',' << ' ' << _pair.second;
-    _logger << '}';
+    _logger.nospace() << _pair.first;
+    _logger.stream() << ',' << ' ';
+    _logger << _pair.second;
     _logger.setAutoSpace( saveState );
+    _logger.stream() << '}';
     return _logger.maybeSpace();
   }
 
@@ -417,21 +429,17 @@ namespace vx::logger {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
-    func printComma = [ &_logger ]() { _logger << ',' << ' '; };
+    func printComma = [ &_logger ]() { _logger.stream() << ',' << ' '; };
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << _what << ' ' << '{';
-    _logger.setAutoQuotes( true );
+    _logger.stream() << _what << ' ' << '{';
     for ( const auto &value : _list ) {
 
       checkComma();
       _logger << value;
     }
-    _logger << '}';
-    _logger.setAutoSpace( saveState );
+    _logger.stream() << '}';
     return _logger.maybeSpace();
   }
 
@@ -464,27 +472,28 @@ namespace vx::logger {
   }
 
   template <typename T>
+
   inline Logger &printMap( Logger &_logger,
                            const std::string &_what,
                            const T &_map ) {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
-    func printComma = [ &_logger ]() { _logger << ',' << ' '; };
+    func printComma = [ &_logger ]() { _logger.stream() << ',' << ' '; };
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << _what << ' ' << '{';
-    _logger.setAutoQuotes( true );
+    _logger.stream() << _what << ' ' << '{';
     for ( const auto &[ key, value ] : _map ) {
 
       checkComma();
-      _logger << '{' << key << ',' << ' ' << value << '}';
+      _logger.stream() << '{';
+      _logger << key;
+      _logger.stream() << ',' << ' ';
+      _logger << value;
+      _logger.stream() << '}';
     }
-    _logger << '}';
-    _logger.setAutoSpace( saveState );
+    _logger.stream() << '}';
     return _logger.maybeSpace();
   }
 
@@ -516,22 +525,18 @@ namespace vx::logger {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
-    func printComma = [ &_logger ]() { _logger << ',' << ' '; };
+    func printComma = [ &_logger ]() { _logger.stream() << ',' << ' '; };
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << _what << ' ' << '{';
-    _logger.setAutoQuotes( true );
+    _logger.stream() << _what << ' ' << '{';
     std::size_t tupleSize = std::tuple_size_v<T>;
     for ( std::size_t pos = 0; pos < tupleSize; pos++ ) {
 
       checkComma();
       _logger.get( pos, _tuple );
     }
-    _logger << '}';
-    _logger.setAutoSpace( saveState );
+    _logger.stream() << '}';
     return _logger.maybeSpace();
   }
 
@@ -547,16 +552,12 @@ namespace vx::logger {
                                const std::string &_what,
                                const T &_variant ) {
 
-    const bool saveState = _logger.autoSpace();
-    _logger.setAutoQuotes( false );
-    _logger.nospace() << _what << ' ';
-    _logger.setAutoQuotes( true );
+    _logger.stream() << _what << ' ';
     std::size_t variantSize = std::variant_size_v<T>;
     for ( std::size_t pos = 0; pos < variantSize; pos++ ) {
 
       _logger.getV( pos, _variant );
     }
-    _logger.setAutoSpace( saveState );
     return _logger.maybeSpace();
   }
 

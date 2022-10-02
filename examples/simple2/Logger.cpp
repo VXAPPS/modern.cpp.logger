@@ -180,6 +180,12 @@ namespace vx::logger {
   Logger::~Logger() {
 
     m_stream << std::endl;
+    m_stream.flush();
+  }
+
+  void Logger::printChar( char _input ) {
+
+    m_autoQuotes ? m_stream << "'" << _input << "'" : m_stream << _input;
   }
 
   void Logger::printString( std::string_view _input ) {

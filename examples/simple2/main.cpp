@@ -163,7 +163,7 @@ int main() {
 
   //  fmt::format("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
   //  logInfo() << std::format( "{}", vec );
-  logInfo() << std::format( "int: {0:d};  hex: {0:#x};  oct: {0:#o};  bin: {0:#b}", theAnswerOfEverything );
+  logInfo().stream() << std::format( "int: {0:d}; hex: {0:#x}; oct: {0:#o}; bin: {0:#b}", theAnswerOfEverything );
 
   const std::optional<std::string> opti = "myOptional";
   const std::optional<std::string> optiNull = std::nullopt;
