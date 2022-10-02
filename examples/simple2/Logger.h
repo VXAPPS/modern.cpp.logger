@@ -55,11 +55,14 @@
 /* magic_enum */
 #include <magic_enum.hpp>
 
+/* modern.cpp.core */
+#include <Demangle.h>
+#include <Singleton.h>
+
 /**
  * @todo Types with every layer !!!
  * @todo Switch to filename, /dev/null at runtime !!!!
  * @todo Interface für LogFormat bereitstellen - wie sieht ein log eintrag aus, in welchem format wird ein eintrag ausgegeben (z.B. als xml)
- * @todo Configuration LoggerConfiguration::instance oder ähnliches
  * @todo Severity eingrenzen - bsp: nur ab error ausgaben
  * @todo API Dokumentation
  * @todo syslog
@@ -67,16 +70,6 @@
  * @todo macOS log
  */
 namespace vx::logger {
-
-  /**
-   * @brief demangle
-   * @param _name  R
-   * @return R
-   */
-  std::string demangle( const std::string &_name );
-
-  // TODO(FB): Write extreme demangle function.
-  //  std::string demangleExtreme( const std::string &_typeInfo );
 
   /**
    * @brief The Severity enum.
@@ -96,6 +89,7 @@ namespace vx::logger {
    */
   enum class Flags {
 
+    None,   /**< No flags. */
     Space,  /**< Auto spaces. */
     Quotes, /**< Auto qoutes. */
     Types   /**< Auto types. */
@@ -109,6 +103,29 @@ namespace vx::logger {
     Absolute, /**< Complete path. */
     Relative, /**< Absolute path to project. */
     Filename  /**< Only the filename. */
+  };
+
+  class Configuration : public Singleton<Configuration> {
+
+  public:
+    inline std::string filename() const { return m_filename; }
+
+    void setFilename( const std::string &_filename ) { m_filename = _filename; }
+
+    void setFlags() {}
+
+    inline bool autoSpace() const { return m_autoSpace; }
+
+    inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
+
+    inline bool autoQuotes() const { return m_autoQuotes; }
+
+    inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
+
+  private:
+    bool m_autoSpace = true;
+    bool m_autoQuotes = true;
+    std::string m_filename {};
   };
 
   class Logger {
@@ -221,6 +238,7 @@ namespace vx::logger {
       return maybeSpace();
     }
 
+#ifdef __APPLE__
     inline Logger &operator<<( std::int64_t _input ) {
 
       m_stream << _input;
@@ -232,6 +250,7 @@ namespace vx::logger {
       m_stream << _input;
       return maybeSpace();
     }
+#endif
 
     inline Logger &operator<<( float _input ) {
 
@@ -396,7 +415,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::optional<T> &_optional ) {
 
-    _logger.stream() << "std::optional" /* << demangle( typeid( T ).name() ) << '>' */ << ' ';
+    _logger.stream() << demangleExtreme( typeid( _optional ).name() ) << ' ';
     if ( _optional ) {
 
       _logger << *_optional;
@@ -412,7 +431,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::pair<Key, T> &_pair ) {
 
-    _logger.stream() << "std::pair<" << demangle( typeid( Key ).name() ) << ',' << ' ' << demangle( typeid( T ).name() ) << '>' << ' ' << '{';
+    _logger.stream() << demangleExtreme( typeid( _pair ).name() ) << ' ' << '{';
     const bool saveState = _logger.autoSpace();
     _logger.nospace() << _pair.first;
     _logger.stream() << ',' << ' ';
@@ -447,28 +466,28 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::array<T, N> &_array ) {
 
-    return printList( _logger, "std::array<" + demangle( typeid( T ).name() ) + ", " + std::to_string( N ) + ">", _array );
+    return printList( _logger, demangleExtreme( typeid( _array ).name() ), _array );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::list<T, Alloc> &_list ) {
 
-    return printList( _logger, "std::list<" + demangle( typeid( T ).name() ) + ">", _list );
+    return printList( _logger, demangleExtreme( typeid( _list ).name() ), _list );
   }
 
   template <typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::set<T, Compare, Alloc> &_set ) {
 
-    return printList( _logger, "std::set<" + demangle( typeid( T ).name() ) + ">", _set );
+    return printList( _logger, demangleExtreme( typeid( _set ).name() ), _set );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::vector<T, Alloc> &_vector ) {
 
-    return printList( _logger, "std::vector<" + demangle( typeid( T ).name() ) + ">", _vector );
+    return printList( _logger, demangleExtreme( typeid( _vector ).name() ), _vector );
   }
 
   template <typename T>
@@ -501,21 +520,21 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::map<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, "std::map<" + demangle( typeid( Key ).name() ) + ", " + demangle( typeid( T ).name() ) + ">", _map );
+    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::multimap<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, "std::multimap<" + demangle( typeid( Key ).name() ) + ", " + demangle( typeid( T ).name() ) + ">", _map );
+    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::unordered_map<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, "std::unordered_map<" + demangle( typeid( Key ).name() ) + ", " + demangle( typeid( T ).name() ) + ">", _map );
+    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
   }
 
   template <typename T>
@@ -544,7 +563,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::tuple<Types...> &_values ) {
 
-    return printTuple( _logger, demangle( typeid( std::tuple<Types...> ).name() ), _values );
+    return printTuple( _logger, demangleExtreme( typeid( std::tuple<Types...> ).name() ), _values );
   }
 
   template <typename T>
@@ -565,7 +584,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::variant<Types...> &_values ) {
 
-    return printVariant( _logger, demangle( typeid( std::variant<Types...> ).name() ), _values );
+    return printVariant( _logger, demangleExtreme( typeid( std::variant<Types...> ).name() ), _values );
   }
 
   template <typename Type, typename Function>
@@ -642,7 +661,7 @@ namespace vx::logger {
     }
     else {
 
-      _logger << "unregistered: " << demangle( _any.type().name() );
+      _logger << "unregistered: " << demangleExtreme( _any.type().name() );
     }
   }
 

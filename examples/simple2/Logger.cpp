@@ -28,11 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* c header */
-#ifndef _WIN32
-  #include <cxxabi.h>
-#endif
-
 /* stl header */
 #include <algorithm>
 #include <iostream> // std::streambuf, std::cout
@@ -40,7 +35,6 @@
 #if defined __GNUC__ && __GNUC__ >= 10 || defined _MSC_VER && _MSC_VER >= 1929 || defined __clang__ && __clang_major__ >= 15
   #include <ranges>
 #endif
-#include <regex>
 #include <sstream>
 
 /* magic enum */
@@ -67,63 +61,6 @@ namespace vx::logger {
     }
   };
 #endif
-
-  std::string demangle( const std::string &_name ) {
-
-    std::string result = _name;
-
-#ifndef _WIN32
-    /**
-     *  0: The demangling operation succeeded.
-     * -1: A memory allocation failiure occurred.
-     * -2: mangled_name is not a valid name under the C++ ABI mangling rules.
-     * -3: One of the arguments is invalid.
-     * */
-    int status = -4;
-
-    const std::unique_ptr<char, void ( * )( void * )> res {
-
-      abi::__cxa_demangle( _name.c_str(), nullptr, nullptr, &status ),
-      std::free
-    };
-
-    if ( status == 0 ) {
-
-      result = res.get();
-    }
-#endif
-
-    // WINDOWS
-    result = std::regex_replace( result, std::regex( "class" ), "" );
-    result = std::regex_replace( result, std::regex( "struct" ), "" );
-    result = std::regex_replace( result, std::regex( "__ptr64" ), "" );
-    //    result = std::regex_replace( result, std::regex( "class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >" ), "std::string" );
-    //    result = std::regex_replace( result, std::regex( "class std::basic_string_view<char,struct std::char_traits<char> >" ), "std::string" );
-
-    // LINUX clang and gcc
-    result = std::regex_replace( result, std::regex( "__cxx11::" ), "" );
-    //    result = std::regex_replace( result, std::regex( "std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
-    //    result = std::regex_replace( result, std::regex( "std::basic_string_view<char, std::char_traits<char> >" ), "std::string_view" );
-
-    // MAC AppleClang
-    result = std::regex_replace( result, std::regex( "__1::" ), "" );
-    //    result = std::regex_replace( result, std::regex( "std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >" ), "std::string" );
-    //    result = std::regex_replace( result, std::regex( "std::__1::basic_string_view<char, std::__1::char_traits<char> >" ), "std::string_view" );
-
-    // All, after general cleanup
-    result = std::regex_replace( result, std::regex( "std::basic_string<char, std::char_traits<char>, std::allocator<char> >" ), "std::string" );
-    result = std::regex_replace( result, std::regex( "std::basic_string_view<char, std::char_traits<char> >" ), "std::string_view" );
-
-    // Will result to const char**??? Maybe, have an look at regex documentation...
-    //    result = std::regex_replace( result, std::regex( "char const *" ), "const char *" );
-    //    result = std::regex_replace( result, std::regex( "char const*" ), "const char *" );
-
-    // Remove space before closing bracket - overall valid
-    result = std::regex_replace( result, std::regex( " >" ), ">" );
-    result = string_utils::simplified( result );
-
-    return result;
-  }
 
   Logger::Logger( Severity _severity,
                   const std::source_location &_location )
