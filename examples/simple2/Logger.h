@@ -407,7 +407,17 @@ namespace vx::logger {
     std::source_location m_location;
     std::ostream m_stream;
 
+    /**
+     * @brief Create timestamp.
+     * @return A timestamp.
+     */
     std::string timestamp() const;
+
+    /**
+     * @brief Create severity output.
+     * @param _severity   Which severity to generate?
+     * @return The formatted severity.
+     */
     std::string severity( Severity _severity ) const;
   };
 
@@ -443,7 +453,6 @@ namespace vx::logger {
 
   template <typename List>
   inline Logger &printList( Logger &_logger,
-                            const std::string &_what,
                             const List &_list ) {
 
     using func = std::function<void( void )>;
@@ -452,7 +461,7 @@ namespace vx::logger {
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    _logger.stream() << _what << ' ' << '{';
+    _logger.stream() << demangleExtreme( typeid( _list ).name() ) << ' ' << '{';
     for ( const auto &value : _list ) {
 
       checkComma();
@@ -466,34 +475,33 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::array<T, N> &_array ) {
 
-    return printList( _logger, demangleExtreme( typeid( _array ).name() ), _array );
+    return printList( _logger, _array );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::list<T, Alloc> &_list ) {
 
-    return printList( _logger, demangleExtreme( typeid( _list ).name() ), _list );
+    return printList( _logger, _list );
   }
 
   template <typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::set<T, Compare, Alloc> &_set ) {
 
-    return printList( _logger, demangleExtreme( typeid( _set ).name() ), _set );
+    return printList( _logger, _set );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::vector<T, Alloc> &_vector ) {
 
-    return printList( _logger, demangleExtreme( typeid( _vector ).name() ), _vector );
+    return printList( _logger, _vector );
   }
 
   template <typename T>
 
   inline Logger &printMap( Logger &_logger,
-                           const std::string &_what,
                            const T &_map ) {
 
     using func = std::function<void( void )>;
@@ -502,7 +510,7 @@ namespace vx::logger {
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    _logger.stream() << _what << ' ' << '{';
+    _logger.stream() << demangleExtreme( typeid( _map ).name() ) << ' ' << '{';
     for ( const auto &[ key, value ] : _map ) {
 
       checkComma();
@@ -520,26 +528,25 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::map<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
+    return printMap( _logger, _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::multimap<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
+    return printMap( _logger, _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
                              const std::unordered_map<Key, T, Compare, Alloc> &_map ) {
 
-    return printMap( _logger, demangleExtreme( typeid( _map ).name() ), _map );
+    return printMap( _logger, _map );
   }
 
   template <typename T>
   inline Logger &printTuple( Logger &_logger,
-                             const std::string &_what,
                              const T &_tuple ) {
 
     using func = std::function<void( void )>;
@@ -548,7 +555,7 @@ namespace vx::logger {
     func noPrint = [ & ]() { checkComma = printComma; };
     checkComma = noPrint;
 
-    _logger.stream() << _what << ' ' << '{';
+    _logger.stream() << demangleExtreme( typeid( _tuple ).name() ) << ' ' << '{';
     std::size_t tupleSize = std::tuple_size_v<T>;
     for ( std::size_t pos = 0; pos < tupleSize; pos++ ) {
 
@@ -563,15 +570,14 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::tuple<Types...> &_values ) {
 
-    return printTuple( _logger, demangleExtreme( typeid( std::tuple<Types...> ).name() ), _values );
+    return printTuple( _logger, _values );
   }
 
   template <typename T>
   inline Logger &printVariant( Logger &_logger,
-                               const std::string &_what,
                                const T &_variant ) {
 
-    _logger.stream() << _what << ' ';
+    _logger.stream() << demangleExtreme( typeid( _variant ).name() ) << ' ';
     std::size_t variantSize = std::variant_size_v<T>;
     for ( std::size_t pos = 0; pos < variantSize; pos++ ) {
 
@@ -584,7 +590,7 @@ namespace vx::logger {
   inline Logger &operator<<( Logger &_logger,
                              const std::variant<Types...> &_values ) {
 
-    return printVariant( _logger, demangleExtreme( typeid( std::variant<Types...> ).name() ), _values );
+    return printVariant( _logger, _values );
   }
 
   template <typename Type, typename Function>

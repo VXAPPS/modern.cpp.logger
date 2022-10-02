@@ -99,7 +99,8 @@ int main() {
 
   logVerbose() << std::make_pair( 1, "hello" );
 
-  //  test_debug() << std::make_any<int>(1) << std::make_any<double>(1.234) << std::make_any<std::string>("hello");
+  logDebug() << std::make_any<int>(1) << std::make_any<double>(1.234) << std::make_any<std::string>("hello");
+
   const std::any blubAny = 1;
   const std::any helo = std::make_any<std::string>( "hello" );
   logDebug() << blubAny << helo << std::make_any<std::vector<int>>( { 1, 2, 3, 4 } );
@@ -161,8 +162,7 @@ int main() {
   constexpr auto pathNames = magic_enum::enum_entries<Path>();
   logInfo() << pathNames;
 
-  //  fmt::format("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
-  //  logInfo() << std::format( "{}", vec );
+//  logInfo() << std::format( "{}", std::vector<char>{'h', 'e', 'l', 'l', 'o'} );
   logInfo().stream() << std::format( "int: {0:d}; hex: {0:#x}; oct: {0:#o}; bin: {0:#b}", theAnswerOfEverything );
 
   const std::optional<std::string> opti = "myOptional";
