@@ -253,13 +253,19 @@ namespace vx::logger {
 
     inline Logger &operator<<( float _input ) {
 
+      std::streamsize saveState = m_stream.precision();
+      m_stream.precision( std::numeric_limits<float>::max_digits10 );
       m_stream << _input;
+      m_stream.precision( saveState );
       return maybeSpace();
     }
 
     inline Logger &operator<<( double _input ) {
 
+      std::streamsize saveState = m_stream.precision();
+      m_stream.precision( std::numeric_limits<double>::max_digits10 );
       m_stream << _input;
+      m_stream.precision( saveState );
       return maybeSpace();
     }
 
