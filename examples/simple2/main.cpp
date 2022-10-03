@@ -140,8 +140,8 @@ int main() {
   constexpr double someDouble = 4.2;
 
   const std::tuple tupl { theAnswerOfEverything, 'a', someDouble }; // Another C++17 feature: class template argument deduction
-  std::apply( []( auto &&...args ) { logDebug() << std::forward_as_tuple( args... ); ( ( logDebug() << args ), ... ); }, tupl );
-  []() { logDebug() << 'a'; logDebug() << 'b'; logDebug() << 'c'; }();
+  std::apply( []( auto &&...args ) { logDebug() << std::forward_as_tuple( args... ); }, tupl );
+  // ( ( logDebug() << args ), ... ); }, tupl );
 
   constexpr auto severities = magic_enum::enum_entries<vx::logger::Path>();
   logFatal() << severities;

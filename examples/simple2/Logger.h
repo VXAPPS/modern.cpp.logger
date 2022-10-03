@@ -327,14 +327,14 @@ namespace vx::logger {
     }
 
     template <typename Tuple>
-    void get_impl( [[maybe_unused]] std::size_t _current,
-                   [[maybe_unused]] const Tuple &_tuple,
-                   [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) noexcept {}
+    void printTupleReal( [[maybe_unused]] std::size_t _current,
+                         [[maybe_unused]] const Tuple &_tuple,
+                         [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) noexcept {}
 
     template <std::size_t _pos, typename Tuple, typename = std::enable_if_t<std::tuple_size<Tuple>::value != _pos>>
-    void get_impl( std::size_t _current,
-                   const Tuple &_tuple,
-                   [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
+    void printTupleReal( std::size_t _current,
+                         const Tuple &_tuple,
+                         [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
 
       if ( _current == _pos ) {
 
@@ -344,26 +344,26 @@ namespace vx::logger {
       }
       else {
 
-        get_impl( _current, _tuple, std::integral_constant<std::size_t, _pos + 1>() );
+        printTupleReal( _current, _tuple, std::integral_constant<std::size_t, _pos + 1>() );
       }
     }
 
     template <typename Tuple>
-    void get( std::size_t _pos,
-              const Tuple &_tuple ) noexcept {
+    void printTuple( std::size_t _pos,
+                     const Tuple &_tuple ) noexcept {
 
-      get_impl( _pos, _tuple, std::integral_constant<std::size_t, 0>() );
+      printTupleReal( _pos, _tuple, std::integral_constant<std::size_t, 0>() );
     }
 
     template <typename Variant>
-    void getV_impl( [[maybe_unused]] std::size_t _current,
-                    [[maybe_unused]] const Variant &_variant,
-                    [[maybe_unused]] typename std::variant_size<Variant>::type _size ) noexcept {}
+    void printVariantReal( [[maybe_unused]] std::size_t _current,
+                           [[maybe_unused]] const Variant &_variant,
+                           [[maybe_unused]] typename std::variant_size<Variant>::type _size ) noexcept {}
 
     template <std::size_t _pos, typename Variant, typename = std::enable_if_t<std::variant_size<Variant>::value != _pos>>
-    void getV_impl( std::size_t _current,
-                    const Variant &_variant,
-                    [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
+    void printVariantReal( std::size_t _current,
+                           const Variant &_variant,
+                           [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
 
       if ( _current == _pos ) {
 
@@ -380,15 +380,15 @@ namespace vx::logger {
       }
       else {
 
-        getV_impl( _current, _variant, std::integral_constant<std::size_t, _pos + 1>() );
+        printVariantReal( _current, _variant, std::integral_constant<std::size_t, _pos + 1>() );
       }
     }
 
     template <typename Variant>
-    void getV( std::size_t _pos,
-               const Variant &_variant ) noexcept {
+    void printVariant( std::size_t _pos,
+                       const Variant &_variant ) noexcept {
 
-      getV_impl( _pos, _variant, std::integral_constant<std::size_t, 0>() );
+      printVariantReal( _pos, _variant, std::integral_constant<std::size_t, 0>() );
     }
 
   private:
@@ -416,8 +416,8 @@ namespace vx::logger {
   };
 
   template <typename T>
-  inline Logger &operator<<( Logger &_logger,
-                             const std::optional<T> &_optional ) noexcept {
+  Logger &operator<<( Logger &_logger,
+                      const std::optional<T> &_optional ) noexcept {
 
     _logger.stream() << demangleExtreme( typeid( _optional ).name() ) << ' ';
     if ( _optional ) {
@@ -434,8 +434,8 @@ namespace vx::logger {
   }
 
   template <typename Key, typename T>
-  inline Logger &operator<<( Logger &_logger,
-                             const std::pair<Key, T> &_pair ) noexcept {
+  Logger &operator<<( Logger &_logger,
+                      const std::pair<Key, T> &_pair ) noexcept {
 
     _logger.stream() << /* demangleExtreme( typeid( _pair ).name() ) << ' ' << */ '{';
     const bool saveState = _logger.autoSpace();
@@ -448,8 +448,8 @@ namespace vx::logger {
   }
 
   template <typename List>
-  inline Logger &printList( Logger &_logger,
-                            const List &_list ) noexcept {
+  Logger &printList( Logger &_logger,
+                     const List &_list ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -498,9 +498,8 @@ namespace vx::logger {
   }
 
   template <typename T>
-
-  inline Logger &printMap( Logger &_logger,
-                           const T &_map ) noexcept {
+  Logger &printMap( Logger &_logger,
+                    const T &_map ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -546,8 +545,8 @@ namespace vx::logger {
   }
 
   template <typename T>
-  inline Logger &printTuple( Logger &_logger,
-                             const T &_tuple ) noexcept {
+  Logger &printTuple( Logger &_logger,
+                      const T &_tuple ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -560,36 +559,48 @@ namespace vx::logger {
     for ( std::size_t pos = 0; pos < tupleSize; pos++ ) {
 
       checkComma();
-      _logger.get( pos, _tuple );
+      _logger.printTuple( pos, _tuple );
     }
     _logger.stream() << '}';
     return _logger.maybeSpace();
   }
 
-  template <typename... Types>
-  inline Logger &operator<<( Logger &_logger,
-                             const std::tuple<Types...> &_values ) noexcept {
+  /* template <typename T>
+  void helper( [[maybe_unused]] Logger &_logger ) noexcept {}
 
+  template <typename T, typename First, typename... Rest>
+  void helper( Logger &_logger ) noexcept {
+
+    _logger << demangleExtreme( typeid( First ).name() );
+    helper<T, Rest...>( _logger );
+  } */
+
+  template <typename... Ts>
+  inline Logger &operator<<( Logger &_logger,
+                             const std::tuple<Ts...> &_values ) noexcept {
+
+    //    helper<void, Ts...>( _logger );
     return printTuple( _logger, _values );
   }
 
   template <typename T>
-  inline Logger &printVariant( Logger &_logger,
-                               const T &_variant ) noexcept {
+  Logger &printVariant( Logger &_logger,
+                        const T &_variant ) noexcept {
 
     _logger.stream() << demangleExtreme( typeid( _variant ).name() ) << ' ';
     std::size_t variantSize = std::variant_size_v<T>;
     for ( std::size_t pos = 0; pos < variantSize; pos++ ) {
 
-      _logger.getV( pos, _variant );
+      _logger.printVariant( pos, _variant );
     }
     return _logger.maybeSpace();
   }
 
-  template <typename... Types>
+  template <typename... Ts>
   inline Logger &operator<<( Logger &_logger,
-                             const std::variant<Types...> &_values ) noexcept {
+                             const std::variant<Ts...> &_values ) noexcept {
 
+    //    helper<void, Ts...>( _logger );
     return printVariant( _logger, _values );
   }
 
@@ -599,7 +610,8 @@ namespace vx::logger {
     return {
 
       std::type_index( typeid( T ) ),
-      [ function = _function ]( Logger &_logger, [[maybe_unused]] const std::any &_any ) {
+      [ function = _function ]( Logger &_logger,
+                                [[maybe_unused]] const std::any &_any ) {
         function( _logger, std::any_cast<const T &>( _any ) );
       }
     };
