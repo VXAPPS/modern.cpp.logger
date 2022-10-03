@@ -63,7 +63,7 @@ namespace vx::logger {
 #endif
 
   Logger::Logger( Severity _severity,
-                  const std::source_location &_location )
+                  const std::source_location &_location ) noexcept
     : m_severity( _severity ),
       m_location( _location ),
 #ifdef _WIN32
@@ -119,28 +119,28 @@ namespace vx::logger {
     }
   }
 
-  Logger::~Logger() {
+  Logger::~Logger() noexcept {
 
     m_stream << std::endl;
     m_stream.flush();
   }
 
-  void Logger::printChar( char _input ) {
+  void Logger::printChar( char _input ) noexcept {
 
     m_autoQuotes ? m_stream << "'" << _input << "'" : m_stream << _input;
   }
 
-  void Logger::printString( std::string_view _input ) {
+  void Logger::printString( std::string_view _input ) noexcept {
 
     m_autoQuotes ? m_stream << std::quoted( _input ) : m_stream << _input;
   }
 
-  std::string Logger::timestamp() const {
+  std::string Logger::timestamp() const noexcept {
 
     return timestamp::iso8601( Precision::MicroSeconds );
   }
 
-  std::string Logger::severity( Severity _severity ) const {
+  std::string Logger::severity( Severity _severity ) const noexcept {
 
     std::string result {};
     std::string severity( magic_enum::enum_name( _severity ) );

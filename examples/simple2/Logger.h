@@ -136,12 +136,12 @@ namespace vx::logger {
      * @param _location   Source location informations.
      */
     explicit Logger( Severity _severity = Severity::Debug,
-                     const std::source_location &_location = std::source_location::current() );
+                     const std::source_location &_location = std::source_location::current() ) noexcept;
 
     /**
      * @brief Default destructor for Logger.
      */
-    ~Logger();
+    ~Logger() noexcept;
 
     /**
      * @brief @~english Delete copy constructor. @~german Entfernt den kopierenden Konstruktor.
@@ -165,36 +165,36 @@ namespace vx::logger {
      */
     Logger &operator=( Logger && ) = delete;
 
-    Logger &logger() { return *this; }
+    Logger &logger() noexcept { return *this; }
 
-    void printChar( char _input );
+    void printChar( char _input ) noexcept;
 
-    void printString( std::string_view _input );
+    void printString( std::string_view _input ) noexcept;
 
-    [[nodiscard]] inline bool autoSpace() const { return m_autoSpace; }
+    [[nodiscard]] inline bool autoSpace() const noexcept { return m_autoSpace; }
 
-    inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
+    inline void setAutoSpace( bool _autoSpace ) noexcept { m_autoSpace = _autoSpace; }
 
-    [[nodiscard]] inline bool autoQuotes() const { return m_autoQuotes; }
+    [[nodiscard]] inline bool autoQuotes() const noexcept { return m_autoQuotes; }
 
-    inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
+    inline void setAutoQuotes( bool _autoQuotes ) noexcept { m_autoQuotes = _autoQuotes; }
 
-    inline void flush() { m_stream.flush(); }
+    inline void flush() noexcept { m_stream.flush(); }
 
-    inline Logger &space() {
+    inline Logger &space() noexcept {
 
       m_autoSpace = true;
       m_stream << ' ';
       return *this;
     }
 
-    inline Logger &nospace() {
+    inline Logger &nospace() noexcept {
 
       m_autoSpace = false;
       return *this;
     }
 
-    inline Logger &maybeSpace() {
+    inline Logger &maybeSpace() noexcept {
 
       if ( m_autoSpace ) {
 
@@ -203,55 +203,55 @@ namespace vx::logger {
       return *this;
     }
 
-    std::ostream &stream() { return m_stream; }
+    inline std::ostream &stream() { return m_stream; }
 
-    inline Logger &operator<<( bool _input ) {
+    inline Logger &operator<<( bool _input ) noexcept {
 
       m_stream << ( _input ? "true" : "false" );
       return maybeSpace();
     }
 
-    inline Logger &operator<<( char _input ) {
+    inline Logger &operator<<( char _input ) noexcept {
 
       printChar( _input );
       return maybeSpace();
     }
 
-    inline Logger &operator<<( int _input ) {
+    inline Logger &operator<<( int _input ) noexcept {
 
       m_stream << _input;
       return maybeSpace();
     }
 
 #if !defined _MSC_VER || defined _MSC_VER && _MSC_VER >= 1920
-    inline Logger &operator<<( unsigned int _input ) {
+    inline Logger &operator<<( unsigned int _input ) noexcept {
 
       m_stream << _input;
       return maybeSpace();
     }
 #endif
 
-    inline Logger &operator<<( std::size_t _input ) {
+    inline Logger &operator<<( std::size_t _input ) noexcept {
 
       m_stream << _input;
       return maybeSpace();
     }
 
 #ifdef __APPLE__
-    inline Logger &operator<<( std::int64_t _input ) {
+    inline Logger &operator<<( std::int64_t _input ) noexcept {
 
       m_stream << _input;
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::uint64_t _input ) {
+    inline Logger &operator<<( std::uint64_t _input ) noexcept {
 
       m_stream << _input;
       return maybeSpace();
     }
 #endif
 
-    inline Logger &operator<<( float _input ) {
+    inline Logger &operator<<( float _input ) noexcept {
 
       std::streamsize saveState = m_stream.precision();
       m_stream.precision( std::numeric_limits<float>::max_digits10 );
@@ -260,7 +260,7 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    inline Logger &operator<<( double _input ) {
+    inline Logger &operator<<( double _input ) noexcept {
 
       std::streamsize saveState = m_stream.precision();
       m_stream.precision( std::numeric_limits<double>::max_digits10 );
@@ -269,27 +269,27 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    inline Logger &operator<<( const char *_input ) {
+    inline Logger &operator<<( const char *_input ) noexcept {
 
       printString( _input );
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::string_view _input ) {
+    inline Logger &operator<<( std::string_view _input ) noexcept {
 
       printString( _input );
       m_stream << 's' << 'v';
       return maybeSpace();
     }
 
-    inline Logger &operator<<( const std::string &_input ) {
+    inline Logger &operator<<( const std::string &_input ) noexcept {
 
       printString( _input );
       return maybeSpace();
     }
 
     template <typename T, typename Ratio = std::ratio<1>>
-    inline Logger &operator<<( const std::chrono::duration<T, Ratio> &_input ) {
+    inline Logger &operator<<( const std::chrono::duration<T, Ratio> &_input ) noexcept {
 
       Ratio ratio;
       std::string_view literal {};
@@ -309,7 +309,7 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::time_t _input ) {
+    inline Logger &operator<<( std::time_t _input ) noexcept {
 
       struct std::tm currentLocalTime {};
 
@@ -323,19 +323,19 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    inline Logger &operator<<( const void *_input ) {
+    inline Logger &operator<<( const void *_input ) noexcept {
 
       _input == nullptr ? m_stream << "(nullptr)" : m_stream << '(' << _input << ')';
       return maybeSpace();
     }
 
-    inline Logger &operator<<( [[maybe_unused]] std::nullptr_t _input ) {
+    inline Logger &operator<<( [[maybe_unused]] std::nullptr_t _input ) noexcept {
 
       m_stream << "(nullptr_t)";
       return maybeSpace();
     }
 
-    inline Logger &operator<<( [[maybe_unused]] std::nullopt_t _input ) {
+    inline Logger &operator<<( [[maybe_unused]] std::nullopt_t _input ) noexcept {
 
       m_stream << "(nullopt_t)";
       return maybeSpace();
@@ -344,12 +344,12 @@ namespace vx::logger {
     template <typename Tuple>
     void get_impl( [[maybe_unused]] std::size_t _current,
                    [[maybe_unused]] const Tuple &_tuple,
-                   [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) {}
+                   [[maybe_unused]] typename std::tuple_size<Tuple>::type _size ) noexcept {}
 
     template <std::size_t _pos, typename Tuple, typename = std::enable_if_t<std::tuple_size<Tuple>::value != _pos>>
     void get_impl( std::size_t _current,
                    const Tuple &_tuple,
-                   [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
+                   [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
 
       if ( _current == _pos ) {
 
@@ -365,7 +365,7 @@ namespace vx::logger {
 
     template <typename Tuple>
     void get( std::size_t _pos,
-              const Tuple &_tuple ) {
+              const Tuple &_tuple ) noexcept {
 
       get_impl( _pos, _tuple, std::integral_constant<std::size_t, 0>() );
     }
@@ -373,12 +373,12 @@ namespace vx::logger {
     template <typename Variant>
     void getV_impl( [[maybe_unused]] std::size_t _current,
                     [[maybe_unused]] const Variant &_variant,
-                    [[maybe_unused]] typename std::variant_size<Variant>::type _size ) {}
+                    [[maybe_unused]] typename std::variant_size<Variant>::type _size ) noexcept {}
 
     template <std::size_t _pos, typename Variant, typename = std::enable_if_t<std::variant_size<Variant>::value != _pos>>
     void getV_impl( std::size_t _current,
                     const Variant &_variant,
-                    [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) {
+                    [[maybe_unused]] std::integral_constant<std::size_t, _pos> _integral ) noexcept {
 
       if ( _current == _pos ) {
 
@@ -401,7 +401,7 @@ namespace vx::logger {
 
     template <typename Variant>
     void getV( std::size_t _pos,
-               const Variant &_variant ) {
+               const Variant &_variant ) noexcept {
 
       getV_impl( _pos, _variant, std::integral_constant<std::size_t, 0>() );
     }
@@ -420,19 +420,19 @@ namespace vx::logger {
      * @brief Create timestamp.
      * @return A timestamp.
      */
-    std::string timestamp() const;
+    std::string timestamp() const noexcept;
 
     /**
      * @brief Create severity output.
      * @param _severity   Which severity to generate?
      * @return The formatted severity.
      */
-    std::string severity( Severity _severity ) const;
+    std::string severity( Severity _severity ) const noexcept;
   };
 
   template <typename T>
   inline Logger &operator<<( Logger &_logger,
-                             const std::optional<T> &_optional ) {
+                             const std::optional<T> &_optional ) noexcept {
 
     _logger.stream() << demangleExtreme( typeid( _optional ).name() ) << ' ';
     //    _logger << _optional.value_or( std::nullopt );
@@ -451,7 +451,7 @@ namespace vx::logger {
 
   template <typename Key, typename T>
   inline Logger &operator<<( Logger &_logger,
-                             const std::pair<Key, T> &_pair ) {
+                             const std::pair<Key, T> &_pair ) noexcept {
 
     _logger.stream() << /* demangleExtreme( typeid( _pair ).name() ) << ' ' << */ '{';
     const bool saveState = _logger.autoSpace();
@@ -465,7 +465,7 @@ namespace vx::logger {
 
   template <typename List>
   inline Logger &printList( Logger &_logger,
-                            const List &_list ) {
+                            const List &_list ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -487,28 +487,28 @@ namespace vx::logger {
 
   template <typename T, std::size_t N>
   inline Logger &operator<<( Logger &_logger,
-                             const std::array<T, N> &_array ) {
+                             const std::array<T, N> &_array ) noexcept {
 
     return printList( _logger, _array );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::list<T, Alloc> &_list ) {
+                             const std::list<T, Alloc> &_list ) noexcept {
 
     return printList( _logger, _list );
   }
 
   template <typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::set<T, Compare, Alloc> &_set ) {
+                             const std::set<T, Compare, Alloc> &_set ) noexcept {
 
     return printList( _logger, _set );
   }
 
   template <typename T, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::vector<T, Alloc> &_vector ) {
+                             const std::vector<T, Alloc> &_vector ) noexcept {
 
     return printList( _logger, _vector );
   }
@@ -516,7 +516,7 @@ namespace vx::logger {
   template <typename T>
 
   inline Logger &printMap( Logger &_logger,
-                           const T &_map ) {
+                           const T &_map ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -542,28 +542,28 @@ namespace vx::logger {
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::map<Key, T, Compare, Alloc> &_map ) {
+                             const std::map<Key, T, Compare, Alloc> &_map ) noexcept {
 
     return printMap( _logger, _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::multimap<Key, T, Compare, Alloc> &_map ) {
+                             const std::multimap<Key, T, Compare, Alloc> &_map ) noexcept {
 
     return printMap( _logger, _map );
   }
 
   template <typename Key, typename T, typename Compare, typename Alloc>
   inline Logger &operator<<( Logger &_logger,
-                             const std::unordered_map<Key, T, Compare, Alloc> &_map ) {
+                             const std::unordered_map<Key, T, Compare, Alloc> &_map ) noexcept {
 
     return printMap( _logger, _map );
   }
 
   template <typename T>
   inline Logger &printTuple( Logger &_logger,
-                             const T &_tuple ) {
+                             const T &_tuple ) noexcept {
 
     using func = std::function<void( void )>;
     func checkComma = []() {};
@@ -584,14 +584,14 @@ namespace vx::logger {
 
   template <typename... Types>
   inline Logger &operator<<( Logger &_logger,
-                             const std::tuple<Types...> &_values ) {
+                             const std::tuple<Types...> &_values ) noexcept {
 
     return printTuple( _logger, _values );
   }
 
   template <typename T>
   inline Logger &printVariant( Logger &_logger,
-                               const T &_variant ) {
+                               const T &_variant ) noexcept {
 
     _logger.stream() << demangleExtreme( typeid( _variant ).name() ) << ' ';
     std::size_t variantSize = std::variant_size_v<T>;
@@ -604,19 +604,19 @@ namespace vx::logger {
 
   template <typename... Types>
   inline Logger &operator<<( Logger &_logger,
-                             const std::variant<Types...> &_values ) {
+                             const std::variant<Types...> &_values ) noexcept {
 
     return printVariant( _logger, _values );
   }
 
-  template <typename Type, typename Function>
-  inline std::pair<const std::type_index, std::function<void( Logger &, const std::any & )>> add( const Function &_function ) {
+  template <typename T, typename Function>
+  inline std::pair<const std::type_index, std::function<void( Logger &, const std::any & )>> add( const Function &_function ) noexcept {
 
     return {
 
-      std::type_index( typeid( Type ) ),
+      std::type_index( typeid( T ) ),
       [ function = _function ]( Logger &_logger, [[maybe_unused]] const std::any &_any ) {
-        function( _logger, std::any_cast<const Type &>( _any ) );
+        function( _logger, std::any_cast<const T &>( _any ) );
       }
     };
   }
@@ -675,7 +675,7 @@ namespace vx::logger {
 #endif
 
   inline void visit( Logger &_logger,
-                     const std::any &_any ) {
+                     const std::any &_any ) noexcept {
 
     if ( const auto iterator = visitors.find( std::type_index( _any.type() ) ); iterator != visitors.cend() ) {
 
@@ -687,14 +687,14 @@ namespace vx::logger {
     }
   }
 
-  template <typename Type, typename Function>
-  inline void registerVisitor( const Function &_function ) {
+  template <typename T, typename Function>
+  inline void registerVisitor( const Function &_function ) noexcept {
 
-    visitors.insert( add<Type>( _function ) );
+    visitors.insert( add<T>( _function ) );
   }
 
   inline Logger &operator<<( Logger &_logger,
-                             const std::any &_input ) {
+                             const std::any &_input ) noexcept {
 
     const bool saveState = _logger.autoSpace();
     visit( _logger.nospace(), _input );
@@ -705,7 +705,7 @@ namespace vx::logger {
   /* MAGIC ENUM */
   template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
   inline Logger &operator<<( Logger &_logger,
-                             E _value ) {
+                             E _value ) noexcept {
 
     using D = std::decay_t<E>;
     using U = magic_enum::underlying_type_t<D>;
@@ -723,7 +723,7 @@ namespace vx::logger {
   }
 
   template <typename E, magic_enum::detail::enable_if_t<E, int> = 0>
-  inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> _value ) {
+  inline Logger &operator<<( Logger &_logger, magic_enum::optional<E> _value ) noexcept {
 
     _value ? _logger << *_value : _logger.stream() << "(nullopt)";
     return _logger.maybeSpace();
