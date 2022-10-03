@@ -101,23 +101,23 @@ namespace vx::logger {
   class Configuration : public Singleton<Configuration> {
 
   public:
-    [[nodiscard]] inline std::string filename() const { return m_filename; }
+    [[nodiscard]] inline std::string filename() const noexcept { return m_filename; }
 
-    void setFilename( const std::string &_filename ) { m_filename = _filename; }
+    void setFilename( const std::string &_filename ) noexcept { m_filename = _filename; }
 
-    void setFlags() {}
+    void setFlags() noexcept {}
 
-    [[nodiscard]] inline bool autoSpace() const { return m_autoSpace; }
+    [[nodiscard]] inline bool autoSpace() const noexcept { return m_autoSpace; }
 
-    inline void setAutoSpace( bool _autoSpace ) { m_autoSpace = _autoSpace; }
+    inline void setAutoSpace( bool _autoSpace ) noexcept { m_autoSpace = _autoSpace; }
 
-    [[nodiscard]] inline bool autoQuotes() const { return m_autoQuotes; }
+    [[nodiscard]] inline bool autoQuotes() const noexcept { return m_autoQuotes; }
 
-    inline void setAutoQuotes( bool _autoQuotes ) { m_autoQuotes = _autoQuotes; }
+    inline void setAutoQuotes( bool _autoQuotes ) noexcept { m_autoQuotes = _autoQuotes; }
 
-    [[nodiscard]] inline Severity avoidLogBelow() { return m_avoidLogBelow; }
+    [[nodiscard]] inline Severity avoidLogBelow() const noexcept { return m_avoidLogBelow; }
 
-    inline void setAvoidLogBelow( Severity _severity ) { m_avoidLogBelow = _severity; }
+    inline void setAvoidLogBelow( Severity _severity ) noexcept { m_avoidLogBelow = _severity; }
 
   private:
     bool m_autoSpace = true;
@@ -196,10 +196,7 @@ namespace vx::logger {
 
     inline Logger &maybeSpace() noexcept {
 
-      if ( m_autoSpace ) {
-
-        m_stream << ' ';
-      }
+      if ( m_autoSpace ) { m_stream << ' '; }
       return *this;
     }
 
@@ -253,7 +250,7 @@ namespace vx::logger {
 
     inline Logger &operator<<( float _input ) noexcept {
 
-      std::streamsize saveState = m_stream.precision();
+      const std::streamsize saveState = m_stream.precision();
       m_stream.precision( std::numeric_limits<float>::max_digits10 );
       m_stream << _input;
       m_stream.precision( saveState );
@@ -262,7 +259,7 @@ namespace vx::logger {
 
     inline Logger &operator<<( double _input ) noexcept {
 
-      std::streamsize saveState = m_stream.precision();
+      const std::streamsize saveState = m_stream.precision();
       m_stream.precision( std::numeric_limits<double>::max_digits10 );
       m_stream << _input;
       m_stream.precision( saveState );
@@ -309,19 +306,7 @@ namespace vx::logger {
       return maybeSpace();
     }
 
-    inline Logger &operator<<( std::time_t _input ) noexcept {
-
-      struct std::tm currentLocalTime {};
-
-#ifdef _WIN32
-      localtime_s( &currentLocalTime, &_input );
-#else
-      localtime_r( &_input, &currentLocalTime );
-#endif
-
-      m_stream << std::put_time( &currentLocalTime, "%c %Z" );
-      return maybeSpace();
-    }
+    Logger &operator<<( std::time_t _input ) noexcept;
 
     inline Logger &operator<<( const void *_input ) noexcept {
 
@@ -435,7 +420,6 @@ namespace vx::logger {
                              const std::optional<T> &_optional ) noexcept {
 
     _logger.stream() << demangleExtreme( typeid( _optional ).name() ) << ' ';
-    //    _logger << _optional.value_or( std::nullopt );
     if ( _optional ) {
 
       const bool saveState = _logger.autoSpace();

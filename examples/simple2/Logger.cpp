@@ -135,6 +135,20 @@ namespace vx::logger {
     m_autoQuotes ? m_stream << std::quoted( _input ) : m_stream << _input;
   }
 
+  Logger &Logger::operator<<( std::time_t _input ) noexcept {
+
+    struct std::tm currentLocalTime {};
+
+#ifdef _WIN32
+    localtime_s( &currentLocalTime, &_input );
+#else
+    localtime_r( &_input, &currentLocalTime );
+#endif
+
+    m_stream << std::put_time( &currentLocalTime, "%c %Z" );
+    return maybeSpace();
+  }
+
   std::string Logger::timestamp() const noexcept {
 
     return timestamp::iso8601( Precision::MicroSeconds );
