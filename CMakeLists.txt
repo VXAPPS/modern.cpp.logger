@@ -39,12 +39,12 @@ include(${CMAKE}/fetch/magic_enum.cmake)
 include(${CMAKE}/fetch/modern.cpp.core.cmake)
 
 # External Project Dependencies
-if(NOT HAVE_FORMAT)
-  include(${CMAKE}/external/fmt.cmake)
-endif()
 
 add_subdirectory(source)
 if(LOGGER_BUILD_EXAMPLES)
+  if(NOT HAVE_FORMAT)
+    include(${CMAKE}/external/fmt.cmake)
+  endif()
   add_subdirectory(examples)
 endif()
 
