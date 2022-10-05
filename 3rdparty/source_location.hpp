@@ -1,6 +1,10 @@
 #pragma once
 
+/* c header */
 #include <cstdint>
+
+/* stl header */
+#include <string_view>
 
 namespace std {
 
@@ -8,8 +12,8 @@ namespace std {
 
   public:
 #if defined __clang__ && __clang_major__ >= 9 || defined _MSC_VER && _MSC_VER >= 1920
-    static constexpr source_location current( const char *fileName = __builtin_FILE(),
-                                              const char *functionName = __builtin_FUNCTION(),
+    static constexpr source_location current( std::string_view fileName = __builtin_FILE(),
+                                              std::string_view functionName = __builtin_FUNCTION(),
                                               const uint_least32_t lineNumber = __builtin_LINE(),
                                               const uint_least32_t columnOffset = __builtin_COLUMN() ) noexcept
 #else
@@ -32,12 +36,12 @@ namespace std {
     source_location( const source_location & ) = default;
     source_location( source_location && ) = default;
 
-    [[nodiscard]] constexpr const char *file_name() const noexcept {
+    [[nodiscard]] constexpr std::string_view file_name() const noexcept {
 
       return fileName;
     }
 
-    [[nodiscard]] constexpr const char *function_name() const noexcept {
+    [[nodiscard]] constexpr std::string_view function_name() const noexcept {
 
       return functionName;
     }
@@ -53,17 +57,17 @@ namespace std {
     }
 
   private:
-    constexpr source_location( const char *_fileName,
-                               const char *_functionName,
+    constexpr source_location( std::string_view _fileName,
+                               std::string_view _functionName,
                                const uint_least32_t _lineNumber,
                                const uint_least32_t _columnOffset ) noexcept
-        : fileName( _fileName ),
-          functionName( _functionName ),
-          lineNumber( _lineNumber ),
-          columnOffset( _columnOffset ) {}
+      : fileName( _fileName ),
+        functionName( _functionName ),
+        lineNumber( _lineNumber ),
+        columnOffset( _columnOffset ) {}
 
-    const char *fileName;
-    const char *functionName;
+    std::string_view fileName;
+    std::string_view functionName;
     const std::uint_least32_t lineNumber;
     const std::uint_least32_t columnOffset;
   };
