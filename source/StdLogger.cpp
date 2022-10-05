@@ -56,9 +56,9 @@ namespace vx {
   constexpr int overhead = 64;
 
   StdLogger::StdLogger( const std::unordered_map<std::string, std::string> &_configuration ) noexcept
-      : Logger( _configuration ),
-        m_useColor( _configuration.find( "color" ) != std::end( _configuration ) ),
-        m_useStdErr( _configuration.find( "stderr" ) != std::end( _configuration ) ) {}
+    : Logger( _configuration ),
+      m_useColor( _configuration.find( "color" ) != std::end( _configuration ) ),
+      m_useStdErr( _configuration.find( "stderr" ) != std::end( _configuration ) ) {}
 
   void StdLogger::log( std::string_view _message,
                        Severity _severity,
@@ -104,7 +104,7 @@ namespace vx {
       output.append( " [" + severity + "] " );
     }
 
-    if ( std::string filename = _location.file_name(); filename != "unsupported" ) {
+    if ( std::string filename = std::string( _location.file_name() ); filename != "unsupported" ) {
 
       if ( filename.find_last_of( '/' ) != std::string::npos ) {
 
