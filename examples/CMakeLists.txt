@@ -30,5 +30,4 @@
 
 add_subdirectory(configuration)
 add_subdirectory(simple)
-add_subdirectory(simple2)
 add_subdirectory(threads)

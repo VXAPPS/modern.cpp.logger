@@ -42,7 +42,7 @@ include(${CMAKE}/fetch/modern.cpp.core.cmake)
 
 add_subdirectory(source)
 if(LOGGER_BUILD_EXAMPLES)
-  if(NOT HAVE_FORMAT)
+  if(NOT TARGET fmt AND NOT HAVE_FORMAT)
     include(${CMAKE}/external/fmt.cmake)
   endif()
   add_subdirectory(examples)
