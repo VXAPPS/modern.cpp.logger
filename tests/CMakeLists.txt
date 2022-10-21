@@ -28,5 +28,146 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-add_subdirectory(simple)
-#add_subdirectory(threads)
+project(test_simple_null)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_simple_cout)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_simple_file)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+  shared/TestHelper.cpp
+  shared/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_simple_xml)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+  shared/TestHelper.cpp
+  shared/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_thread_null)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_thread_cout)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_thread_file)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+  shared/TestHelper.cpp
+  shared/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)
+
+project(test_thread_xml)
+
+add_executable(${PROJECT_NAME}
+  ${PROJECT_NAME}.cpp
+  shared/TestHelper.cpp
+  shared/TestHelper.h
+)
+
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+  modern.cpp.logger
+  GTest::gtest_main
+  Threads::Threads
+)
+
+gtest_add_tests(${PROJECT_NAME}
+  SOURCES ${PROJECT_NAME}.cpp
+)

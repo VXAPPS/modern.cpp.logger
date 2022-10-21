@@ -30,6 +30,7 @@
 
 include(FetchContent)
 
+option(CORE_MASTER_PROJECT "Master project" OFF)
 option(CORE_BUILD_EXAMPLES "Build examples" OFF)
 option(CORE_BUILD_TESTS "Build tests" OFF)
 
