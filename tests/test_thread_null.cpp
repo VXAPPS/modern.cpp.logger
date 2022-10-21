@@ -46,16 +46,10 @@
 #endif
 
 /* stl header */
-#include <filesystem>
-
-/* magic enum */
-#include <magic_enum.hpp>
+#include <thread>
 
 /* modern.cpp.logger */
 #include <LoggerFactory.h>
-
-/* local header */
-//#include "TestHelper.h"
 
 using ::testing::InitGoogleTest;
 using ::testing::Test;

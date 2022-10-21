@@ -47,6 +47,7 @@
 
 /* stl header */
 #include <filesystem>
+#include <thread>
 
 /* magic enum */
 #include <magic_enum.hpp>

@@ -45,6 +45,9 @@
   #pragma clang diagnostic pop
 #endif
 
+/* stl header */
+#include <thread>
+
 /* modern.cpp.logger */
 #include <LoggerFactory.h>
 
